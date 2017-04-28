@@ -184,7 +184,15 @@ class OrgportalsPlugin(plugins.SingletonPlugin,
             'orgportals_get_portal_page_url':
                 helpers.orgportals_get_portal_page_url,
             'orgportals_get_organization_image':
-                helpers.orgportals_get_organization_image
+                helpers.orgportals_get_organization_image,
+            'orgportals_get_dataset_count':
+                helpers.orgportals_get_dataset_count,
+            'orgportals_get_recent_datasets':
+                helpers.recent_datasets,
+            'orgportals_get_popular_datasets':
+                helpers.popular_datasets,
+            'orgportals_get_package_metadata':
+                helpers.get_package_metadata
         }
 
     # IGroupForm

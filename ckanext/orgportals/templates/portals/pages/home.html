@@ -5,15 +5,28 @@
     {% set container_height = 'initial' %}
     {% set image_url = page.image_url %}
   {% else %}
-    {% set container_height = '100px' %}
-    {% set image_url = '' %}
+    {% set container_height = '480px' %}
+    {% set image_url = '/img/background_SardineLake.jpg' %}
   {% endif %}
 
-  <div class="hero-content-container" style="height: {{ container_height }};">
-    <img class="hero-content-container__image" src="{{ image_url }}">
+  <div class="hero-content-container" style="background:url({{ image_url }}); background-size: cover; height:{{ container_height }};">
+    <div class="tint"></div>
     <div class="hero-content-container__content">
       <h3 class="hero-content-container__header">{{ page.content_title }}</h3>
-      <a href="data"><div class="hero-content-container__button">{{ page.text_box }}</div></a>
+      <div class="hero-content-container__secondary">{{ h.render_markdown(page.text_box) }}</div>
+      {% snippet 'portals/snippets/home/search.html' %}
+    </div>
+  </div>
+  <div class="main-updates">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          {% snippet 'portals/snippets/home/popular_datasets.html' %}
+        </div>
+        <div class="col-md-6">
+          {% snippet 'portals/snippets/home/recent_datasets.html' %}
+        </div>
+      </div>
     </div>
   </div>
 {% endblock %}

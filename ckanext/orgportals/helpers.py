@@ -452,3 +452,38 @@ def orgportals_get_organization_image(org_name):
     org = toolkit.get_action('organization_show')({}, {'id': org_name})
 
     return org['image_display_url']
+
+
+def orgportals_get_dataset_count(org_name):
+    count = 0
+    try:
+        result = toolkit.get_action('organization_list')({}, {'all_fields':'true', 'limit':1, 'organizations':[org_name]})
+        if result[0].get('package_count'):
+            count = result[0].get('package_count')
+    except:
+        pass
+    return count
+
+
+def recent_datasets(num=5):
+    """Return a list of recent datasets."""
+    sorted_datasets = []
+    datasets = toolkit.get_action('current_package_list_with_resources')({},{'limit': num})
+    if datasets:
+        sorted_datasets = sorted(datasets, key=lambda k: k['metadata_modified'], reverse=True)
+    return sorted_datasets[:num]
+
+
+def popular_datasets(num=5):
+    """Return a list of popular datasets."""
+    datasets = []
+    search = toolkit.get_action('package_search')({},{'rows': num, 'sort': 'views_recent desc'})
+    if search.get('results'):
+        datasets = search.get('results')
+    return datasets[:num]
+
+
+def get_package_metadata(package):
+    """Return the metadata of a dataset"""
+    result = toolkit.get_action('package_show')(None, {'id': package.get('name'), 'include_tracking': True})
+    return result
