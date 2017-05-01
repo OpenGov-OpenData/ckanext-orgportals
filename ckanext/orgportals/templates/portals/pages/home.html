@@ -2,14 +2,12 @@
 
 {% block content %}
   {% if page.image_url %}
-    {% set container_height = 'initial' %}
     {% set image_url = page.image_url %}
   {% else %}
-    {% set container_height = '480px' %}
     {% set image_url = '/img/background_SardineLake.jpg' %}
   {% endif %}
 
-  <div class="hero-content-container" style="background:url({{ image_url }}); background-size: cover; height:{{ container_height }};">
+  <div class="hero-content-container" style="background:url({{ image_url }}); background-size: cover; height:480px;">
     <div class="tint"></div>
     <div class="hero-content-container__content">
       <h3 class="hero-content-container__header">{{ page.content_title }}</h3>

@@ -465,19 +465,21 @@ def orgportals_get_dataset_count(org_name):
     return count
 
 
-def recent_datasets(num=5):
+def recent_datasets(org_name, num=5):
     """Return a list of recent datasets."""
-    sorted_datasets = []
-    datasets = toolkit.get_action('current_package_list_with_resources')({},{'limit': num})
-    if datasets:
-        sorted_datasets = sorted(datasets, key=lambda k: k['metadata_modified'], reverse=True)
-    return sorted_datasets[:num]
+    datasets = []
+    try:
+        result = toolkit.get_action('organization_show')({},{'id': org_name, 'include_datasets': True})
+        datasets = result['packages']
+    except:
+        pass
+    return datasets[:num]
 
 
-def popular_datasets(num=5):
+def popular_datasets(org_name, num=5):
     """Return a list of popular datasets."""
     datasets = []
-    search = toolkit.get_action('package_search')({},{'rows': num, 'sort': 'views_recent desc'})
+    search = toolkit.get_action('package_search')({},{'rows': num, 'sort': 'views_recent desc', 'fq': 'organization:'+org_name})
     if search.get('results'):
         datasets = search.get('results')
     return datasets[:num]

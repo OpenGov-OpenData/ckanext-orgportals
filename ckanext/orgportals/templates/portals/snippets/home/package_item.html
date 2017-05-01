@@ -13,6 +13,7 @@ Example:
   {% snippet 'snippets/package_item.html', package=c.datasets[0] %}
 
 #}
+{% set package = h.orgportals_get_package_metadata(package) %}
 {% set truncate = truncate or 180 %}
 {% set truncate_title = truncate_title or 80 %}
 {% set title = package.title or package.name %}
@@ -33,7 +34,7 @@ Example:
               {% endif %}
             {% endblock %}
             {% block heading_title %}
-              {{ h.link_to(h.truncate(title, truncate_title), h.url_for(controller='package', action='read', id=package.name)) }}
+              <a href=" {{ h.url_for(controller='package', action='read', id=package.name) }}" target="_blank">{{ h.truncate(title, truncate_title) }}</a>
             {% endblock %}
             {% block heading_meta %}
               {% if package.get('state', '').startswith('draft') %}
@@ -41,7 +42,6 @@ Example:
               {% elif package.get('state', '').startswith('deleted') %}
                 <span class="label label-important">{{ _('Deleted') }}</span>
               {% endif %}
-              {{ h.popular('recent views', package.tracking_summary.recent, min=10) if package.tracking_summary }}
             {% endblock %}
           </h3>
         {% endblock %}
