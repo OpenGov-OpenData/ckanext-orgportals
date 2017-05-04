@@ -63,9 +63,7 @@
                 {% set page_active = 'false' %}
               {% endif %}
 
-              {% if page.type in ['home','data'] or page.content_title %}
               <li><a href="{{ page_link }}" data-page-active="{{ page_active }}">{{ page.page_title }}</a></li>
-              {% endif %}
             {% endfor %}
           </ul>
         </div>

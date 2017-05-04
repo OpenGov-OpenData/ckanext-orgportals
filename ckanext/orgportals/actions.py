@@ -87,6 +87,8 @@ pages_schema = {
     'content_title': [p.toolkit.get_validator('ignore_missing'), unicode],
     'order': [p.toolkit.get_validator('ignore_missing'), unicode],
     'image_url': [p.toolkit.get_validator('ignore_empty'), unicode],
+    'image_url_2': [p.toolkit.get_validator('ignore_empty'), unicode],
+    'image_url_3': [p.toolkit.get_validator('ignore_empty'), unicode],
     'text_box': [p.toolkit.get_validator('ignore_empty'), unicode],
     'content': [p.toolkit.get_validator('ignore_missing'), unicode],
     'topics': [p.toolkit.get_validator('ignore_missing'), unicode],
@@ -176,7 +178,7 @@ def _pages_update(context, data_dict):
         out.org_name = org_name
         out.name = page_name
 
-    items = ['page_title', 'content_title', 'content', 'name', 'image_url',
+    items = ['page_title', 'content_title', 'content', 'name', 'image_url', 'image_url_2', 'image_url_3',
              'type', 'text_box',
              'topics', 'datasets_per_page', 'survey_enabled',
              'survey_text', 'survey_link', 'map', 'map_main_property',

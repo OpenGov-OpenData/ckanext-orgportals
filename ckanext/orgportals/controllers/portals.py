@@ -96,6 +96,22 @@ class OrgportalsController(PackageController):
             else:
                 image_url = None
 
+            image_field_list = ['image_url_2','image_url_3']
+            image_url_dict = {}
+            for image_field in image_field_list:
+                field_postfix = image_field[-1:]
+                if 'image_upload_'+field_postfix in dict(p.toolkit.request.params):
+                    image_upload = dict(p.toolkit.request.params)['image_upload_'+field_postfix]
+                    if isinstance(image_upload, cgi.FieldStorage):
+                        upload = uploader.get_uploader('portal', data[image_field])
+                        upload.update_data_dict(data, image_field, 'image_upload_'+field_postfix, 'clear_upload_'+field_postfix)
+                        upload.upload(uploader.get_max_image_size())
+                        image_url_dict[image_field] = '/uploads/portal/{}'.format(upload.filename)
+                    else:
+                        image_url_dict[image_field] = data[image_field]
+                else:
+                    image_url_dict[image_field] = None
+
             if 'type' in _page and _page['type'] == 'data':
                 _page['map'] = []
                 _page['map_main_property'] = []
@@ -143,6 +159,9 @@ class OrgportalsController(PackageController):
             _page['org_name'] = org_name
             _page['page_name'] = page
             _page['image_url'] = image_url
+
+            for image_field in image_field_list:
+                _page[image_field] = image_url_dict[image_field]
 
             try:
                 junk = p.toolkit.get_action('orgportals_pages_update')(

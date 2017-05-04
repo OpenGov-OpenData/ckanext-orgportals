@@ -489,3 +489,14 @@ def get_package_metadata(package):
     """Return the metadata of a dataset"""
     result = toolkit.get_action('package_show')(None, {'id': package.get('name'), 'include_tracking': True})
     return result
+
+
+def get_showcase_list(num=24):
+    """Return a list of showcases"""
+    sorted_showcases = []
+    try:
+        showcases = toolkit.get_action('ckanext_showcase_list')({},{})
+        sorted_showcases = sorted(showcases, key=lambda k: k.get('metadata_modified'), reverse=True)
+    except:
+        print "[orgportals] Error in retrieving list of showcases"
+    return sorted_showcases[:num]

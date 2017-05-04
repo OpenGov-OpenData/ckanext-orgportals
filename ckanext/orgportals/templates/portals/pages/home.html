@@ -1,20 +1,37 @@
 {% extends 'portals/index.html' %}
 
 {% block content %}
-  {% if page.image_url %}
-    {% set image_url = page.image_url %}
+  {% if page.image_url and page.image_url_2 and page.image_url_3 %}
+    {% snippet 'portals/snippets/home/hero_slider.html', title=page.content_title, intro=page.text_box,
+               image_url=page.image_url, image_url_2=page.image_url_2, image_url_3=page.image_url_3 %}
   {% else %}
     {% set image_url = '/img/background_SardineLake.jpg' %}
+    <div class="hero-content-container" style="background:url({{ image_url }}); background-size: cover; height:500px; z-index:-25">
+      <div class="tint"></div>
+      <div class="hero-content-container__content">
+        <h3 class="hero-content-container__header">{{ page.content_title }}</h3>
+        <div class="hero-content-container__secondary">{{ h.render_markdown(page.text_box) }}</div>
+        {% snippet 'portals/snippets/home/search.html' %}
+      </div>
+    </div>
   {% endif %}
-
-  <div class="hero-content-container" style="background:url({{ image_url }}); background-size: cover; height:480px;">
-    <div class="tint"></div>
-    <div class="hero-content-container__content">
-      <h3 class="hero-content-container__header">{{ page.content_title }}</h3>
-      <div class="hero-content-container__secondary">{{ h.render_markdown(page.text_box) }}</div>
-      {% snippet 'portals/snippets/home/search.html' %}
+  {% if h.orgportals_get_showcase_list() %}
+  <div class="main-featured">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="module-content box">
+            <header>
+              <h2 class="heading"><a href="/showcase">Showcases</a></h2>
+              <span class="heading-explanation">See what our users are doing with open data.</span>
+            </header>
+            {% snippet 'portals/snippets/home/showcase_list.html', showcases=h.orgportals_get_showcase_list() %}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+  {% endif %}
   <div class="main-updates">
     <div class="container">
       <div class="row">

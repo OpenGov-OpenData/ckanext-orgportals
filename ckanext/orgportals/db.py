@@ -59,6 +59,8 @@ def _create_pages_table():
         sa.Column('page_title', sa.types.UnicodeText, default=u''),
         sa.Column('content_title', sa.types.UnicodeText, default=u''),
         sa.Column('image_url', sa.types.UnicodeText, default=u''),
+        sa.Column('image_url_2', sa.types.UnicodeText, default=u''),
+        sa.Column('image_url_3', sa.types.UnicodeText, default=u''),
         sa.Column('text_box', sa.types.UnicodeText, default=u''),
         sa.Column('content', sa.types.UnicodeText, default=u''),
         sa.Column('map', sa.types.UnicodeText, default=u''),

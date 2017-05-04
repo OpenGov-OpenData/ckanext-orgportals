@@ -192,7 +192,9 @@ class OrgportalsPlugin(plugins.SingletonPlugin,
             'orgportals_get_popular_datasets':
                 helpers.popular_datasets,
             'orgportals_get_package_metadata':
-                helpers.get_package_metadata
+                helpers.get_package_metadata,
+            'orgportals_get_showcase_list':
+                helpers.get_showcase_list
         }
 
     # IGroupForm

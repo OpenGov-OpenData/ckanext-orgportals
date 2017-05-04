@@ -25,7 +25,7 @@
       <form {% if form_id %}id="{{ form_id }}" {% endif %}class="search-form{% if no_bottom_border %} no-bottom-border{% endif %}"
             method="get" data-module="select-switch">
           <div class="input-group">
-            <input type="text" name="q" value="{{ query }}" autocomplete="off"
+            <input aria-label="search datasets" type="text" name="q" value="{{ query }}" autocomplete="off"
                  class="form-control input-search-data" placeholder="{{ placeholder }}"
                  {# style="border-color: {{ base_color }}" #}>
             <button type="submit" value="search">
