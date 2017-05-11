@@ -19,6 +19,10 @@ Example:
 {% set title = package.title or package.name %}
 {% set notes = h.markdown_extract(package.notes, extract_length=truncate) %}
 
+{% set ctrl = 'ckanext.orgportals.controllers.portals:OrgportalsController' %}
+{% set source = 'admin' %}
+{% set page_link = h.url_for(controller=ctrl, action='datapage_show', org_name=c.org_name, source=source) %}
+
 {% block package_item %}
   <li class="{{ item_class or "dataset-item" }}">
     {% block content %}
@@ -34,7 +38,8 @@ Example:
               {% endif %}
             {% endblock %}
             {% block heading_title %}
-              <a href=" {{ h.url_for(controller='package', action='read', id=package.name) }}" target="_blank">{{ h.truncate(title, truncate_title) }}</a>
+              {# <a href="{{ h.url_for(controller='package', action='read', id=package.name) }}" target="_blank">{{ h.truncate(title, truncate_title) }}</a> #}
+              <a href="{{page_link}}?q={{package.title}}#search-data">{{ h.truncate(title, truncate_title) }}</a>
             {% endblock %}
             {% block heading_meta %}
               {% if package.get('state', '').startswith('draft') %}
