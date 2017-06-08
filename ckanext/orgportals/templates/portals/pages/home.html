@@ -11,10 +11,26 @@
       <div class="hero-content-container__content">
         <h3 class="hero-content-container__header">{{ page.content_title }}</h3>
         <div class="hero-content-container__secondary">{{ h.render_markdown(page.text_box) }}</div>
-        {% snippet 'portals/snippets/home/search.html' %}
       </div>
     </div>
   {% endif %}
+  <div class="row search-block">
+    <div class="container"> 
+      <div class="col-md-6">
+        {% snippet 'portals/snippets/home/search.html' %}
+      </div>
+      <p class="search-hint col-md-6">
+        <span>
+          Get started by searching from
+          <b>{{ h.orgportals_get_dataset_count(c.org_name) }}</b> 
+        </span>
+        <br > 
+        <span>
+          datasets and maps
+        </span>
+      </p>
+    </div>
+  </div>
   {% if h.orgportals_get_showcase_list() %}
   <div class="main-featured">
     <div class="container">

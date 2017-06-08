@@ -8,7 +8,6 @@
           {{ h.render_markdown(intro) }}
         {% endif %}
       </div>
-      {% snippet 'portals/snippets/home/search.html' %}
     </div>
   </div>
 </div>
@@ -27,7 +26,7 @@
       <span class="cd-marker item-1"></span>
       <ul>
         {% for hero_img in hero_images_list %}
-          <li {%if loop.index == 1%}class="selected"{%endif%}><a href="#0">{{loop.index}}</a></li>
+          <li {%if loop.index == 1%}class="selected"{%endif%}><a href="#0"><i class="icon-circle"></i></a></li>
         {% endfor %}
       </ul>
     </nav>
