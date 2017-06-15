@@ -99,6 +99,7 @@
 
     {{ form.select('orgportals_is_active', 'orgportals_is_active', _('Is portal active?'), options=[{'value': '1', 'text': 'Yes'}, {'value': '0', 'text': 'No'}], selected=data.orgportals_is_active) }}
 
+{#
     {{ form.input('orgportals_portal_url', 'orgportals_portal_url', label=_('Portal URL'), type='url', value=data.orgportals_portal_url, error=errors.orgportals_portal_url) }}
 
     {{ form.select('orgportals_lang_is_active', 'orgportals_lang_is_active', _('Show language selector'), options=[{'value': '0', 'text': 'No'}, {'value': '1', 'text': 'Yes'}], selected=data.orgportals_lang_is_active) }}
@@ -123,7 +124,7 @@
     {% if data.id %}
       {% snippet 'organization/snippets/colors.html', data=data %}
     {% endif %}
-
+#}
   </fieldset>
 
   {{ form.required_message() }}
