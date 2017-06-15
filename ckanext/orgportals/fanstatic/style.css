@@ -1417,8 +1417,8 @@ select[multiple], select[size], textarea.form-control {
 }
 
 .h1, .h2, .h3, h1, h2, h3 {
-    margin-top: 20px;
-    margin-bottom: 0px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .h1 .small, .h1 small, .h2 .small, .h2 small, .h3 .small, .h3 small, h1 .small, h1 small, h2 .small, h2 small, h3 .small, h3 small {
@@ -1427,7 +1427,7 @@ select[multiple], select[size], textarea.form-control {
 
 .h4, .h5, .h6, h4, h5, h6 {
     margin-top: 10px;
-    margin-bottom: 10px
+    margin-bottom: 10px;
 }
 
 .h4 .small, .h4 small, .h5 .small, .h5 small, .h6 .small, .h6 small, h4 .small, h4 small, h5 .small, h5 small, h6 .small, h6 small {
@@ -8486,6 +8486,7 @@ li.dataset-item .dataset-heading a {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  padding-right: 5px;
 }
 
 .nav-facet > li > a {
@@ -8495,7 +8496,6 @@ li.dataset-item .dataset-heading a {
 .main-featured .heading,
 .main-updates .heading {
   border-bottom: 2px solid #1F549B;
-  margin-bottom: -2px;
 }
 h2.heading a {
   color: #375F87;
