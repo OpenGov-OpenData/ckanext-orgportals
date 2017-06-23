@@ -26,7 +26,7 @@ Example:
     <article class="data-set">
       <div class="row">
         <div class="col-md-12">
-          <div class="data-set-title col-md-8">
+          <div class="data-set-title col-md-10">
             <a href="#"
                onclick="toggleResources('{{ datasets_group_name }}-resources-{{ package.id }}'); return false;">
               {{ h.markdown_extract(title, extract_length=truncate_title) }}
@@ -35,6 +35,7 @@ Example:
           <div class="col-sm-3 col-md-2">
             <a href="/dataset/{{package.name}}" target="_blank"><i class="fa fa-desktop "></i> {{ _('View dataset') }}</a>
           </div>
+{#
           <div class="col-sm-3 col-md-2">
             <a 
              href="#"
@@ -42,12 +43,13 @@ Example:
              <i class="fa fa-desktop "></i>{{ _(' List resources') }}         
             </a>
           </div>
+#}
         </div>
         <div class="col-sm-12 col-md-12" style="padding-top: 10px">
           <p>{{ package.notes }}</p>
         </div>
       </div>
-      <div class="hidden resources-dropdown" id="{{ datasets_group_name }}-resources-{{ package.id }}">
+      <div class="resources-list" id="{{ datasets_group_name }}-resources-{{ package.id }}">
         {% if package.resources %}
           <div class="row">
             <div class="col-sm-12 col-md-12">
@@ -55,24 +57,10 @@ Example:
             </div>
           </div>
           {% for resource in package.resources %}
+            {% if resource.format == 'PDF' %}
             <div class="row">
               <div class="col-sm-12 col-md-12 resources-dropdown-name">
                 <span class="format-label" property="dc:format" data-format="{{ resource.format.lower() }}">{{ resource.format }}</span>
-{#
-                {% if resource.format == 'ODS' %}
-                  <p
-                     class="noclick btn btn-xs btn-success">{{ resource.format }}</p>
-                {% elif resource.format == 'PDF' %}
-                  <p
-                    class="noclick btn btn-xs btn-warning">{{ resource.format }}</p>
-                {% elif resource.format == 'GeoJSON' %}
-                  <p
-                     class="noclick btn btn-xs btn-primary">{{ resource.format }}</p>
-                {% else %}
-                  <p
-                     class="noclick btn btn-xs btn-primary">{{ resource.format }}</p>
-                {% endif %}
-#}
                 <div class="title-dsc-container">
                   {% if resource.name %}
                     <div class="resources-title">
@@ -92,7 +80,7 @@ Example:
                 </div>
               </div>
             </div>
-           
+            {% endif %}
           {% endfor %}
         {% else %}
           <div class="row">
@@ -107,7 +95,6 @@ Example:
               <h4>{{ _('Additional information') }}</h4>
             </div>
           </div>
-
           {% if package.author %}
             <div class="row">
               <div class="col-md-3">

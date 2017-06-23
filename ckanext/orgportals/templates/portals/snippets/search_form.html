@@ -52,7 +52,11 @@
           </div>
           {% endif %}
         <div class="col-dataset-found">
-          <h2 class="data-block-heading" {# style="color: {{ font_base_color }}" #}> {{ count }} {{ _('datasets found') }}</h2>
+          {% if result_text %}
+            <h2 class="data-block-heading"> {{ count }} {{ _('datasets found ') }} {{ result_text }}</h2>
+          {% else %}
+            <h2 class="data-block-heading" {# style="color: {{ font_base_color }}" #}> {{ count }} {{ _('datasets found') }}</h2>
+          {% endif %}
         </div>    
       </form>
     </div>

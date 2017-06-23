@@ -57,6 +57,7 @@ class OrgportalsPlugin(plugins.SingletonPlugin,
         #portal routes for custom domain
         map.connect('/', controller=ctrl, action='show_portal_homepage')
         map.connect('/data', controller=ctrl, action='show_portal_datapage')
+        map.connect('/library', controller=ctrl, action='show_portal_library')
         map.connect('/contact', controller=ctrl, action='show_portal_contentpage', page_name='contact')
         map.connect('/aboutportal', controller=ctrl, action='show_portal_contentpage', page_name='about')
         map.connect('/help', controller=ctrl, action='show_portal_contentpage', page_name='help')
@@ -71,6 +72,8 @@ class OrgportalsPlugin(plugins.SingletonPlugin,
                     action='view_portal', source='admin')
         map.connect('/organization/{org_name}/portal/data', controller=ctrl,
                     action='datapage_show', source='admin')
+        map.connect('/organization/{org_name}/portal/library', controller=ctrl,
+                    action='library_show', source='admin')
         map.connect('/organization/{org_name}/portal/subdashboard/{subdashboard_name}', controller=ctrl,
                     action='subdashboardpage_show', source='admin')
         map.connect('/organization/{org_name}/portal/contact', controller=ctrl,
