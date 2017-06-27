@@ -1345,7 +1345,7 @@ a:focus {
 .carousel-inner > .item > a > img, .carousel-inner > .item > img, .img-responsive, .thumbnail a > img, .thumbnail > img {
     display: block;
     max-width: 245px;
-    max-height: 100px;
+    max-height: 80px;
 }
 
 .img-rounded {
@@ -7587,7 +7587,7 @@ footer .container {
 
 .resources-dropdown .row,
 .resources-list .row {
-    margin-top: 10px;
+    margin-top: 3px;
 }
 
 .resources-dropdown-name a {
@@ -7613,7 +7613,7 @@ footer .container {
 
 .top-navigation {
     font-size: 20px;
-    margin-top: 15px;
+    margin-top: 10px;
     background-color: #FFF !important;
 }
 
