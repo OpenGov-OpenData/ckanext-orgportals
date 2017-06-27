@@ -469,8 +469,9 @@ def recent_datasets(org_name, num=5):
     """Return a list of recent datasets."""
     datasets = []
     try:
-        result = toolkit.get_action('organization_show')({},{'id': org_name, 'include_datasets': True})
-        datasets = result['packages']
+        search = toolkit.get_action('package_search')({},{'rows': num, 'sort': 'metadata_modified desc', 'fq': 'organization:'+org_name})
+        if search.get('results'):
+            datasets = search.get('results')
     except:
         pass
     return datasets[:num]
