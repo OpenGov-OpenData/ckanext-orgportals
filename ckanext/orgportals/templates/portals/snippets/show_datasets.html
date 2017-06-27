@@ -44,7 +44,18 @@ Example:
           </div>
         </div>
         <div class="col-sm-12 col-md-12" style="padding-top: 10px">
-          <p>{{ package.notes }}</p>
+          {% if package.notes %}
+            <p>{{ package.notes }}</p>
+          {% endif %}
+        </div>
+        <div class="col-sm-12 col-md-12">
+          <ul class="dataset-resources unstyled">
+            {% for resource in h.dict_list_reduce(package.resources, 'format') %}
+              <li>
+                <div class="label" data-format="{{ resource.lower() }}" style="color:white;">{{ resource }}</div>
+              </li>
+            {% endfor %}
+          </ul>
         </div>
       </div>
       <div class="hidden resources-dropdown" id="{{ datasets_group_name }}-resources-{{ package.id }}">

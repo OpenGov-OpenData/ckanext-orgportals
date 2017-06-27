@@ -54,6 +54,13 @@ Example:
           {% if package.metadata_modified %}
             <div>Updated on {{h.render_datetime(package.metadata_modified)}}</div>
           {% endif %}
+          <ul class="dataset-resources unstyled">
+            {% for resource in h.dict_list_reduce(package.resources, 'format') %}
+              <li>
+                <div class="label" data-format="{{ resource.lower() }}" style="color:white;">{{ resource }}</div>
+              </li>
+            {% endfor %}
+          </ul>
         {% endblock %}
       </div>
     {% endblock %}
