@@ -501,3 +501,15 @@ def get_showcase_list(num=24):
     except:
         print "[orgportals] Error in retrieving list of showcases"
     return sorted_showcases[:num]
+
+
+def get_default_resource_view(resource_id):
+    """Return the first resource view"""
+    resource_view = ''
+    try:
+        resource_views = toolkit.get_action('resource_view_list')({},{'id': resource_id})
+        if len(resource_views) > 0:
+            resource_view = resource_views[0]
+    except:
+        print "[orgportals] Error in retrieving resource view"
+    return resource_view

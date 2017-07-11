@@ -2482,7 +2482,7 @@ pre code {
 
 @media (min-width: 1050px) {
     .col-dataset-found {
-        width: 30%;
+        width: 60%;
     }
 }
 
@@ -8247,6 +8247,11 @@ ul.col-md-2 {
 .nav-item.active>a:hover {
   background-color: #8ca0a6;
 }
+.nav-item>a {
+  font-size: 14px;
+  line-height: 20px;
+  padding: 7px 10px;
+}
 .nav-facet .nav-item>a:hover:after,
 .nav-facet .nav-item.active>a:after {
     *margin-right: .3em;
@@ -8596,4 +8601,8 @@ ul.unstyled, ol.unstyled {
 .label[data-format*=ntriples],
 .label[data-format*=turtle] {
   background-color:#0b4498
+}
+
+.resource-view {
+  padding-top: 40px;
 }

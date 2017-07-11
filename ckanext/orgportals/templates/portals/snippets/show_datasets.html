@@ -15,7 +15,7 @@ Example:
 
 #}
 
-{% set truncate = truncate or 100 %}
+{% set truncate = truncate or 250 %}
 {% set truncate_title = truncate_title or 150 %}
 {% set datasets_group_name = datasets_group_name or 'anonymous' %}
 
@@ -44,8 +44,8 @@ Example:
           </div>
         </div>
         <div class="col-sm-12 col-md-12" style="padding-top: 10px">
-          {% if package.notes %}
-            <p>{{ package.notes }}</p>
+          {% if notes %}
+            <p>{{ notes }}</p>
           {% endif %}
         </div>
         <div class="col-sm-12 col-md-12">

@@ -46,7 +46,7 @@ name
                 {% set href = h.remove_url_param(key=name.value, controller=c.controller, action=c.action, extras=extras) if item.active
                               else h.orgportals_replace_or_add_url_param(name=name.value, value=item.name, params=request.params.items(), controller=c.controller, action=c.action, context_name=c.org_name, subdashboard_name=subdashboard_name, source=c.source) %}
                 {% set label = label_function(item) if label_function else item.display_name %}
-                {% set label_truncated = h.truncate(label, 22) if not label_function else label %}
+                {% set label_truncated = h.truncate(label, 50) if not label_function else label %}
                 {% set count = count_label(item['count']) if count_label else ('(%d)' % item['count']) %}
                 <li class="nav-item{% if item.active %} active{% endif %}">
                   <a href="{{ href }}" title="{{ label if label != label_truncated else '' }}">

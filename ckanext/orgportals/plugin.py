@@ -197,7 +197,9 @@ class OrgportalsPlugin(plugins.SingletonPlugin,
             'orgportals_get_package_metadata':
                 helpers.get_package_metadata,
             'orgportals_get_showcase_list':
-                helpers.get_showcase_list
+                helpers.get_showcase_list,
+            'orgportals_get_default_resource_view':
+                helpers.get_default_resource_view
         }
 
     # IGroupForm
