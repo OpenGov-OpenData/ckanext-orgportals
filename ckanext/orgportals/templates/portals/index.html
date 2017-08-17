@@ -17,12 +17,28 @@
 
 {% block page %}
   {% if ga_code %}
-        {% snippet 'portals/snippets/gtm_body.html', ga=ga_code %}
+    {% snippet 'portals/snippets/gtm_body.html', ga=ga_code %}
   {% endif %}
   <div class="boxed-layout">
 
     {% block header %}
       {% snippet 'portals/snippets/header.html' %}
+    {% endblock %}
+
+    {% block toolbar %}
+      {% set ctrl = 'ckanext.orgportals.controllers.portals:OrgportalsController' %}
+      {% set portal_link = h.url_for(controller=ctrl, action='view_portal', org_name=c.org_name, source='admin') %}
+      {% set org = h.orgportals_get_current_organization(c.org_name) %}
+      <div class="container">
+        <div class="toolbar">
+          <ol class="breadcrumb">
+            <li class="active"><a href="/organization/{{ c.org_name }}">Home</a></li>
+            <li class="active"><a href="{{ portal_link }}">{{ org.display_name }}</a></li>
+            {% block breadcrumb_content %}
+            {% endblock %}
+          </div>
+        </div>
+      </div>
     {% endblock %}
 
     {% block content %}

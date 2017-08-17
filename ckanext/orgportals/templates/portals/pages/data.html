@@ -7,6 +7,10 @@
   {% resource 'orgportals/goto-next-section.js' %}
 {% endblock %}
 
+{% block breadcrumb_content %}
+  <li class="active"><a class=" active" href="{{ page_link }}">Data</a></li>
+{% endblock %}
+
 {% block content %}
   {% if organization.orgportals_base_color %}
     {% set base_color = "#" + organization.orgportals_base_color %}

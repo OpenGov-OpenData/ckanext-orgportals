@@ -4908,10 +4908,9 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
 
 .breadcrumb {
     padding: 8px 15px;
-    margin-bottom: 20px;
     list-style: none;
-    background-color: #f5f5f5;
-    border-radius: 4px
+    border-radius: 4px;
+    margin-top: 10px
 }
 
 .breadcrumb > li + li:before {
@@ -4922,6 +4921,12 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
 
 .breadcrumb > .active {
     color: #777
+}
+
+.toolbar .breadcrumb a {
+    color: #6CB1D7;
+    font-weight: 500;
+    font-size: 14px;
 }
 
 .pagination {
@@ -7729,8 +7734,8 @@ footer .container {
 */
 
 .content-page-container__header {
-  margin-left: 40px;
-  color: #154289;
+  margin-left: 30px;
+  color: #375F87;
 }
 
 .content-page-container__text {
@@ -8083,7 +8088,6 @@ ul.col-md-2 {
   display: table;
   margin-right: auto;
   margin-left: auto;
-  padding-top: 20px;
   width: 95%;
 }
 @media (min-width: 1200px) {

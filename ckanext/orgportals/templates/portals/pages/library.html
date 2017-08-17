@@ -1,5 +1,9 @@
 {% extends 'portals/index.html' %}
 
+{% block breadcrumb_content %}
+  <li class="active"><a class=" active" href="{{ page_link }}">Library</a></li>
+{% endblock %}
+
 {% block content %}
   {% snippet 'portals/snippets/pdf_data.html',
     base_color=base_color,

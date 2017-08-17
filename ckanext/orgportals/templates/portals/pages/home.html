@@ -1,5 +1,8 @@
 {% extends 'portals/index.html' %}
 
+{% block toolbar %}
+{% endblock %}
+
 {% block content %}
   {% if page.image_url and page.image_url_2 and page.image_url_3 %}
     {% snippet 'portals/snippets/home/hero_slider.html', title=page.content_title, intro=page.text_box,

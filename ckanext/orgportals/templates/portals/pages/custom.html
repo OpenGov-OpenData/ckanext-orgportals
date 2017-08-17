@@ -1,5 +1,13 @@
 {% extends 'portals/index.html' %}
 
+{% block breadcrumb_content %}
+  {% set ctrl = 'ckanext.orgportals.controllers.portals:OrgportalsController' %}
+  {% set home_link = h.url_for(controller=ctrl, action='view_portal', org_name=c.org_name, source='admin') %}
+  <li class="active"><a href="/">CNRA</a></li>
+  <li class="active"><a href="{{ home_link }}">Home</a></li>
+  <li class="active"><a class=" active" href="{{ page_link }}">{{ data.page_title }}</a></li>
+{% endblock %}
+
 {% block content %}
   <div class="content-page-container">
     <h1 class="content-page-container__header">{{ data.page_title }}</h1>
