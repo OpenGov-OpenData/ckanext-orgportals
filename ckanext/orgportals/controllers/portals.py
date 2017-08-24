@@ -845,7 +845,8 @@ class OrgportalsController(PackageController):
         authors_list = []
 
         for dataset in datasets_query['results']:
-            full_name_authors.add(dataset['author'])
+            if dataset.get('author'):
+                full_name_authors.add(dataset['author'])
 
         for author in full_name_authors:
             authors_list.append({
