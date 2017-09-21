@@ -1336,12 +1336,6 @@ a:focus, a:hover {
     text-decoration: underline
 }
 
-a:focus {
-    outline: dotted thin;
-    outline: -webkit-focus-ring-color auto 5px;
-    outline-offset: -2px
-}
-
 .carousel-inner > .item > a > img, .carousel-inner > .item > img, .img-responsive, .thumbnail a > img, .thumbnail > img {
     display: block;
     max-width: 245px;
@@ -4907,7 +4901,7 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
 }
 
 .breadcrumb {
-    padding: 8px 15px;
+    padding: 8px 0px;
     list-style: none;
     border-radius: 4px;
     margin-top: 10px
@@ -5978,6 +5972,9 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:focus, a.list-g
     padding: 0
 }
 
+iframe {
+    border: none;
+}
 .embed-responsive .embed-responsive-item, .embed-responsive embed, .embed-responsive iframe, .embed-responsive object, .embed-responsive video {
     position: absolute;
     top: 0;
@@ -7240,6 +7237,9 @@ header {
     box-shadow: none;
     background-color: transparent;
 }
+.module-content.box {
+    padding: 20px;
+}
 
 .main-navigation {
     font-size: 18px;
@@ -7734,12 +7734,7 @@ footer .container {
 */
 
 .content-page-container__header {
-  margin-left: 30px;
   color: #375F87;
-}
-
-.content-page-container__text {
-  padding: 30px;
 }
 
 .content-page-container__image {
@@ -8418,8 +8413,42 @@ ul#popular-list, ul.dataset-list.unstyled {
 .main-featured {
   background-color: #f3f3f3;
 }
-.main-updates {
+.main-browse, .main-updates {
   background-color: #e4e4e4;
+}
+
+.browse-group {
+  display: inline-block;
+  margin-bottom: 20px;
+  margin-right: 10px;
+  text-align: center;
+  transition: all 400ms;
+  vertical-align: top;
+}
+
+a.browse-group {
+  background-color: #fff;
+  padding: 1%;
+}
+@media (max-width: 639px) {
+  a.browse-group {
+    width: 44%;
+  }
+}
+@media (max-width: 1200px) {
+  a.browse-group {
+    width: 190px;
+  }
+}
+@media (min-width: 1200px) {
+  a.browse-group {
+    width: 21.7%;
+  }
+}
+
+.browse-group-display-name {
+  color: #112e51;
+  font-size: 22px;
 }
 
 .media-item {
@@ -8456,6 +8485,13 @@ ul#popular-list, ul.dataset-list.unstyled {
 
 .media-view span {
   display: none;
+}
+
+.main-browse .browse-group {
+  border-top: 2px solid #375F87;
+  color: #375F87;
+  padding: 5px;
+  margin: 15px 5px 0px 10px;
 }
 
 .slick-showcase .media-item {
@@ -8518,6 +8554,14 @@ li.dataset-item .dataset-content div {
   color: #2d2d2d;
 }
 
+.browse-group-image {
+  margin: 12px;
+  max-height: 100px;
+  max-width: 85%;
+  height: 65px;
+}
+
+.main-browse .heading,
 .main-featured .heading,
 .main-updates .heading {
   border-bottom: 2px solid #1F549B;

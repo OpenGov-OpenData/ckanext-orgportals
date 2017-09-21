@@ -34,7 +34,26 @@
       </p>
     </div>
   </div>
-  {% if h.orgportals_get_showcase_list() %}
+  {% if h.orgportals_get_group_list() %}
+  <div class="main-browse">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="module-content box">
+            <header>
+              <h2 class="heading"><a href="/group">Topics</a></h2>
+              <span class="heading-explanation">
+                As datasets are published, they are tagged with categories so you can learn about popular topics. Explore them below.
+              </span>
+            </header>
+            {% snippet 'portals/snippets/home/group_list.html', groups=h.orgportals_get_group_list() %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  {% if h.orgportals_get_showcase_list(c.org_name) %}
   <div class="main-featured">
     <div class="container">
       <div class="row">
@@ -44,7 +63,7 @@
               <h2 class="heading"><a href="/showcase">Showcases</a></h2>
               <span class="heading-explanation">See what our users are doing with open data.</span>
             </header>
-            {% snippet 'portals/snippets/home/showcase_list.html', showcases=h.orgportals_get_showcase_list() %}
+            {% snippet 'portals/snippets/home/showcase_list.html', showcases=h.orgportals_get_showcase_list(c.org_name) %}
           </div>
         </div>
       </div>

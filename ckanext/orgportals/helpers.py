@@ -491,13 +491,27 @@ def get_package_metadata(package):
     result = toolkit.get_action('package_show')(None, {'id': package.get('name'), 'include_tracking': True})
     return result
 
+def get_group_list(num=12):
+    """Return a list of groups"""
+    groups = toolkit.get_action('group_list')({}, {'all_fields': True, 'sort': 'title'})
+    return groups[:num]
 
-def get_showcase_list(num=24):
+def get_showcase_list(org_name, num=24):
     """Return a list of showcases"""
+    org_showcases = []
     sorted_showcases = []
     try:
         showcases = toolkit.get_action('ckanext_showcase_list')({},{})
-        sorted_showcases = sorted(showcases, key=lambda k: k.get('metadata_modified'), reverse=True)
+        org = toolkit.get_action('organization_show')({},{'id': org_name})
+        org_display_name = org.get('display_name')
+        for showcase in showcases:
+            tags = showcase.get('tags',{})
+            for tag in tags:
+                lower_tag = tag.get('display_name','').lower()
+                if lower_tag == org_name.lower() or lower_tag == org_display_name.replace("'","").lower():
+                    org_showcases.append(showcase)
+                    break
+        sorted_showcases = sorted(org_showcases, key=lambda k: k.get('metadata_modified'), reverse=True)
     except:
         print "[orgportals] Error in retrieving list of showcases"
     return sorted_showcases[:num]
