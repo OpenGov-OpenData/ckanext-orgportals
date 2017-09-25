@@ -491,10 +491,16 @@ def get_package_metadata(package):
     result = toolkit.get_action('package_show')(None, {'id': package.get('name'), 'include_tracking': True})
     return result
 
-def get_group_list(num=12):
+def get_group_list(org_name, num=12):
     """Return a list of groups"""
-    groups = toolkit.get_action('group_list')({}, {'all_fields': True, 'sort': 'title'})
-    return groups[:num]
+    org_groups = []
+    result = toolkit.get_action('package_search')({}, {'fq':'organization:\"'+org_name+'\"', 'facet.field': ["groups"], 'rows': 0})
+    facet_list = result.get('search_facets',{}).get('groups',{}).get('items')
+    for item in facet_list:
+        group = toolkit.get_action('group_show')({},{'id': item['name'], 'include_users': False})
+        if group:
+            org_groups.append(group)
+    return org_groups[:num]
 
 def get_showcase_list(org_name, num=24):
     """Return a list of showcases"""

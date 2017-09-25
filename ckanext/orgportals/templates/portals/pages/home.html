@@ -34,7 +34,7 @@
       </p>
     </div>
   </div>
-  {% if h.orgportals_get_group_list() %}
+  {% if h.orgportals_get_group_list(c.org_name) %}
   <div class="main-browse">
     <div class="container">
       <div class="row">
@@ -46,7 +46,7 @@
                 As datasets are published, they are tagged with categories so you can learn about popular topics. Explore them below.
               </span>
             </header>
-            {% snippet 'portals/snippets/home/group_list.html', groups=h.orgportals_get_group_list() %}
+            {% snippet 'portals/snippets/home/group_list.html', groups=h.orgportals_get_group_list(c.org_name) %}
           </div>
         </div>
       </div>
