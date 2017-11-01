@@ -93,5 +93,13 @@
         </div>
       </nav>
     </div>
+    <div>
+      {% set org = h.orgportals_get_current_organization(c.org_name) %}
+      <nav class="top-navigation pull-right">
+        <ul class="list-inline">
+          <li><a href="/organization/{{ c.org_name }}">{{ org.display_name }}</a></li>
+        </ul>
+      </nav>
+    </div>
   </div>
 </header>
