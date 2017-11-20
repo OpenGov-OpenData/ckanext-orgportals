@@ -492,12 +492,32 @@ def get_package_metadata(package):
     return result
 
 
-def get_showcase_list(num=24):
+def get_group_list(org_name, num=12):
+    """Return a list of groups"""
+    org_groups = []
+    result = toolkit.get_action('package_search')({}, {'fq':'organization:\"'+org_name+'\"', 'facet.field': ["groups"], 'rows': 0})
+    facet_list = result.get('search_facets',{}).get('groups',{}).get('items')
+    for item in facet_list:
+        group = toolkit.get_action('group_show')({},{'id': item['name'], 'include_users': False})
+        if group:
+            org_groups.append(group)
+    return org_groups[:num]
+
+
+def get_showcase_list(org_name, num=24):
     """Return a list of showcases"""
+    org_showcases = []
     sorted_showcases = []
     try:
         showcases = toolkit.get_action('ckanext_showcase_list')({},{})
-        sorted_showcases = sorted(showcases, key=lambda k: k.get('metadata_modified'), reverse=True)
+        for showcase in showcases:
+            showcase_id = showcase.get('name')
+            showcase_pkg_list = toolkit.get_action('ckanext_showcase_package_list')({},{'showcase_id':showcase_id})
+            for package in showcase_pkg_list:
+                if package.get('organization',{}).get('name') == org_name:
+                    org_showcases.append(showcase)
+                    break
+        sorted_showcases = sorted(org_showcases, key=lambda k: k.get('metadata_modified'), reverse=True)
     except:
         print "[orgportals] Error in retrieving list of showcases"
     return sorted_showcases[:num]
