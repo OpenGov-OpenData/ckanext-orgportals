@@ -196,6 +196,8 @@ class OrgportalsPlugin(plugins.SingletonPlugin,
                 helpers.popular_datasets,
             'orgportals_get_package_metadata':
                 helpers.get_package_metadata,
+            'orgportals_get_group_list':
+                helpers.get_group_list,
             'orgportals_get_showcase_list':
                 helpers.get_showcase_list,
             'orgportals_get_default_resource_view':
