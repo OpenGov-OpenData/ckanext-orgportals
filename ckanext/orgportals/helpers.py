@@ -491,6 +491,7 @@ def get_package_metadata(package):
     result = toolkit.get_action('package_show')(None, {'id': package.get('name'), 'include_tracking': True})
     return result
 
+  
 def get_group_list(org_name, num=12):
     """Return a list of groups"""
     org_groups = []
@@ -502,19 +503,18 @@ def get_group_list(org_name, num=12):
             org_groups.append(group)
     return org_groups[:num]
 
+
 def get_showcase_list(org_name, num=24):
     """Return a list of showcases"""
     org_showcases = []
     sorted_showcases = []
     try:
         showcases = toolkit.get_action('ckanext_showcase_list')({},{})
-        org = toolkit.get_action('organization_show')({},{'id': org_name})
-        org_display_name = org.get('display_name')
         for showcase in showcases:
-            tags = showcase.get('tags',{})
-            for tag in tags:
-                lower_tag = tag.get('display_name','').lower()
-                if lower_tag == org_name.lower() or lower_tag == org_display_name.replace("'","").lower():
+            showcase_id = showcase.get('name')
+            showcase_pkg_list = toolkit.get_action('ckanext_showcase_package_list')({},{'showcase_id':showcase_id})
+            for package in showcase_pkg_list:
+                if package.get('organization',{}).get('name') == org_name:
                     org_showcases.append(showcase)
                     break
         sorted_showcases = sorted(org_showcases, key=lambda k: k.get('metadata_modified'), reverse=True)

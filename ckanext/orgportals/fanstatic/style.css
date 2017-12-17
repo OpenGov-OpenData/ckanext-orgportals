@@ -7241,6 +7241,10 @@ header {
     padding: 20px;
 }
 
+.module-content.box {
+    padding: 20px;
+}
+
 .main-navigation {
     font-size: 18px;
     background-color: #B80000
