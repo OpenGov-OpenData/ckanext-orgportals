@@ -491,7 +491,7 @@ def get_package_metadata(package):
     result = toolkit.get_action('package_show')(None, {'id': package.get('name'), 'include_tracking': True})
     return result
 
-
+  
 def get_group_list(org_name, num=12):
     """Return a list of groups"""
     org_groups = []
