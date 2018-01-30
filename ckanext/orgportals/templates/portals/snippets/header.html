@@ -1,4 +1,5 @@
 {% set pages = h.orgportals_get_pages(c.org_name) %}
+
 <header>
   {% snippet 'portals/snippets/language_switcher.html' %}
 
@@ -11,13 +12,20 @@
     {% set home_url = h.url_for(controller=ctrl, action='show_portal_homepage') %}
   {% endif %}
 
-  <div class="row">
-    <div class="col-sm-3 organization-logo">
-      <a href="{{ home_url }}" title="Home"><img class="img-responsive" src="{{ h.orgportals_get_organization_image(c.org_name) }}" height="130" alt="Organization logo"></a>
+  {%- set exclude_headers = [
+    'home',
+    'resources',
+    'help',
+    'contact'
+  ] -%}
+
+  <div class="row data-header-container">
+    <div class="organization-logo">
+      <a href="{{ home_url }}" title="Home"><img class="img-responsive" src="{{ h.orgportals_get_organization_image(c.org_name) }}" alt="Organization logo"></a>
     </div>
 
-    <div class="col-sm-9">
-      <nav class="top-navigation pull-right" style="background-color: grey">
+    <div class="col-header-nav">
+      <nav class="top-navigation pull-right">
         <div class="">
           <ul class="list-inline">
 
@@ -47,7 +55,7 @@
                   {% set page_link = h.url_for(controller=ctrl, action='show_portal_contentpage', page_name=page.name) %}
                 {% endif %}
 
-              {% elif page.type == 'custom' %}
+              {% elif page.type == 'custom' and page.name != 'resources' %}
 
                 {% if c.source == 'admin' %}
                   {% set page_link = h.url_for(controller=ctrl, action='custompage_show', org_name=c.org_name, page_name=page.name, source=source) %}
@@ -62,10 +70,35 @@
                 {% set page_active = 'false' %}
               {% endif %}
 
-              <li><a href="{{ page_link }}" data-page-active="{{ page_active }}">{{ page.page_title }}</a></li>
+              {% if c.source == 'admin' %}
+                {% set library_link = h.url_for(controller=ctrl, action='library_show', org_name=c.org_name, source=source) %}
+              {% else %}
+                {% set library_link = h.url_for(controller=ctrl, action='show_portal_library') %}
+              {% endif %}
+
+              {% if c.page_name == 'library' %}
+                {% set library_active = 'true' %}
+              {% else %}
+                {% set library_active = 'false' %}
+              {% endif %}
+
+              {% if page.name not in exclude_headers %}
+                <li><a href="{{ page_link }}" data-page-active="{{ page_active }}">{{ page.page_title }}</a></li>
+                {% if page.name == 'data' %}
+                  <li><a href="{{ library_link }}" data-page-active="{{ library_active }}">Document Library</a></li>
+                {% endif %}
+              {% endif %}
             {% endfor %}
           </ul>
         </div>
+      </nav>
+    </div>
+    <div>
+      {% set org = h.orgportals_get_current_organization(c.org_name) %}
+      <nav class="top-navigation pull-right">
+        <ul class="list-inline">
+          <li><a href="/" target='_blank'>{{ _('CNRA Home') }}</a></li>
+        </ul>
       </nav>
     </div>
   </div>

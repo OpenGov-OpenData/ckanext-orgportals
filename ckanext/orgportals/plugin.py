@@ -59,12 +59,13 @@ class OrgportalsPlugin(plugins.SingletonPlugin,
         if asbool(config.get('ckanext.orgdashboards.custom_dns_active')):
             map.connect('/', controller=ctrl, action='show_portal_homepage')
         map.connect('/data', controller=ctrl, action='show_portal_datapage')
+        map.connect('/library', controller=ctrl, action='show_portal_library')
         map.connect('/contact', controller=ctrl, action='show_portal_contentpage', page_name='contact')
         map.connect('/aboutportal', controller=ctrl, action='show_portal_contentpage', page_name='about')
         map.connect('/help', controller=ctrl, action='show_portal_contentpage', page_name='help')
         map.connect('/resources', controller=ctrl, action='show_portal_contentpage', page_name='resources')
         map.connect('/glossary', controller=ctrl, action='show_portal_contentpage', page_name='glossary')
-        map.connect('/pages/{page_name}', controller=ctrl, action='show_portal_custompage')
+        map.connect('/org-pages/{page_name}', controller=ctrl, action='show_portal_custompage')
         map.connect('/subdashboard/{subdashboard_name}', controller=ctrl, action='show_portal_subdashboardpage')
 
 
@@ -73,6 +74,8 @@ class OrgportalsPlugin(plugins.SingletonPlugin,
                     action='view_portal', source='admin')
         map.connect('/organization/{org_name}/portal/data', controller=ctrl,
                     action='datapage_show', source='admin')
+        map.connect('/organization/{org_name}/portal/library', controller=ctrl,
+                    action='library_show', source='admin')
         map.connect('/organization/{org_name}/portal/subdashboard/{subdashboard_name}', controller=ctrl,
                     action='subdashboardpage_show', source='admin')
         map.connect('/organization/{org_name}/portal/contact', controller=ctrl,
@@ -186,7 +189,21 @@ class OrgportalsPlugin(plugins.SingletonPlugin,
             'orgportals_get_portal_page_url':
                 helpers.orgportals_get_portal_page_url,
             'orgportals_get_organization_image':
-                helpers.orgportals_get_organization_image
+                helpers.orgportals_get_organization_image,
+            'orgportals_get_dataset_count':
+                helpers.orgportals_get_dataset_count,
+            'orgportals_get_recent_datasets':
+                helpers.recent_datasets,
+            'orgportals_get_popular_datasets':
+                helpers.popular_datasets,
+            'orgportals_get_package_metadata':
+                helpers.get_package_metadata,
+            'orgportals_get_group_list':
+                helpers.get_group_list,
+            'orgportals_get_showcase_list':
+                helpers.get_showcase_list,
+            'orgportals_get_default_resource_view':
+                helpers.get_default_resource_view
         }
 
     # IGroupForm
