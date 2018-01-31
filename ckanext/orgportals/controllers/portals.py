@@ -448,7 +448,7 @@ class OrgportalsController(PackageController):
                     facets[facet] = facet
 
             # Add 'author' facet
-            facets['author'] = _('Authors')
+            #facets['author'] = _('Authors')
 
             # Facet titles
             for plugin in p.PluginImplementations(p.IFacets):
@@ -471,8 +471,8 @@ class OrgportalsController(PackageController):
             query = get_action('package_search')(context, data_dict)
 
             # Override the "author" list, to include full name authors
-            query['search_facets']['author']['items'] =\
-                self._get_full_name_authors(context, org_name, None)
+            #query['search_facets']['author']['items'] =\
+            #    self._get_full_name_authors(context, org_name, None)
 
             c.sort_by_selected = query['sort']
 
@@ -679,9 +679,6 @@ class OrgportalsController(PackageController):
             # Remove res_format facet
             facets.pop('res_format', None)
 
-            # Add 'author' facet
-            facets['author'] = _('Authors')
-
             # Facet titles
             for plugin in p.PluginImplementations(p.IFacets):
                 facets = plugin.dataset_facets(facets, package_type)
@@ -702,10 +699,6 @@ class OrgportalsController(PackageController):
             }
 
             query = get_action('package_search')(context, data_dict)
-
-            # Override the "author" list, to include full name authors
-            query['search_facets']['author']['items'] =\
-                self._get_full_name_authors(context, org_name, None)
 
             c.sort_by_selected = query['sort']
 
