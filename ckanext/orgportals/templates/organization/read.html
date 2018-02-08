@@ -33,6 +33,12 @@
       {% set end = ((total / per_page) + 1)|int %}
     {% endif %}
 
+    {% if c.sort_by_selected %}
+      {% set filter = 'q='+c.q+'&sort='+c.sort_by_selected %}
+    {% else %}
+      {% set filter = 'q='+c.q %}
+    {% endif %}
+
     {% if current+9 <= end %}
       {% set start = current %}
       {% set stop = current+10 %}
@@ -43,20 +49,21 @@
       {% set start = 1 %}
       {% set stop = end+1 %}
     {% endif %}
-      <div class="pagination pagination-centered">
-        <ul>
-            {% if current != 1 %}
-              <li><a href="?page={{ 1 }}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-              <li><a href="?page={{ current - 1 }}" aria-label="Previous"><span aria-hidden="true">&lsaquo;</span></a></li>
-            {% endif %}
-            {% for index in range(start, stop) %}
-              <li{% if index == current %} class="active"{% endif %}><a href="?page={{ index }}">{{ index }}</a></li>
-            {% endfor %}
-            {% if current < end %}
-              <li><a href="?page={{ current + 1 }}" aria-label="Next"><span aria-hidden="true">&rsaquo;</span></a></li>
-              <li><a href="?page={{ end }}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-            {% endif %}
-        </ul>
-      </div>
+
+    <div class="pagination pagination-centered">
+      <ul>
+        {% if current != 1 %}
+          <li><a href="?{{filter}}&page={{ 1 }}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+          <li><a href="?{{filter}}&page={{ current - 1 }}" aria-label="Previous"><span aria-hidden="true">&lsaquo;</span></a></li>
+        {% endif %}
+        {% for index in range(start, stop) %}
+          <li{% if index == current %} class="active"{% endif %}><a href="?{{filter}}&page={{ index }}">{{ index }}</a></li>
+        {% endfor %}
+        {% if current < end %}
+          <li><a href="?{{filter}}&page={{ current + 1 }}" aria-label="Next"><span aria-hidden="true">&rsaquo;</span></a></li>
+          <li><a href="?{{filter}}&page={{ end }}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+        {% endif %}
+      </ul>
+    </div>
   {% endblock %}
 {% endblock %}
