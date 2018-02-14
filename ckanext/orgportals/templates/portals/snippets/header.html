@@ -13,10 +13,7 @@
   {% endif %}
 
   {%- set exclude_headers = [
-    'home',
-    'resources',
-    'help',
-    'contact'
+    'home'
   ] -%}
 
   <div class="row data-header-container">
@@ -47,6 +44,14 @@
                   {% set page_link = h.url_for(controller=ctrl, action='show_portal_datapage') %}
                 {% endif %}
 
+              {% elif page.type == 'library' %}
+
+                {% if c.source == 'admin' %}
+                  {% set page_link = h.url_for(controller=ctrl, action='library_show', org_name=c.org_name, source=source) %}
+                {% else %}
+                  {% set page_link = h.url_for(controller=ctrl, action='show_portal_library') %}
+                {% endif %}
+
               {% elif page.type == 'default' %}
 
                 {% if c.source == 'admin' %}
@@ -70,23 +75,8 @@
                 {% set page_active = 'false' %}
               {% endif %}
 
-              {% if c.source == 'admin' %}
-                {% set library_link = h.url_for(controller=ctrl, action='library_show', org_name=c.org_name, source=source) %}
-              {% else %}
-                {% set library_link = h.url_for(controller=ctrl, action='show_portal_library') %}
-              {% endif %}
-
-              {% if c.page_name == 'library' %}
-                {% set library_active = 'true' %}
-              {% else %}
-                {% set library_active = 'false' %}
-              {% endif %}
-
               {% if page.name not in exclude_headers %}
                 <li><a href="{{ page_link }}" data-page-active="{{ page_active }}">{{ page.page_title }}</a></li>
-                {% if page.name == 'data' %}
-                  <li><a href="{{ library_link }}" data-page-active="{{ library_active }}">Document Library</a></li>
-                {% endif %}
               {% endif %}
             {% endfor %}
           </ul>

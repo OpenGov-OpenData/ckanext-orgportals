@@ -288,11 +288,9 @@ def _create_pages(org_name):
     pages = [
         {'org_name': org_name, 'type': 'home', 'name': 'home', 'page_title': 'Home', 'order': 0},
         {'org_name': org_name, 'type': 'data', 'name': 'data', 'page_title': 'Data', 'order': 1},
-        {'org_name': org_name, 'type': 'default', 'name': 'about', 'page_title': 'About', 'order': 2},
-        {'org_name': org_name, 'type': 'default', 'name': 'help', 'page_title': 'Help', 'order': 3},
-        {'org_name': org_name, 'type': 'default', 'name': 'resources', 'page_title': 'Resources', 'order': 4},
-        {'org_name': org_name, 'type': 'default', 'name': 'glossary', 'page_title': 'Glossary', 'order': 5},
-        {'org_name': org_name, 'type': 'default', 'name': 'contact', 'page_title': 'Contact', 'order': 6},
+        {'org_name': org_name, 'type': 'library', 'name': 'library', 'page_title': 'Document Library', 'order': 2},
+        {'org_name': org_name, 'type': 'default', 'name': 'about', 'page_title': 'About', 'order': 3},
+        {'org_name': org_name, 'type': 'default', 'name': 'glossary', 'page_title': 'Glossary', 'order': 4},
     ]
 
     for page in pages:
