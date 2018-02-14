@@ -188,7 +188,7 @@ class OrgportalsController(PackageController):
         errors = errors or {}
         error_summary = error_summary or {}
 
-        if 'topics' in data and len(data['topics']) > 0:
+        if data.get('topics') and len(data.get('topics')) > 0:
             data['topics'] = json.loads(data['topics'])
             data['topics'].sort(key=itemgetter('order'))
 

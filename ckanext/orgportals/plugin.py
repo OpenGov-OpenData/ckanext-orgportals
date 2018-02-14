@@ -22,6 +22,7 @@ class OrgportalsPlugin(plugins.SingletonPlugin,
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.IAuthFunctions, inherit=True)
     plugins.implements(plugins.IGroupForm, inherit=True)
+    plugins.implements(plugins.IPackageController, inherit=True)
     plugins.implements(plugins.ITranslation)
 
     def __init__(self, name='OrgportalsPlugin'):
@@ -60,10 +61,10 @@ class OrgportalsPlugin(plugins.SingletonPlugin,
             map.connect('/', controller=ctrl, action='show_portal_homepage')
         map.connect('/data', controller=ctrl, action='show_portal_datapage')
         map.connect('/library', controller=ctrl, action='show_portal_library')
-        map.connect('/contact', controller=ctrl, action='show_portal_contentpage', page_name='contact')
+        #map.connect('/contact', controller=ctrl, action='show_portal_contentpage', page_name='contact')
         map.connect('/aboutportal', controller=ctrl, action='show_portal_contentpage', page_name='about')
-        map.connect('/help', controller=ctrl, action='show_portal_contentpage', page_name='help')
-        map.connect('/resources', controller=ctrl, action='show_portal_contentpage', page_name='resources')
+        #map.connect('/help', controller=ctrl, action='show_portal_contentpage', page_name='help')
+        #map.connect('/resources', controller=ctrl, action='show_portal_contentpage', page_name='resources')
         map.connect('/glossary', controller=ctrl, action='show_portal_contentpage', page_name='glossary')
         map.connect('/org-pages/{page_name}', controller=ctrl, action='show_portal_custompage')
         map.connect('/subdashboard/{subdashboard_name}', controller=ctrl, action='show_portal_subdashboardpage')
@@ -78,14 +79,14 @@ class OrgportalsPlugin(plugins.SingletonPlugin,
                     action='library_show', source='admin')
         map.connect('/organization/{org_name}/portal/subdashboard/{subdashboard_name}', controller=ctrl,
                     action='subdashboardpage_show', source='admin')
-        map.connect('/organization/{org_name}/portal/contact', controller=ctrl,
-                    action='contentpage_show', source='admin', page_name='contact')
+        #map.connect('/organization/{org_name}/portal/contact', controller=ctrl,
+        #            action='contentpage_show', source='admin', page_name='contact')
         map.connect('/organization/{org_name}/portal/about', controller=ctrl,
                     action='contentpage_show', source='admin', page_name='about')
-        map.connect('/organization/{org_name}/portal/help', controller=ctrl,
-                    action='contentpage_show', source='admin', page_name='help')
-        map.connect('/organization/{org_name}/portal/resources', controller=ctrl,
-                    action='contentpage_show', source='admin', page_name='resources')
+        #map.connect('/organization/{org_name}/portal/help', controller=ctrl,
+        #            action='contentpage_show', source='admin', page_name='help')
+        #map.connect('/organization/{org_name}/portal/resources', controller=ctrl,
+        #            action='contentpage_show', source='admin', page_name='resources')
         map.connect('/organization/{org_name}/portal/glossary', controller=ctrl,
                     action='contentpage_show', source='admin', page_name='glossary')
         map.connect('/organization/{org_name}/portal/{page_name}', controller=ctrl,
@@ -306,6 +307,14 @@ class OrgportalsPlugin(plugins.SingletonPlugin,
         })
 
         return schema
+
+    # IPackageController
+
+    def before_index(self, pkg_dict):
+        title = pkg_dict.get('title')
+        if title:
+            pkg_dict['title_string'] = title.lower()
+        return pkg_dict
 
 def _domain_validator(key, data, errors, context):
 
