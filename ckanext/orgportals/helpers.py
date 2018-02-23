@@ -552,7 +552,7 @@ def get_showcase_list(org_name, num=24):
                 tags = showcase.get('tags',{})
                 for tag in tags:
                     lower_tag = tag.get('display_name','').lower()
-                    if (lower_tag in org_name.lower() or lower_tag in org_display_name.lower()):
+                    if (lower_tag == org_name.lower() or lower_tag == org_display_name.lower()):
                         org_showcases.append(showcase)
                         break
         sorted_showcases = sorted(org_showcases, key=lambda k: k.get('metadata_modified'), reverse=True)
