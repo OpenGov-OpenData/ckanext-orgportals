@@ -18,10 +18,10 @@ show_remove    - If True, show the remove button to remove showcase/dataset asso
 <div class="media-item">
   {% block item_inner %}
     {% block image %}
-      {% if showcase.extras[0].value and 'http' not in showcase.extras[0].value %}
-      <img data-lazy="/uploads/showcase/{{ showcase.extras[0].value }}" alt="" class="media-image">
+      {% if showcase.image_url and 'http' not in showcase.image_url %}
+      <img data-lazy="/uploads/showcase/{{ showcase.image_url }}" alt="" class="media-image">
       {% else %}
-      <img data-lazy="{{ showcase.extras[0].value or h.url_for_static('/base/images/placeholder-group.png') }}" alt="" class="media-image">
+      <img data-lazy="{{ showcase.image_url or h.url_for_static('/base/images/placeholder-group.png') }}" alt="" class="media-image">
       {% endif %}
     {% endblock %}
     {% block title %}

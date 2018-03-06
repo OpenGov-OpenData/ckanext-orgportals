@@ -538,23 +538,11 @@ def get_showcase_list(org_name, num=24):
     org_showcases = []
     sorted_showcases = []
     try:
-        showcases = toolkit.get_action('ckanext_showcase_list')({},{})
-        for showcase in showcases:
-            showcase_id = showcase.get('name')
-            showcase_pkg_list = toolkit.get_action('ckanext_showcase_package_list')({},{'showcase_id':showcase_id})
-            for package in showcase_pkg_list:
-                if package.get('organization',{}).get('name') == org_name:
-                    org_showcases.append(showcase)
-                    break
-            else:
-                org = toolkit.get_action('organization_show')({},{'id': org_name})
-                org_display_name = org.get('display_name')
-                tags = showcase.get('tags',{})
-                for tag in tags:
-                    lower_tag = tag.get('display_name','').lower()
-                    if (lower_tag == org_name.lower() or lower_tag == org_display_name.lower()):
-                        org_showcases.append(showcase)
-                        break
+        showcase_ids_list = toolkit.get_action('ckanext_organization_showcase_list')({},{'organization_id':org_name})
+        if showcase_ids_list:
+            for showcase_id in showcase_ids_list:
+                showcase = toolkit.get_action('ckanext_showcase_show')({},{'id':showcase_id})
+                org_showcases.append(showcase)
         sorted_showcases = sorted(org_showcases, key=lambda k: k.get('metadata_modified'), reverse=True)
     except:
         print "[orgportals] Error in retrieving list of showcases"
