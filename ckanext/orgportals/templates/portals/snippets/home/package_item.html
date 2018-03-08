@@ -39,7 +39,7 @@ Example:
             {% endblock %}
             {% block heading_title %}
               {# <a href="{{ h.url_for(controller='package', action='read', id=package.name) }}" target="_blank">{{ h.truncate(title, truncate_title) }}</a> #}
-              <a href="{{page_link}}?q={{package.title}}#search-data">{{ h.truncate(title, truncate_title) }}</a>
+              <a href="{{page_link}}?id={{package.id}}#search-data">{{ h.truncate(title, truncate_title) }}</a>
             {% endblock %}
             {% block heading_meta %}
               {% if package.get('state', '').startswith('draft') %}

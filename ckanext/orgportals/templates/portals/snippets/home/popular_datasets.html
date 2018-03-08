@@ -17,10 +17,8 @@
                 <div class="dataset-content">
                   <div class="text-wrapper">
                     <h3 class="dataset-heading">
-{#
-                      <a href="{{ h.url_for(controller='package', action='read', id=package.name) }}" target="_blank">{{ package.title or package.name }}</a>
-#}
-                      <a href="{{page_link}}?q={{package.title}}">{{ package.title or package.name }}</a>
+                      {# <a href="{{ h.url_for(controller='package', action='read', id=package.name) }}" target="_blank">{{ package.title or package.name }}</a> #}
+                      <a href="{{page_link}}?id={{package.id}}">{{ package.title or package.name }}</a>
                     </h3>
                     {% set curr_package = h.orgportals_get_package_metadata(package) %}
                     <div>{{curr_package.tracking_summary.recent}} recent views</div>
