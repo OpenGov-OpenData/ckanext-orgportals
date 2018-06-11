@@ -335,7 +335,11 @@ class OrgportalsController(PackageController):
         # unicode format (decoded from utf8)
         q = c.q = request.params.get('q', u'')
         c.query_error = False
-        page = self._get_page_number(request.params)
+        # check ckan version and call appropriate get_page number
+        if p.toolkit.check_ckan_version(min_version='2.6.0'):
+            page = h.get_page_number(request.params)
+        else:
+            page = self._get_page_number(request.params)
 
         try:
             limit = int(org['orgportals_datasets_per_page'])
@@ -441,7 +445,12 @@ class OrgportalsController(PackageController):
                 'license_id': _('Licenses'),
             }
 
-            for facet in g.facets:
+            if p.toolkit.check_ckan_version(min_version='2.6.0'):
+                facet_list = h.facets()
+            else:
+                facet_list = g.facets
+
+            for facet in facet_list:
                 if facet in default_facet_titles:
                     facets[facet] = default_facet_titles[facet]
                 else:
@@ -496,16 +505,12 @@ class OrgportalsController(PackageController):
         for facet in c.search_facets.keys():
             try:
                 limit = int(request.params.get('_%s_limit' % facet,
-                                               g.facets_default_number))
+                            int(config.get('search.facets.default', 10))))
             except ValueError:
                 p.toolkit.abort(400, _('Parameter "{parameter_name}" is not '
                              'an integer').format(
                     parameter_name='_%s_limit' % facet))
             c.search_facets_limits[facet] = limit
-
-        maintain.deprecate_context_item(
-            'facets',
-            'Use `c.search_facets` instead.')
 
         self._setup_template_variables(context, {},
                                        package_type=package_type)
@@ -569,7 +574,11 @@ class OrgportalsController(PackageController):
         # unicode format (decoded from utf8)
         q = c.q = request.params.get('q', u'')
         c.query_error = False
-        page = self._get_page_number(request.params)
+        # check ckan version and call appropriate get_page number
+        if p.toolkit.check_ckan_version(min_version='2.6.0'):
+            page = h.get_page_number(request.params)
+        else:
+            page = self._get_page_number(request.params)
 
         try:
             limit = int(org['orgportals_datasets_per_page'])
@@ -670,7 +679,12 @@ class OrgportalsController(PackageController):
                 'license_id': _('Licenses'),
             }
 
-            for facet in g.facets:
+            if p.toolkit.check_ckan_version(min_version='2.6.0'):
+                facet_list = h.facets()
+            else:
+                facet_list = g.facets
+
+            for facet in facet_list:
                 if facet in default_facet_titles:
                     facets[facet] = default_facet_titles[facet]
                 else:
@@ -722,16 +736,12 @@ class OrgportalsController(PackageController):
         for facet in c.search_facets.keys():
             try:
                 limit = int(request.params.get('_%s_limit' % facet,
-                                               g.facets_default_number))
+                            int(config.get('search.facets.default', 10))))
             except ValueError:
                 p.toolkit.abort(400, _('Parameter "{parameter_name}" is not '
                              'an integer').format(
                     parameter_name='_%s_limit' % facet))
             c.search_facets_limits[facet] = limit
-
-        maintain.deprecate_context_item(
-            'facets',
-            'Use `c.search_facets` instead.')
 
         self._setup_template_variables(context, {},
                                        package_type=package_type)
@@ -1071,7 +1081,11 @@ class OrgportalsController(PackageController):
         # unicode format (decoded from utf8)
         q = c.q = request.params.get('q', u'')
         c.query_error = False
-        page = self._get_page_number(request.params)
+        # check ckan version and call appropriate get_page number
+        if p.toolkit.check_ckan_version(min_version='2.6.0'):
+            page = h.get_page_number(request.params)
+        else:
+            page = self._get_page_number(request.params)
 
         try:
             limit = int(org['orgportals_datasets_per_page'])
@@ -1177,7 +1191,12 @@ class OrgportalsController(PackageController):
                 'license_id': _('Licenses'),
             }
 
-            for facet in g.facets:
+            if p.toolkit.check_ckan_version(min_version='2.6.0'):
+                facet_list = h.facets()
+            else:
+                facet_list = g.facets
+
+            for facet in facet_list:
                 if facet in default_facet_titles:
                     facets[facet] = default_facet_titles[facet]
                 else:
@@ -1234,16 +1253,12 @@ class OrgportalsController(PackageController):
         for facet in c.search_facets.keys():
             try:
                 limit = int(request.params.get('_%s_limit' % facet,
-                                               g.facets_default_number))
+                            int(config.get('search.facets.default', 10))))
             except ValueError:
                 p.toolkit.abort(400, _('Parameter "{parameter_name}" is not '
                              'an integer').format(
                     parameter_name='_%s_limit' % facet))
             c.search_facets_limits[facet] = limit
-
-        maintain.deprecate_context_item(
-            'facets',
-            'Use `c.search_facets` instead.')
 
         self._setup_template_variables(context, {},
                                        package_type=package_type)
