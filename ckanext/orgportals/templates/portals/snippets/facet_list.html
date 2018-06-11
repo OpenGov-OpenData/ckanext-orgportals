@@ -6,7 +6,7 @@ name
 
 #}
 
-{% set items = h.orgportals_get_facet_items_dict(name.value) %}
+{% set items = items or h.orgportals_get_facet_items_dict(name.value) or h.get_facet_items_dict(name.value) %}
 
 {% if subdashboard and subdashboard.name %}
   {% set subdashboard_name = subdashboard.name %}
@@ -18,12 +18,12 @@ name
   <section class="module module-narrow module-shallow">
     {% block facet_list_heading %}
       <h2 class="module-heading" {# style="background:{{ secondary_color }}; color:{{ font_base_color }};" #}>
-        {% set title = title or h.get_facet_title(name.name) %}
+        {% set title = title or name.name %}
         {{ title }}
       </h2>
     {% endblock %}
     {% block facet_list_items %}
-      {% with items = items or h.get_facet_items_dict(name.value) %}
+      {% with items = items or h.get_facet_items_dict(name.name) %}
 
         {% if c.source == 'admin' %}
           {% if subdashboard_name %}
