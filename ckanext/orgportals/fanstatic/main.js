@@ -13,14 +13,20 @@
   });
 
   var api = {
-    get: function (action, params, api_ver=3) {
+    get: function (action, params, api_ver) {
       var base_url = ckan.sandbox().client.endpoint;
+      if (api_ver === undefined) {
+        api_ver = 3;
+      }
       params = $.param(params);
       var url = base_url + '/api/' + api_ver + '/action/' + action + '?' + params;
       return $.getJSON(url);
     },
-    post: function (action, data, api_ver=3) {
+    post: function (action, data, api_ver) {
       var base_url = ckan.sandbox().client.endpoint;
+      if (api_ver === undefined) {
+        api_ver = 3;
+      }
       var url = base_url + '/api/' + api_ver + '/action/' + action;
       return $.post(url, JSON.stringify(data), "json");
     }
@@ -232,3 +238,4 @@ function _focusSearchData() {
 
   }
 }
+

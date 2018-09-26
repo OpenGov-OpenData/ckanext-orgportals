@@ -1,0 +1,42 @@
+{% set ctrl = 'ckanext.orgportals.controllers.portals:OrgportalsController' %}
+{% set source = 'admin' %}
+{% set page_link = h.url_for(controller=ctrl, action='datapage_show', org_name=c.org_name, source=source) %}
+{% set popular_datasets = h.orgportals_get_popular_datasets(org_name=c.org_name) %}
+
+  <div class="module-content box">
+    <header>
+      <h2 class="heading">Popular Datasets</h2>
+      <span class="heading-explanation">Browse popular datasets below and see what other citizens find interesting. </span>
+    </header>
+    <section>
+      {% block package_list %}
+        <ul id="popular-list" class="unstyled dataset-list">
+          {% block package_list_inner %}
+            {% for package in popular_datasets %}
+              <li class="dataset-item">
+                <div class="dataset-content">
+                  <div class="text-wrapper">
+                    <h3 class="dataset-heading">
+{#
+                      <a href="{{ h.url_for(controller='package', action='read', id=package.name) }}" target="_blank">{{ package.title or package.name }}</a>
+#}
+                      <a href="{{page_link}}?id={{package.id}}">{{ package.title or package.name }}</a>
+                    </h3>
+                    {% set curr_package = h.orgportals_get_package_metadata(package) %}
+                    <div>{{curr_package.tracking_summary.recent}} recent views</div>
+                    <ul class="dataset-resources unstyled">
+                      {% for resource in h.dict_list_reduce(package.resources, 'format') %}
+                        <li>
+                          <div class="label" data-format="{{ resource.lower() }}" style="color:white;">{{ resource }}</div>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              </li>
+            {% endfor %}
+          {% endblock %}
+        </ul>
+      {% endblock %}
+    </section>
+  </div>

@@ -111,7 +111,7 @@
       base_color=base_color,
       map=subdashboard.map,
       map_main_property=subdashboard.map_main_property,
-      org_display_name=organization.display_name,
+      org_display_name=organization.display_name or organization.title,
       country_name=organization.orgportals_country
     %}
   {% endif %}
@@ -125,7 +125,7 @@
       base_color=base_color,
       font_base_color=font_base_color,
       font_new_data_color=font_new_data_color,
-      org_display_name=organization.display_name,
+      org_display_name=organization.display_name or organization.title,
       subdashboard_group_name=subdashboard.group
     %}
     {% snippet 'portals/snippets/all_data.html',

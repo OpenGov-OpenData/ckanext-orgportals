@@ -1,0 +1,25 @@
+{#
+Displays a list of groups.
+
+groups      - A list of groups to display.
+list_class     - The class name for the list item.
+item_class     - The class name to use on each item.
+truncate       - The length to trucate the description to (default: 180)
+truncate_title - The length to truncate the title to (default: 80).
+
+{% snippet 'home/snippets/group_list.html', groups=h.get_group_list() %}
+
+#}
+
+{% block group_list %}
+  {% for group in groups %}
+    <a href="/organization/{{c.org_name}}/portal/data?groups={{ group.name }}" class="browse-group">
+      <img class="browse-group-image" alt="" class="homepage-group-images" src="{{ group.image_display_url or '/base/images/placeholder-group.png' }}">
+      <div class="browse-group-title">
+        <div class="browse-group-display-name">
+          {{ group.display_name or group.title }}
+        </div>
+      </div>
+    </a>
+  {% endfor %}
+{% endblock %}

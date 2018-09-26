@@ -42,7 +42,7 @@
   {% endif %}
 
   {% if page.type == 'home' %}
-    {{ form.input('text_box', id='field-title', label=_('Text box'), value=page.text_box, classes=['control-full'], error=errors.text_box) }}
+    {{ form.input('text_box', id='field-title', label=_('Text Area'), value=page.text_box, classes=['control-full'], error=errors.text_box) }}
   {% endif %}
 
   {% set prefix = h.url_for(controller='ckanext.orgportals.controllers.portals:OrgportalsController', action='custompage_show', org_name=org_name, page_name='', source='admin') %}
@@ -70,9 +70,20 @@
 
   {% set is_upload = page.image_url and not page.image_url.startswith('http') %}
   {% set is_url = page.image_url and page.image_url.startswith('http') %}
+  {% set is_upload_2 = page.image_url_2 and not page.image_url_2.startswith('http') %}
+  {% set is_url_2 = page.image_url_2 and page.image_url_2.startswith('http') %}
+  {% set is_upload_3 = page.image_url_3 and not page.image_url_3.startswith('http') %}
+  {% set is_url_3 = page.image_url_3 and page.image_url_3.startswith('http') %}
 
   {% if page.type != 'data' and page.name != 'contact' %}
     {{ form.image_upload(page, errors, is_upload_enabled=h.uploads_enabled(), is_url=is_url, is_upload=is_upload) }}
+    {% if page.type == 'home' %}
+      {{ form.image_upload(page, errors, field_url='image_url_2', field_upload='image_upload_2', field_clear='clear_upload_2',
+                         is_upload_enabled=h.uploads_enabled(), is_url=is_url_2, is_upload=is_upload_2, url_label='Image URL 2') }}
+      {{ form.image_upload(page, errors, field_url='image_url_3', field_upload='image_upload_3', field_clear='clear_upload_3',
+                         is_upload_enabled=h.uploads_enabled(), is_url=is_url_3, is_upload=is_upload_3, url_label='Image URL 3') }}
+
+    {% endif %}
   {% endif %}
 
   {% if page.type == 'data' %}
@@ -96,7 +107,7 @@
       {% block delete_button %}
         {% set page_types = ['home', 'data', 'default'] %}
 
-        {% if h.check_access('orgportals_pages_delete', {'page': page.type}) and page.type not in page_types %}
+        {% if h.check_access('orgportals_pages_delete', {'id': org_name, 'page': page.type}) and page.type not in page_types %}
           {% set locale = h.dump_json({'content': _('Are you sure you want to delete this Page?')}) %}
           <a class="btn btn-danger pull-left" href="{{ delete_url }}" data-module="confirm-action" data-module-i18n="{{ locale }}">{% block delete_button_text %}{{ _('Delete') }}{% endblock %}</a>
         {% endif %}

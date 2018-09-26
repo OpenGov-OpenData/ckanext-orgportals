@@ -351,7 +351,7 @@ def orgportals_get_all_organizations(current_org_name):
     organizations = map(lambda item:
                         {
                             'value': item['name'],
-                            'text': item['display_name']
+                            'text': item['title']
                         },
                         organizations
                     )
@@ -481,3 +481,81 @@ def orgportals_get_organization_image(org_name):
     org = toolkit.get_action('organization_show')({}, {'id': org_name})
 
     return org['image_display_url']
+
+
+def orgportals_get_dataset_count(org_name):
+    count = 0
+    try:
+        result = toolkit.get_action('organization_list')({}, {'all_fields':'true', 'limit':1, 'organizations':[org_name]})
+        if result[0].get('package_count'):
+            count = result[0].get('package_count')
+    except:
+        pass
+    return count
+
+
+def recent_datasets(org_name, num=5):
+    """Return a list of recent datasets."""
+    datasets = []
+    try:
+        search = toolkit.get_action('package_search')({},{'rows': num, 'sort': 'metadata_modified desc', 'fq': 'organization:'+org_name})
+        if search.get('results'):
+            datasets = search.get('results')
+    except:
+        pass
+    return datasets[:num]
+
+
+def popular_datasets(org_name, num=5):
+    """Return a list of popular datasets."""
+    datasets = []
+    search = toolkit.get_action('package_search')({},{'rows': num, 'sort': 'views_recent desc', 'fq': 'organization:'+org_name})
+    if search.get('results'):
+        datasets = search.get('results')
+    return datasets[:num]
+
+
+def get_package_metadata(package):
+    """Return the metadata of a dataset"""
+    result = toolkit.get_action('package_show')(None, {'id': package.get('name'), 'include_tracking': True})
+    return result
+
+
+def get_group_list(org_name, num=12):
+    """Return a list of groups"""
+    org_groups = []
+    result = toolkit.get_action('package_search')({}, {'fq':'organization:\"'+org_name+'\"', 'facet.field': ["groups"], 'rows': 0})
+    facet_list = result.get('search_facets',{}).get('groups',{}).get('items')
+    for item in facet_list:
+        group = toolkit.get_action('group_show')({},{'id': item['name'], 'include_users': False})
+        if group:
+            org_groups.append(group)
+    return org_groups[:num]
+
+
+def get_showcase_list(org_name, num=24):
+    """Return a list of showcases"""
+    org_showcases = []
+    sorted_showcases = []
+    try:
+        showcase_ids_list = toolkit.get_action('ckanext_organization_showcase_list')({},{'organization_id':org_name})
+        if showcase_ids_list:
+            for showcase_id in showcase_ids_list:
+                showcase = toolkit.get_action('ckanext_showcase_show')({},{'id':showcase_id})
+                org_showcases.append(showcase)
+        sorted_showcases = sorted(org_showcases, key=lambda k: k.get('metadata_modified'), reverse=True)
+    except:
+        print "[orgportals] Error in retrieving list of showcases"
+    return sorted_showcases[:num]
+
+
+def get_default_resource_view(resource_id):
+    """Return the first resource view"""
+    resource_view = ''
+    try:
+        resource_views = toolkit.get_action('resource_view_list')({},{'id': resource_id})
+        if len(resource_views) > 0:
+            resource_view = resource_views[0]
+    except:
+        print "[orgportals] Error in retrieving resource view"
+    return resource_view

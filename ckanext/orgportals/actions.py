@@ -87,6 +87,8 @@ pages_schema = {
     'content_title': [p.toolkit.get_validator('ignore_missing'), unicode],
     'order': [p.toolkit.get_validator('ignore_missing'), unicode],
     'image_url': [p.toolkit.get_validator('ignore_empty'), unicode],
+    'image_url_2': [p.toolkit.get_validator('ignore_empty'), unicode],
+    'image_url_3': [p.toolkit.get_validator('ignore_empty'), unicode],
     'text_box': [p.toolkit.get_validator('ignore_empty'), unicode],
     'content': [p.toolkit.get_validator('ignore_missing'), unicode],
     'topics': [p.toolkit.get_validator('ignore_missing'), unicode],
@@ -176,7 +178,7 @@ def _pages_update(context, data_dict):
         out.org_name = org_name
         out.name = page_name
 
-    items = ['page_title', 'content_title', 'content', 'name', 'image_url',
+    items = ['page_title', 'content_title', 'content', 'name', 'image_url', 'image_url_2', 'image_url_3',
              'type', 'text_box',
              'topics', 'datasets_per_page', 'survey_enabled',
              'survey_text', 'survey_link', 'map', 'map_main_property',
@@ -286,11 +288,7 @@ def _create_pages(org_name):
     pages = [
         {'org_name': org_name, 'type': 'home', 'name': 'home', 'page_title': 'Home', 'order': 0},
         {'org_name': org_name, 'type': 'data', 'name': 'data', 'page_title': 'Data', 'order': 1},
-        {'org_name': org_name, 'type': 'default', 'name': 'about', 'page_title': 'About', 'order': 2},
-        {'org_name': org_name, 'type': 'default', 'name': 'help', 'page_title': 'Help', 'order': 3},
-        {'org_name': org_name, 'type': 'default', 'name': 'resources', 'page_title': 'Resources', 'order': 4},
-        {'org_name': org_name, 'type': 'default', 'name': 'glossary', 'page_title': 'Glossary', 'order': 5},
-        {'org_name': org_name, 'type': 'default', 'name': 'contact', 'page_title': 'Contact', 'order': 6},
+        {'org_name': org_name, 'type': 'default', 'name': 'about', 'page_title': 'About', 'order': 2}
     ]
 
     for page in pages:
