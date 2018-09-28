@@ -291,7 +291,8 @@ class OrgportalsPlugin(plugins.SingletonPlugin,
             'package_count': [_not_empty],
             'orgportals_portal_url': [_convert_from_extras, _ignore_missing, _domain_validator],
             'orgportals_country': default_validators,
-            'orgportals_gtm': default_validators
+            'orgportals_gtm': default_validators,
+            'display_name': [_ignore_missing]
         })
 
         return schema
