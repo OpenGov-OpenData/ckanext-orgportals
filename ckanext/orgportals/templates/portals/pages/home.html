@@ -19,18 +19,18 @@
   {% endif %}
   <div class="row search-block">
     <div class="container">
+      <p class="search-hint col-md-3">
+        <span>Get started by searching from <b>{{ h.orgportals_get_dataset_count(c.org_name) }}</b></span>
+        <br>
+        <span>datasets and maps</span>
+      </p>      
       <div class="col-md-6">
         {% snippet 'portals/snippets/home/search.html' %}
       </div>
-      <p class="search-hint col-md-6">
-        <span>
-          Get started by searching from
-          <b>{{ h.orgportals_get_dataset_count(c.org_name) }}</b>
-        </span>
+      <p class="search-hint search-doc col-md-3">
+        <span>Try <a href="/pages/advanced-search-documentation"><u>Advanced Search Terms</u></a></span>
         <br>
-        <span>
-          datasets and maps
-        </span>
+        <span>for more specific results</span>
       </p>
     </div>
   </div>

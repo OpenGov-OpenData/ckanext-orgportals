@@ -8228,6 +8228,10 @@ ul.col-md-2 {
   border-radius: 4px;
   padding-left: 45px;
 }
+.data-block .search-doc {
+  text-align: right;
+  margin-right: 20px;
+}
 .search-block .search-hint {
   color: #787878;
   display: table;
@@ -8235,13 +8239,25 @@ ul.col-md-2 {
   text-align: left;
   padding-top: 24px;
 }
+
+.search-block .search-doc {
+  text-align: right;
+}
+
 @media (max-width: 767px) {
   .search-hint {
     height: auto;
     padding-left: 20px;
     padding-right: 20px;
   }
+  .search-block .search-doc {
+    text-align: left;
+  }
+  .search-block {
+    margin-bottom: 20px;
+  }
 }
+
 .aside-fixed-panel .module.module-narrow.module-shallow {
   border: 1px solid #d3d3d3;
 }
