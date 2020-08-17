@@ -60,8 +60,8 @@ class OrgportalsController(PackageController):
 
         return p.toolkit.render('organization/pages_list.html')
 
-    def orgportals_pages_edit(self, org_name, page=None, data=None, errors=None, error_summary=None):
 
+    def orgportals_pages_edit(self, org_name, page=None, data=None, errors=None, error_summary=None):
         if page:
             page = page[1:]
         data_dict = {
@@ -95,6 +95,22 @@ class OrgportalsController(PackageController):
                     image_url = data['image_url']
             else:
                 image_url = None
+
+            image_field_list = ['image_url_2','image_url_3']
+            image_url_dict = {}
+            for image_field in image_field_list:
+                i = image_field[-1:]
+                if 'image_upload_'+i in dict(p.toolkit.request.params):
+                    image_upload = dict(p.toolkit.request.params)['image_upload_'+i]
+                    if isinstance(image_upload, cgi.FieldStorage):
+                        upload = uploader.get_uploader('portal', data[image_field])
+                        upload.update_data_dict(data, image_field, 'image_upload_'+i, 'clear_upload_'+i)
+                        upload.upload(uploader.get_max_image_size())
+                        image_url_dict[image_field] = upload.filename
+                    else:
+                        image_url_dict[image_field] = data[image_field]
+                else:
+                    image_url_dict[image_field] = None
 
             if 'type' in _page and _page['type'] == 'data':
                 _page['map'] = []
@@ -145,6 +161,9 @@ class OrgportalsController(PackageController):
             _page['page_name'] = page
             _page['image_url'] = image_url
 
+            for image_field in image_field_list:
+                _page[image_field] = image_url_dict[image_field]
+
             try:
                 junk = p.toolkit.get_action('orgportals_pages_update')(
                     {'user': p.toolkit.c.user or p.toolkit.c.author},
@@ -169,7 +188,7 @@ class OrgportalsController(PackageController):
         errors = errors or {}
         error_summary = error_summary or {}
 
-        if 'topics' in data and len(data['topics']) > 0:
+        if data.get('topics') and len(data.get('topics')) > 0:
             data['topics'] = json.loads(data['topics'])
             data['topics'].sort(key=itemgetter('order'))
 
@@ -187,8 +206,8 @@ class OrgportalsController(PackageController):
 
         return p.toolkit.render('organization/pages_edit.html', extra_vars=vars)
 
-    def orgportals_pages_delete(self, org_name, page):
 
+    def orgportals_pages_delete(self, org_name, page):
         page = page[1:]
 
         data_dict = {
@@ -207,6 +226,7 @@ class OrgportalsController(PackageController):
         except p.toolkit.ObjectNotFound:
             p.toolkit.abort(404, _('Group not found'))
         return p.toolkit.render('organization/confirm_delete.html', {'page': page})
+
 
     def orgportals_nav_bar(self, org_name):
         data_dict = {'org_name': org_name}
@@ -252,8 +272,8 @@ class OrgportalsController(PackageController):
 
         return p.toolkit.render('organization/nav_bar.html', extra_vars=extra_vars)
 
-    def view_portal(self, org_name):
 
+    def view_portal(self, org_name):
         if not _is_portal_active(org_name):
             extra_vars = {'type': 'portal'}
 
@@ -268,7 +288,13 @@ class OrgportalsController(PackageController):
         is_upload = page['image_url'] and not page['image_url'].startswith('http')
 
         if is_upload:
-            page['image_url'] = '{0}/uploads/portal/{1}'.format(p.toolkit.request.host_url, page['image_url'])
+            page['image_url'] = '/uploads/portal/{}'.format(page['image_url'])
+        
+        image_field_list = ['image_url_2','image_url_3']
+        for image_field in image_field_list:
+            is_upload = page[image_field] and not page[image_field].startswith('http')
+            if is_upload:
+                page[image_field] = '/uploads/portal/{}'.format(page[image_field])
 
         extra_vars = {
             'page': page
@@ -281,6 +307,7 @@ class OrgportalsController(PackageController):
             extra_vars['ga_code'] = org['orgportals_gtm']
 
         return p.toolkit.render('portals/pages/home.html', extra_vars=extra_vars)
+
 
     def datapage_show(self, org_name):
         data_dict = {'id': org_name, 'include_extras': True}
@@ -310,12 +337,11 @@ class OrgportalsController(PackageController):
         # unicode format (decoded from utf8)
         q = c.q = request.params.get('q', u'')
         c.query_error = False
-
         # check ckan version and call appropriate get_page number
-        if p.toolkit.check_ckan_version(min_version='2.5.0', max_version='2.5.3'):
-            page = self._get_page_number(request.params)
-        else:
+        if p.toolkit.check_ckan_version(min_version='2.6.0'):
             page = h.get_page_number(request.params)
+        else:
+            page = self._get_page_number(request.params)
 
         try:
             limit = int(org['orgportals_datasets_per_page'])
@@ -421,14 +447,19 @@ class OrgportalsController(PackageController):
                 'license_id': _('Licenses'),
             }
 
-            for facet in g.facets:
+            if p.toolkit.check_ckan_version(min_version='2.6.0'):
+                facet_list = h.facets()
+            else:
+                facet_list = g.facets
+
+            for facet in facet_list:
                 if facet in default_facet_titles:
                     facets[facet] = default_facet_titles[facet]
                 else:
                     facets[facet] = facet
 
             # Add 'author' facet
-            facets['author'] = _('Authors')
+            #facets['author'] = _('Authors')
 
             # Facet titles
             for plugin in p.PluginImplementations(p.IFacets):
@@ -451,8 +482,8 @@ class OrgportalsController(PackageController):
             query = get_action('package_search')(context, data_dict)
 
             # Override the "author" list, to include full name authors
-            query['search_facets']['author']['items'] =\
-                self._get_full_name_authors(context, org_name, None)
+            #query['search_facets']['author']['items'] =\
+            #    self._get_full_name_authors(context, org_name, None)
 
             c.sort_by_selected = query['sort']
 
@@ -483,10 +514,237 @@ class OrgportalsController(PackageController):
                     parameter_name='_%s_limit' % facet))
             c.search_facets_limits[facet] = limit
 
-        if g.facets_default_number:
-            maintain.deprecate_context_item(
-                'facets',
-                'Use `c.search_facets` instead.')
+        self._setup_template_variables(context, {},
+                                       package_type=package_type)
+
+        data_dict = {
+            'org_name': org['name'],
+            'page_name': 'data'
+        }
+        data_page = p.toolkit.get_action('orgportals_pages_show')({}, data_dict)
+
+        if len(data_page['topics']) > 0:
+            data_page['topics'] = json.loads(data_page['topics'])
+            data_page['topics'].sort(key=itemgetter('order'))
+        else:
+            data_page['topics'] = []
+
+        subdashboards_list = p.toolkit.get_action('orgportals_subdashboards_list')(context, {'org_name': org['name']})
+        subdashboards_dict = {x['name']: x for x in subdashboards_list}
+        for topic in data_page['topics']:
+            is_upload = topic['image_url'] and not topic['image_url'].startswith('http')
+
+            if is_upload:
+                topic['image_url'] = '/uploads/portal/{}'.format(topic['image_url'])
+
+            if topic['subdashboard'] in subdashboards_dict:
+                topic['full_attributes'] = subdashboards_dict[topic['subdashboard']]
+
+        extra_vars = {
+            'organization': org,
+            'data_page': data_page
+        }
+
+        return p.toolkit.render('portals/pages/data.html',
+                                extra_vars=extra_vars)
+
+
+    def library_show(self, org_name):
+        data_dict = {'id': org_name, 'include_extras': True}
+        org = get_action('organization_show')({}, data_dict)
+
+        if not _is_portal_active(org_name):
+            extra_vars = {'type': 'portal'}
+
+            return p.toolkit.render('portals/snippets/not_active.html', extra_vars=extra_vars)
+
+        package_type = 'dataset'
+
+        c.page_name = 'library'
+        c.org_name = org_name
+
+        try:
+            context = {
+                'model': model,
+                'user': c.user or c.author,
+                'auth_user_obj': c.userobj
+            }
+
+            check_access('site_read', context)
+        except p.toolkit.NotAuthorized:
+            p.toolkit.abort(401, _('Not authorized to see this page'))
+
+        # unicode format (decoded from utf8)
+        q = c.q = request.params.get('q', u'')
+        c.query_error = False
+        # check ckan version and call appropriate get_page number
+        if p.toolkit.check_ckan_version(min_version='2.6.0'):
+            page = h.get_page_number(request.params)
+        else:
+            page = self._get_page_number(request.params)
+
+        try:
+            limit = int(org['orgportals_datasets_per_page'])
+        except KeyError, ValueError:
+            limit = int(config.get('ckanext.orgportals.datasets_per_page',
+                                   '6'))
+
+        # most search operations should reset the page counter:
+        params_nopage = [(k, v) for k, v in request.params.items()
+                         if k != 'page']
+
+        def drill_down_url(alternative_url=None, **by):
+            return h.add_url_param(alternative_url=alternative_url,
+                                   controller='package', action='search',
+                                   new_params=by)
+
+        c.drill_down_url = drill_down_url
+
+        def remove_field(key, value=None, replace=None):
+            return h.remove_url_param(key, value=value, replace=replace,
+                                      controller='package', action='search')
+
+        c.remove_field = remove_field
+
+        sort_by = request.params.get('sort', None)
+        params_nosort = [(k, v) for k, v in params_nopage if k != 'sort']
+
+        def _sort_by(fields):
+            """
+            Sort by the given list of fields.
+            Each entry in the list is a 2-tuple: (fieldname, sort_order)
+            eg - [('metadata_modified', 'desc'), ('name', 'asc')]
+            If fields is empty, then the default ordering is used.
+            """
+            params = params_nosort[:]
+
+            if fields:
+                sort_string = ', '.join('%s %s' % f for f in fields)
+                params.append(('sort', sort_string))
+
+            return search_url(params, package_type)
+
+        c.sort_by = _sort_by
+
+        if not sort_by:
+            c.sort_by_fields = []
+        else:
+            c.sort_by_fields = [field.split()[0]
+                                for field in sort_by.split(',')]
+
+        def pager_url(q=None, page=None):
+            params = list(params_nopage)
+            params.append(('page', page))
+
+            return search_url(params, package_type)
+
+        c.search_url_params = urlencode(_encode_params(params_nopage))
+
+        try:
+            c.fields = []
+            # c.fields_grouped will contain a dict of params containing
+            # a list of values eg {'tags':['tag1', 'tag2']}
+            c.fields_grouped = {}
+            search_extras = {}
+            fq = ''
+            for (param, value) in request.params.items():
+                if param not in ['q', 'page', 'sort'] \
+                        and len(value) and not param.startswith('_'):
+                    if not param.startswith('ext_'):
+                        c.fields.append((param, value))
+                        fq += ' %s:"%s"' % (param, value)
+                        if param not in c.fields_grouped:
+                            c.fields_grouped[param] = [value]
+                        else:
+                            c.fields_grouped[param].append(value)
+                    else:
+                        search_extras[param] = value
+
+            context = {'model': model, 'session': model.Session,
+                       'user': c.user or c.author, 'for_view': True,
+                       'auth_user_obj': c.userobj}
+
+            if package_type and package_type != 'dataset':
+                # Only show datasets of this particular type
+                fq += ' +dataset_type:{type}'.format(type=package_type)
+            else:
+                # Unless changed via config options, don't show non standard
+                # dataset types on the default search page
+                if not asbool(
+                        config.get('ckan.search.show_all_types', 'False')):
+                    fq += ' +dataset_type:dataset'
+
+            facets = OrderedDict()
+
+            default_facet_titles = {
+                'groups': _('Groups'),
+                'tags': _('Tags'),
+                'license_id': _('Licenses'),
+            }
+
+            if p.toolkit.check_ckan_version(min_version='2.6.0'):
+                facet_list = h.facets()
+            else:
+                facet_list = g.facets
+
+            for facet in facet_list:
+                if facet in default_facet_titles:
+                    facets[facet] = default_facet_titles[facet]
+                else:
+                    facets[facet] = facet
+
+            # Remove res_format facet
+            facets.pop('res_format', None)
+
+            # Facet titles
+            for plugin in p.PluginImplementations(p.IFacets):
+                facets = plugin.dataset_facets(facets, package_type)
+
+            c.facet_titles = facets
+
+            fq += ' +organization:"{}"'.format(org_name)
+            fq += ' +res_format:"{}"'.format('PDF')
+
+            data_dict = {
+                'q': q,
+                'fq': fq.strip(),
+                'facet.field': facets.keys(),
+                'rows': limit,
+                'start': (page - 1) * limit,
+                'sort': sort_by,
+                'extras': search_extras
+            }
+
+            query = get_action('package_search')(context, data_dict)
+
+            c.sort_by_selected = query['sort']
+
+            c.page = h.Page(
+                collection=query['results'],
+                page=page,
+                url=pager_url,
+                item_count=query['count'],
+                items_per_page=limit
+            )
+            c.facets = query['facets']
+            c.search_facets = query['search_facets']
+            c.page.items = query['results']
+        except SearchError, se:
+            log.error('Dataset search error: %r', se.args)
+            c.query_error = True
+            c.facets = {}
+            c.search_facets = {}
+            c.page = h.Page(collection=[])
+        c.search_facets_limits = {}
+        for facet in c.search_facets.keys():
+            try:
+                limit = int(request.params.get('_%s_limit' % facet,
+                                               g.facets_default_number or 10))
+            except ValueError:
+                p.toolkit.abort(400, _('Parameter "{parameter_name}" is not '
+                             'an integer').format(
+                    parameter_name='_%s_limit' % facet))
+            c.search_facets_limits[facet] = limit
 
         self._setup_template_variables(context, {},
                                        package_type=package_type)
@@ -509,18 +767,22 @@ class OrgportalsController(PackageController):
             is_upload = topic['image_url'] and not topic['image_url'].startswith('http')
 
             if is_upload:
-                topic['image_url'] = '{0}/uploads/portal/{1}'.format(p.toolkit.request.host_url, topic['image_url'])
+                topic['image_url'] = '/uploads/portal/{}'.format(topic['image_url'])
 
             if topic['subdashboard'] in subdashboards_dict:
                 topic['full_attributes'] = subdashboards_dict[topic['subdashboard']]
+
+        data_page['page_title'] = 'Library'
+        data_page['name'] = 'library'
 
         extra_vars = {
             'organization': org,
             'data_page': data_page
         }
 
-        return p.toolkit.render('portals/pages/data.html',
+        return p.toolkit.render('portals/pages/library.html',
                                 extra_vars=extra_vars)
+
 
     def contentpage_show(self, org_name, page_name):
         if not _is_portal_active(org_name):
@@ -538,7 +800,7 @@ class OrgportalsController(PackageController):
         is_upload = page['image_url'] and not page['image_url'].startswith('http')
 
         if is_upload:
-            page['image_url'] = '{0}/uploads/portal/{1}'.format(p.toolkit.request.host_url, page['image_url'])
+            page['image_url'] = '/uploads/portal/{}'.format(page['image_url'])
 
         if page_name == 'contact' and p.toolkit.request.method == 'POST':
             data = dict(p.toolkit.request.POST)
@@ -556,6 +818,7 @@ class OrgportalsController(PackageController):
 
         return p.toolkit.render('portals/pages/{0}.html'.format(page_name), extra_vars=extra_vars)
 
+
     def custompage_show(self, org_name, page_name):
         if not _is_portal_active(org_name):
             extra_vars = {'type': 'portal'}
@@ -571,7 +834,7 @@ class OrgportalsController(PackageController):
         is_upload = data['image_url'] and not data['image_url'].startswith('http')
 
         if is_upload:
-            data['image_url'] = '{0}/uploads/portal/{1}'.format(p.toolkit.request.host_url, data['image_url'])
+            data['image_url'] = '/uploads/portal/{}'.format(data['image_url'])
 
         extra_vars = {
             'data': data
@@ -580,8 +843,8 @@ class OrgportalsController(PackageController):
 
         return p.toolkit.render('portals/pages/custom.html', extra_vars=extra_vars)
 
-    def _get_full_name_authors(self, context, org_name, group):
 
+    def _get_full_name_authors(self, context, org_name, group):
         # "rows" is set to a big number because by default Solr will
         # return only 10 rows, and we need all datasets
         all_packages_dict = {
@@ -600,7 +863,8 @@ class OrgportalsController(PackageController):
         authors_list = []
 
         for dataset in datasets_query['results']:
-            full_name_authors.add(dataset['author'])
+            if dataset.get('author'):
+                full_name_authors.add(dataset['author'])
 
         for author in full_name_authors:
             authors_list.append({
@@ -611,6 +875,7 @@ class OrgportalsController(PackageController):
 
         return authors_list
 
+
     def orgportals_subdashboards_index(self, org_name):
         data_dict = {'org_name': org_name}
         subdashboards = get_action('orgportals_subdashboards_list')({}, data_dict)
@@ -620,8 +885,8 @@ class OrgportalsController(PackageController):
 
         return p.toolkit.render('organization/subdashboards_list.html')
 
-    def orgportals_subdashboards_edit(self, org_name, subdashboard=None, data=None, errors=None, error_summary=None):
 
+    def orgportals_subdashboards_edit(self, org_name, subdashboard=None, data=None, errors=None, error_summary=None):
         if subdashboard:
             subdashboard = subdashboard[1:]
 
@@ -743,8 +1008,8 @@ class OrgportalsController(PackageController):
 
         return p.toolkit.render('organization/subdashboards_edit.html', extra_vars=vars)
 
-    def orgportals_subdashboards_delete(self, org_name, subdashboard):
 
+    def orgportals_subdashboards_delete(self, org_name, subdashboard):
         subdashboard = subdashboard[1:]
 
         data_dict = {
@@ -782,6 +1047,7 @@ class OrgportalsController(PackageController):
         except p.toolkit.ObjectNotFound:
             p.toolkit.abort(404, _('Group not found'))
         return p.toolkit.render('organization/confirm_delete.html', {'subdashboard': subdashboard})
+
 
     def subdashboardpage_show(self, org_name, subdashboard_name):
         data_dict = {'id': org_name, 'include_extras': True}
@@ -822,13 +1088,11 @@ class OrgportalsController(PackageController):
         # unicode format (decoded from utf8)
         q = c.q = request.params.get('q', u'')
         c.query_error = False
-
         # check ckan version and call appropriate get_page number
-        if p.toolkit.check_ckan_version(min_version='2.5.0',
-                                        max_version='2.5.3'):
-            page = self._get_page_number(request.params)
-        else:
+        if p.toolkit.check_ckan_version(min_version='2.6.0'):
             page = h.get_page_number(request.params)
+        else:
+            page = self._get_page_number(request.params)
 
         try:
             limit = int(org['orgportals_datasets_per_page'])
@@ -934,7 +1198,12 @@ class OrgportalsController(PackageController):
                 'license_id': _('Licenses'),
             }
 
-            for facet in g.facets:
+            if p.toolkit.check_ckan_version(min_version='2.6.0'):
+                facet_list = h.facets()
+            else:
+                facet_list = g.facets
+
+            for facet in facet_list:
                 if facet in default_facet_titles:
                     facets[facet] = default_facet_titles[facet]
                 else:
@@ -967,7 +1236,7 @@ class OrgportalsController(PackageController):
             query['search_facets']['author']['items'] =\
                 self._get_full_name_authors(context, org_name, subdashboard['group'])
 
-            print 'authotrs', self._get_full_name_authors(context, org_name, subdashboard['group'])
+            print 'authors', self._get_full_name_authors(context, org_name, subdashboard['group'])
 
             c.sort_by_selected = query['sort']
 
@@ -998,12 +1267,6 @@ class OrgportalsController(PackageController):
                     parameter_name='_%s_limit' % facet))
             c.search_facets_limits[facet] = limit
 
-        if g.facets_default_number:
-
-            maintain.deprecate_context_item(
-                'facets',
-                'Use `c.search_facets` instead.')
-
         self._setup_template_variables(context, {},
                                        package_type=package_type)
 
@@ -1015,7 +1278,7 @@ class OrgportalsController(PackageController):
                 is_upload = 'image_url' in item and item['image_url'] and not item['image_url'].startswith('http')
 
                 if is_upload:
-                    item['image_url'] = '{0}/uploads/portal/{1}'.format(p.toolkit.request.host_url, item['image_url'])
+                    item['image_url'] = '/uploads/portal/{}'.format(item['image_url'])
 
         extra_vars = {
             'organization': org,
@@ -1024,6 +1287,7 @@ class OrgportalsController(PackageController):
         c.org_name = org_name
 
         return p.toolkit.render('portals/pages/subdashboard.html', extra_vars=extra_vars)
+
 
     def show_portal_homepage(self):
         return self._get_portal_page(self.view_portal)
@@ -1068,6 +1332,7 @@ class OrgportalsController(PackageController):
         else:
             return p.toolkit.render('home/index.html')
 
+
 def _is_portal_active(orgnization_name):
     data_dict = {'id': orgnization_name, 'include_extras': True}
     org = get_action('organization_show')({}, data_dict)
@@ -1076,7 +1341,3 @@ def _is_portal_active(orgnization_name):
         return True
     else:
         return False
-
-
-
-

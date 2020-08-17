@@ -1,0 +1,34 @@
+<div class="cd-header">
+  <div class="tint"></div>
+  <div class="hero-container">
+    <div class="row">
+      <h1 class="hero-content-container__header">{{title}}</h1>
+      <div class="hero-content-container__secondary">
+        {% if intro %}
+          {{ h.render_markdown(intro) }}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+<section class="cd-hero">
+  <ul class="cd-hero-slider autoplay">
+    {% set hero_images_list = [image_url, image_url_2, image_url_3] %}
+    {% for hero_img in hero_images_list %}
+      <li style="background-image: url({{hero_img}})" {%if loop.index == 1%}class="selected"{%endif%}>
+        <div class="cd-full-width">
+        </div> <!-- .cd-full-width -->
+      </li>
+    {% endfor %}
+  </ul> <!-- .cd-hero-slider -->
+  <div class="cd-slider-nav">
+    <nav>
+      <span class="cd-marker item-1"></span>
+      <ul>
+        {% for hero_img in hero_images_list %}
+          <li {%if loop.index == 1%}class="selected"{%endif%}><a href="#0"><i class="icon-circle"></i></a></li>
+        {% endfor %}
+      </ul>
+    </nav>
+  </div> <!-- .cd-slider-nav -->
+</section> <!-- .cd-hero -->

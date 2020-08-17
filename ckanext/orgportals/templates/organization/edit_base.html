@@ -25,7 +25,9 @@
   {% if c.group_dict.orgportals_portal_created == '1' %}
     {{ h.build_nav_icon('orgportals_pages_index', _('Pages'), org_name=c.group_dict.name) }}
     {{ h.build_nav_icon('orgportals_nav_bar', _('Nav Menu'), org_name=c.group_dict.name) }}
+{#
     {{ h.build_nav_icon('orgportals_subdashboards_index', _('Subdashboards'), org_name=c.group_dict.name) }}
+#}
   {% endif %}
 {% endblock %}
 

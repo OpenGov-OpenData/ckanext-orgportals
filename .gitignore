@@ -43,3 +43,5 @@ docs/_build/
 
 .editorconfig
 .mo
+
+*.DS_Store

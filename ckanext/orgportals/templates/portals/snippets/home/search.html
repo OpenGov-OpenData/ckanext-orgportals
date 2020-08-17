@@ -1,0 +1,15 @@
+{% set ctrl = 'ckanext.orgportals.controllers.portals:OrgportalsController' %}
+{% set source = 'admin' %}
+{% set page_link = h.url_for(controller=ctrl, action='datapage_show', org_name=c.org_name, source=source) %}
+{% set placeholder = 'Search Datasets' %}
+<div class="module module-search box">
+  <form class="module-content search-form" method="get" action="{{ page_link }}">
+    <div class="search-input control-group search-giant">
+      <input type="text" class="search" name="q" value="" autocomplete="off" id="data-search-keyword-input-field" placeholder="{{placeholder}}" title="{{_('Type search term here')}}"/>
+      <button type="submit">
+        <i class="fa fa-search"></i>
+        <span>{{ _('search') }}</span>
+      </button>
+    </div>
+  </form>
+</div>

@@ -26,7 +26,7 @@ Example:
     <article class="data-set">
       <div class="row">
         <div class="col-md-12">
-          <div class="data-set-title col-md-8">
+          <div class="data-set-title col-md-10">
             <a href="#"
                onclick="toggleResources('{{ datasets_group_name }}-resources-{{ package.id }}'); return false;">
               {{ h.markdown_extract(title, extract_length=truncate_title) }}
@@ -35,30 +35,23 @@ Example:
           <div class="col-sm-3 col-md-2">
             <a href="/dataset/{{package.name}}" target="_blank"><i class="fa fa-desktop "></i> {{ _('View dataset') }}</a>
           </div>
+{#
           <div class="col-sm-3 col-md-2">
-            <a
+            <a 
              href="#"
              onclick="toggleResources('{{ datasets_group_name }}-resources-{{ package.id }}'); return false;">
-             <i class="fa fa-desktop "></i>{{ _(' List resources') }}
+             <i class="fa fa-desktop "></i>{{ _(' List resources') }}         
             </a>
           </div>
+#}
         </div>
-        <div class="col-sm-12 col-md-12" style="padding-top: 10px">
+        <div class="col-sm-12 col-md-12">
           {% if notes %}
             <p>{{ notes }}</p>
           {% endif %}
         </div>
-        <div class="col-sm-12 col-md-12">
-          <ul class="dataset-resources unstyled">
-            {% for resource in h.dict_list_reduce(package.resources, 'format') %}
-              <li>
-                <div class="label" data-format="{{ resource.lower() }}" style="color:white;">{{ resource }}</div>
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
       </div>
-      <div class="hidden resources-dropdown" id="{{ datasets_group_name }}-resources-{{ package.id }}">
+      <div class="resources-list" id="{{ datasets_group_name }}-resources-{{ package.id }}">
         {% if package.resources %}
           <div class="row">
             <div class="col-sm-12 col-md-12">
@@ -66,24 +59,10 @@ Example:
             </div>
           </div>
           {% for resource in package.resources %}
+            {% if resource.format == 'PDF' %}
             <div class="row">
               <div class="col-sm-12 col-md-12 resources-dropdown-name">
                 <span class="format-label" property="dc:format" data-format="{{ resource.format.lower() }}">{{ resource.format }}</span>
-{#
-                {% if resource.format == 'ODS' %}
-                  <p
-                     class="noclick btn btn-xs btn-success">{{ resource.format }}</p>
-                {% elif resource.format == 'PDF' %}
-                  <p
-                    class="noclick btn btn-xs btn-warning">{{ resource.format }}</p>
-                {% elif resource.format == 'GeoJSON' %}
-                  <p
-                     class="noclick btn btn-xs btn-primary">{{ resource.format }}</p>
-                {% else %}
-                  <p
-                     class="noclick btn btn-xs btn-primary">{{ resource.format }}</p>
-                {% endif %}
-#}
                 <div class="title-dsc-container">
                   {% if resource.name %}
                     <div class="resources-title">
@@ -96,14 +75,33 @@ Example:
                   {% if resource.description %}
                     <div class="data-dsc">{{ h.markdown_extract(resource.description, extract_length=truncate) }}</div>
                   {% endif %}
-                </div>
+                </div>                
                 <div class="btn-group">
                   <a href="{{ resource.url }}" class="btn btn-sm btn-primary" target="_blank"><i class="fa fa-arrow-circle-o-down"></i>{{ _(' Download')}}</a>
+                  {% set resource_view = h.orgportals_get_default_resource_view(resource.id) %}
+                  {% if resource_view %}
+                  <a href="#" class="btn btn-sm btn-primary" onclick="toggleResources('resource-view-{{ resource.id }}'); return false;">
+                    <i class="fa fa-desktop "></i>{{ _(' View') }}
+                  </a>
+                  {% endif %}
+{#
                   <a href="{{ h.orgportals_get_resource_view_url(dataset=package.name, id=resource.id) }}" class="btn btn-sm btn-primary" target="_blank"><i class="fa fa-desktop "></i> {{ _('Preview') }}</a>
+#}
                 </div>
+                {% if resource_view %}
+                <div class="resource-view hidden" id="resource-view-{{resource.id}}">
+                    {% set src = h.url(qualified=true, controller='package',
+                                 action='resource_view', id=package.name,
+                                 resource_id=resource.id,
+                                 view_id=resource_view.id)  %}
+                    <iframe src="{{ src }}" frameborder="0" width="100%" height="500px" data-module="data-viewer" allowfullscreen>
+                      <p>{{ _('Your browser does not support iframes.') }}</p>
+                    </iframe>
+                </div>
+                {% endif %}
               </div>
             </div>
-
+            {% endif %}
           {% endfor %}
         {% else %}
           <div class="row">
@@ -118,7 +116,6 @@ Example:
               <h4>{{ _('Additional information') }}</h4>
             </div>
           </div>
-
           {% if package.author %}
             <div class="row">
               <div class="col-md-3">

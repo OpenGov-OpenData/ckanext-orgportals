@@ -1,5 +1,9 @@
 {% extends 'portals/index.html' %}
 
+{% block breadcrumb_content %}
+  <li class="active"><a class=" active" href="{{ page_link }}">{{ page.page_title }}</a></li>
+{% endblock %}
+
 {% block content %}
   <div class="content-page-container">
     <h1 class="content-page-container__header">{{ page.content_title }}</h1>
