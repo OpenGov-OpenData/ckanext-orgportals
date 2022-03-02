@@ -26,24 +26,19 @@ Example:
     <article class="data-set">
       <div class="row">
         <div class="col-md-12">
-          <div class="data-set-title col-md-10">
-            <a href="#"
-               onclick="toggleResources('{{ datasets_group_name }}-resources-{{ package.id }}'); return false;">
-              {{ h.markdown_extract(title, extract_length=truncate_title) }}
+          <h3 class="data-set-title col-md-8">
+            {{ h.markdown_extract(title, extract_length=truncate_title) }}
+          </h3>
+          <div class="dataset-actions">
+            <a href="/dataset/{{package.name}}" target="_blank" class="view-dataset">
+              <i class="fa fa-desktop "></i> {{ _('View dataset') }}
             </a>
+            <button onclick="toggleResources('{{ datasets_group_name }}-resources-{{ package.id }}'); return false;"
+                    aria-label="Toggle between hiding and showing resources and additional information for {{ title }}"
+                    class="btn">
+              <i class="fa fa-list-ul"></i>{{ _(' Toggle resources') }}
+            </button>
           </div>
-          <div class="col-sm-3 col-md-2">
-            <a href="/dataset/{{package.name}}" target="_blank"><i class="fa fa-desktop "></i> {{ _('View dataset') }}</a>
-          </div>
-{#
-          <div class="col-sm-3 col-md-2">
-            <a 
-             href="#"
-             onclick="toggleResources('{{ datasets_group_name }}-resources-{{ package.id }}'); return false;">
-             <i class="fa fa-desktop "></i>{{ _(' List resources') }}         
-            </a>
-          </div>
-#}
         </div>
         <div class="col-sm-12 col-md-12">
           {% if notes %}
@@ -77,12 +72,12 @@ Example:
                   {% endif %}
                 </div>                
                 <div class="btn-group">
-                  <a href="{{ resource.url }}" class="btn btn-sm btn-primary" target="_blank"><i class="fa fa-arrow-circle-o-down"></i>{{ _(' Download')}}</a>
+                  <a href="{{ resource.url }}" class="btn btn-sm btn-primary resource-download" target="_blank"><i class="fa fa-arrow-circle-o-down"></i>{{ _(' Download')}}</a>
                   {% set resource_view = h.orgportals_get_default_resource_view(resource.id) %}
                   {% if resource_view %}
-                  <a href="#" class="btn btn-sm btn-primary" onclick="toggleResources('resource-view-{{ resource.id }}'); return false;">
+                  <button class="btn btn-sm btn-primary resource-view" onclick="toggleResources('resource-view-{{ resource.id }}'); return false;">
                     <i class="fa fa-desktop "></i>{{ _(' View') }}
-                  </a>
+                  </button>
                   {% endif %}
 {#
                   <a href="{{ h.orgportals_get_resource_view_url(dataset=package.name, id=resource.id) }}" class="btn btn-sm btn-primary" target="_blank"><i class="fa fa-desktop "></i> {{ _('Preview') }}</a>

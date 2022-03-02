@@ -15,7 +15,7 @@
   {% set subdashboard_name = None %}
 {% endif %}
 
-  <ul class="pagination pull-right">
+  <ul class="pagination">
     {% if current != 1 %}
       <li>
         <a href="{{ h.orgportals_get_current_url(1, params, controller, action, name, subdashboard_name, c.source, exclude_param='page') }}#search-data" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
@@ -25,13 +25,13 @@
       </li>
     {% endif %}
 
-    {%if current+9 <= end %}
+    {% if current+9 <= end %}
       {% for index in range(current, current+10) %}
         <li{% if index == current %} class="active"{% endif %}>
           <a href="{{ h.orgportals_get_current_url(index, params, controller, action, name, subdashboard_name, c.source, exclude_param='page') }}#search-data">{{ index }}</a>
         </li>
       {% endfor %}
-    {%elif end-9 >= 1 %}
+    {% elif end-9 >= 1 %}
       {% for index in range(end-9, end+1) %}
         <li{% if index == current %} class="active"{% endif %}>
           <a href="{{ h.orgportals_get_current_url(index, params, controller, action, name, subdashboard_name, c.source, exclude_param='page') }}#search-data">{{ index }}</a>
