@@ -26,21 +26,18 @@ Example:
     <article class="data-set">
       <div class="row">
         <div class="col-md-12">
-          <div class="data-set-title col-md-8">
-            <a href="#"
-               onclick="toggleResources('{{ datasets_group_name }}-resources-{{ package.id }}'); return false;">
-              {{ h.markdown_extract(title, extract_length=truncate_title) }}
+          <h3 class="data-set-title col-md-8">
+            {{ h.markdown_extract(title, extract_length=truncate_title) }}
+          </h3>
+          <div class="dataset-actions">
+            <a href="/dataset/{{package.name}}" target="_blank" class="view-dataset">
+              <i class="fa fa-desktop "></i> {{ _('View dataset') }}
             </a>
-          </div>
-          <div class="col-sm-3 col-md-2">
-            <a href="/dataset/{{package.name}}" target="_blank"><i class="fa fa-desktop "></i> {{ _('View dataset') }}</a>
-          </div>
-          <div class="col-sm-3 col-md-2">
-            <a
-             href="#"
-             onclick="toggleResources('{{ datasets_group_name }}-resources-{{ package.id }}'); return false;">
-             <i class="fa fa-desktop "></i>{{ _(' List resources') }}
-            </a>
+            <button onclick="toggleResources('{{ datasets_group_name }}-resources-{{ package.id }}'); return false;"
+                    aria-label="Toggle between hiding and showing resources and additional information for {{ title }}"
+                    class="btn">
+             <i class="fa fa-list-ul"></i>{{ _(' List resources') }}
+            </button>
           </div>
         </div>
         <div class="col-sm-12 col-md-12" style="padding-top: 10px">

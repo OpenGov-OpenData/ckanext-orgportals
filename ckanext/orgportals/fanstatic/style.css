@@ -1468,7 +1468,7 @@ p {
 }
 
 .data-set p {
-    color: #a6a6a6;
+    color: #131517;
 }
 
 .col-md-4 p {
@@ -3336,20 +3336,24 @@ select[multiple].input-lg, textarea.input-lg {
     }
 }
 
+a {
+    color: #165cab;
+}
 .btn {
     display: inline-block;
+    padding: 4px 12px;
     margin-bottom: 0;
-    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
     text-align: center;
     vertical-align: middle;
-    touch-action: manipulation;
     cursor: pointer;
-    border: 1px solid transparent;
-    white-space: nowrap;
-    padding: 6px 12px;
-    font-size: 14px;
-    line-height: 1.42857143;
-    border-radius: 4px;
+    color: #333333;
+    text-shadow: 0 1px 1px rgb(255 255 255 / 75%);
+    background-color: #f7f7f7;
+    border: 1px solid #cccccc;
+    border-bottom-color: #b3b3b3;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 20%), 0 1px 2px rgb(0 0 0 / 5%);
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -4183,7 +4187,7 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
 
 .nav > li > a:focus, .nav > li > a:hover {
     text-decoration: none;
-    background-color: #eeeeee
+    background-color: #eeeeee;
 }
 
 .nav > li.disabled > a {
@@ -4916,7 +4920,7 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
 .breadcrumb > li + li:before {
     content: "/\00a0";
     padding: 0 5px;
-    color: #ccc
+    color: #505050;
 }
 
 .breadcrumb > .active {
@@ -4924,9 +4928,10 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
 }
 
 .toolbar .breadcrumb a {
-    color: #6CB1D7;
+    color: #505050;
     font-weight: 500;
-    font-size: 14px;
+    font-size: 20px;
+    text-decoration: none;
 }
 
 .pagination {
@@ -4934,7 +4939,7 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
     margin-top: 20px;
     margin-bottom: 0px;
     margin-right: 20px;
-    border-radius: 4px
+    border-radius: 4px;
 }
 
 .pager li, .pagination > li {
@@ -4974,7 +4979,7 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
 .pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
     z-index: 3;
     color: #fff;
-    background-color: #777;
+    background-color: #1f76d8;
     border-color: #777;
     cursor: default
 }
@@ -6741,6 +6746,27 @@ button.close {
     position: fixed
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.sr-only-focusable:active,
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+}
+
 @-ms-viewport {
     width: device-width
 }
@@ -7396,7 +7422,7 @@ main:after {
 }
 
 .data-set:not(:last-child) {
-    border-bottom: 2px solid rgba(0, 0, 0, .2)
+    border-bottom: 2px solid #d3d3d3;
 }
 
 .data-set-title {
@@ -7406,8 +7432,8 @@ main:after {
     padding-left: 0px;
 }
 
-.data-set a, .data-set a{
-    color: #428bca;
+.data-set a {
+    color: #165cab;
 }
 
 @media (min-width: 343px) and (max-width: 376px) {
@@ -7475,7 +7501,7 @@ main:after {
     padding-right: 15px;
     padding-bottom: 15px;
     /*border-bottom: 2px solid rgba(0, 0, 0, .2)*/
-    background-color: #eeeeee;
+    background-color: #eff2f5;
 }
 
 
@@ -7627,13 +7653,17 @@ footer .container {
 }
 
 .top-navigation a {
-    color: #787878;
+    color: #375f87;
     font-size: 16px;
     font-weight: bold;
+    letter-spacing: 1.5px;
+    padding: 10px;
 }
 
-.top-navigation a:hover {
-    color: #428bca;
+.top-navigation li a:hover {
+    color: #165cab;
+    border-bottom: 2px solid #165cab;
+    text-decoration: none;
 }
 
 .top-navigation .list-inline {
@@ -7865,7 +7895,8 @@ fieldset {
 }
 
 a[data-page-active="true"] {
-  color: #428bca;
+  color: #165cab;
+  border-bottom: 2px solid #165cab;
 }
 
 .orgportals-marker-icon {
@@ -8112,7 +8143,7 @@ ul.col-md-2 {
   float: left;
 }
 .aside-fixed-panel .module-heading {
-  background-color: #E8ECEC;
+  background-color: #eff2f5;
   border-bottom: 0;
   color: #2d2d2d;
   font-size: 16px;
@@ -8178,6 +8209,15 @@ ul.col-md-2 {
   margin: 10px 0 0;
   padding: 5px;
 }
+.search-form {
+  margin-bottom: 20px;
+  padding-bottom: 25px;
+  border-bottom: 1px dotted #dddddd;
+}
+.search-form.no-bottom-border {
+  border-bottom-width: 0;
+  margin-bottom: 0;
+}
 .search-form .search-input input {
   box-sizing: border-box;
   font-size: 16px;
@@ -8232,14 +8272,17 @@ ul.col-md-2 {
   text-align: right;
   margin-right: 20px;
 }
+
+.search-block {
+  min-height: 100px;
+}
 .search-block .search-hint {
-  color: #787878;
+  color: #131517;
   display: table;
   height: 62px;
   text-align: left;
   padding-top: 24px;
 }
-
 .search-block .search-doc {
   text-align: right;
 }
@@ -8405,7 +8448,7 @@ div.resources-title {
 
 .title-dsc-container {
   float: left;
-  width: 60%;
+  width: calc(99% - 180px);
 }
 
 @media (max-width: 1024px) {
@@ -8436,10 +8479,11 @@ ul#popular-list, ul.dataset-list.unstyled {
 }
 
 .main-featured {
-  background-color: #f3f3f3;
+  background-color: #eff2f5;
 }
-.main-browse, .main-updates {
-  background-color: #e4e4e4;
+.main-browse,
+.main-updates {
+  background-color: #eff2f5;
 }
 
 .browse-group {
@@ -8492,7 +8536,7 @@ a.browse-group {
   font-weight: normal;
 }
 .media-item:hover {
-  background-color: #428BCA;
+  background-color: #165cab;
 }
 .media-item:hover h3 {
   color: #ffffff;
@@ -8526,6 +8570,11 @@ a.browse-group {
   height: 255px;
 }
 
+.media-item:hover, .media-item:focus,
+.browse-group:hover, .browse-group:focus {
+  background-color: #c2e5ff;
+}
+
 .slick-showcase .media-item .media-image {
   margin-left: auto;
   margin-right: auto;
@@ -8550,6 +8599,7 @@ a.browse-group {
 
 .all-data .pagination-container {
   padding-bottom: 60px;
+  text-align: center;
 }
 
 span.dataset-private.label.label-inverse {
@@ -8572,7 +8622,7 @@ li.dataset-item .dataset-heading a {
 }
 
 li.dataset-item .dataset-content div {
-  color: #A6A6A6;
+  color: #131517;
   margin-bottom: 10px;
 }
 
@@ -8618,7 +8668,7 @@ h2.heading a {
 }
 
 .text-wrapper div {
-  color: #A6A6A6;
+  color: #131517;
   margin-bottom:10px;
 }
 
@@ -8631,52 +8681,51 @@ ul.unstyled, ol.unstyled {
   display: inline;
 }
 .dataset-resources li div {
-  background-color: #aaaaaa;
+  background-color: #6e6e6e;
 }
-
 .label[data-format=html],
 .label[data-format*=html] {
-  background-color:#55a1ce
+  background-color: #2E759E;
 }
 .label[data-format=json],
 .label[data-format*=json] {
-  background-color:#ef7100
+  background-color: #D63B00;
 }
 .label[data-format=xml],
 .label[data-format*=xml] {
-  background-color:#ef7100
+  background-color: #D63B00;
 }
 .label[data-format=text],
 .label[data-format*=text] {
-  background-color:#74cbec
+  background-color: #1A7EA3;
 }
 .label[data-format=csv],
 .label[data-format*=csv] {
-  background-color:#dfb100
+  background-color: #856A00;
 }
 .label[data-format=xls],
 .label[data-format*=xls] {
-  background-color:#2db55d
+  background-color: #207E42;
 }
 .label[data-format=zip],
 .label[data-format*=zip] {
-  background-color:#686868
+  background-color: #686868;
 }
 .label[data-format=api],
 .label[data-format*=api] {
-  background-color:#ec96be}
+  background-color: #D22D81;
+}
 .label[data-format=pdf],
 .label[data-format*=pdf] {
-  background-color:#e0051e
+  background-color: #e0051e;
 }
-.label[data-format=rdf],
-.label[data-format*=rdf],
-.label[data-format*=nquad],
-.label[data-format*=ntriples],
-.label[data-format*=turtle] {
-  background-color:#0b4498
-}
-
 .resource-view {
   padding-top: 40px;
+}
+
+.dataset-actions {
+  float: right;
+}
+.dataset-actions .view-dataset {
+  padding-right: 20px;
 }

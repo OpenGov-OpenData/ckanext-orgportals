@@ -36,12 +36,11 @@
 <div class="data-block-container"> 
   <div class="data-block-header span3 aside-fixed-panel">
     <div class="row" >
-      <ul style="list-style-type:none; padding:0;" class="col-md-2">
-        {# <h3 class="data-block-heading">{{ _('Filter Data by') }}:</h3> #}
+      <div class="filters">
         {% for facet in facets.titles %}
           {{ h.snippet('portals/snippets/facet_list.html', name=facet, organization_name=c.org_name, subdashboard=subdashboard, font_base_color=font_base_color, secondary_color=secondary_color) }}
         {% endfor %}
-      </ul>
+      </div>
     </div>
   </div>
 

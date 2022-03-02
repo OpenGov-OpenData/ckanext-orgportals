@@ -28,9 +28,8 @@
             <input aria-label="search datasets" type="text" name="q" value="{{ query }}" autocomplete="off"
                  class="form-control input-search-data" placeholder="{{ placeholder }}"
                  {# style="border-color: {{ base_color }}" #}>
-            <button type="submit" value="search">
+            <button type="submit" value="search" aria-label="{{_('Submit')}}">
               <i class="fa fa-search fa-2x"></i>
-              <span>{{ _('Submit') }}</span>
             </button>
 {#
             {% if h.orgportals_show_exit_button(request.params) %}
