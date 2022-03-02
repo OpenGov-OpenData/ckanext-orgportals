@@ -3894,14 +3894,16 @@ tbody.collapse.in {
     border-radius: 0
 }
 
-.btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle) {
+.btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle),
+.resource-download {
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;
     color: #1F549B;
     background-color: white;
 }
 
-.btn-group > .btn:last-child:not(:first-child), .btn-group > .dropdown-toggle:not(:first-child) {
+.btn-group > .btn:last-child:not(:first-child), .btn-group > .dropdown-toggle:not(:first-child),
+.resource-view {
     border-bottom-left-radius: 0;
     border-top-left-radius: 0;
     color: white;
