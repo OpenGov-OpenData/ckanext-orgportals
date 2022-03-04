@@ -3895,7 +3895,7 @@ tbody.collapse.in {
 }
 
 .btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle),
-.resource-download {
+.resources-dropdown-name .btn.res-download {
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;
     color: #1F549B;
@@ -3903,7 +3903,7 @@ tbody.collapse.in {
 }
 
 .btn-group > .btn:last-child:not(:first-child), .btn-group > .dropdown-toggle:not(:first-child),
-.resource-view {
+.resources-dropdown-name .btn.res-view {
     border-bottom-left-radius: 0;
     border-top-left-radius: 0;
     color: white;
@@ -4939,7 +4939,7 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
 .pagination {
     padding-left: 0;
     margin-top: 20px;
-    margin-bottom: 0px;
+    margin-bottom: 40px;
     margin-right: 20px;
     border-radius: 4px;
 }
@@ -8599,8 +8599,7 @@ a.browse-group {
   padding-right: 10px;
 }
 
-.all-data .pagination-container {
-  padding-bottom: 60px;
+.pagination-container {
   text-align: center;
 }
 

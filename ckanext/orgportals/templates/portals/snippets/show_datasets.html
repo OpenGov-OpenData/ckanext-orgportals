@@ -26,11 +26,14 @@ Example:
     <article class="data-set">
       <div class="row">
         <div class="col-md-12">
-          <h3 class="data-set-title col-md-8">
+          <h3 class="data-set-title col-md-8" onclick="toggleResources('{{ datasets_group_name }}-resources-{{ package.id }}'); return false;">
             {{ h.markdown_extract(title, extract_length=truncate_title) }}
           </h3>
           <div class="dataset-actions">
-            <a href="/dataset/{{package.name}}" target="_blank" class="view-dataset">
+            <a href="/dataset/{{package.name}}"
+               target="_blank"
+               class="view-dataset"
+               aria-label="View dataset {{ title }}">
               <i class="fa fa-desktop "></i> {{ _('View dataset') }}
             </a>
             <button onclick="toggleResources('{{ datasets_group_name }}-resources-{{ package.id }}'); return false;"
@@ -40,7 +43,7 @@ Example:
             </button>
           </div>
         </div>
-        <div class="col-sm-12 col-md-12" style="padding-top: 10px">
+        <div class="col-sm-12 col-md-12">
           {% if notes %}
             <p>{{ notes }}</p>
           {% endif %}

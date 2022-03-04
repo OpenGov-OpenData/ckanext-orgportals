@@ -26,12 +26,15 @@ Example:
     <article class="data-set">
       <div class="row">
         <div class="col-md-12">
-          <h3 class="data-set-title col-md-8">
+          <h3 class="data-set-title col-md-8" onclick="toggleResources('{{ datasets_group_name }}-resources-{{ package.id }}'); return false;">
             {{ h.markdown_extract(title, extract_length=truncate_title) }}
           </h3>
           <div class="dataset-actions">
-            <a href="/dataset/{{package.name}}" target="_blank" class="view-dataset">
-              <i class="fa fa-desktop "></i> {{ _('View dataset') }}
+            <a href="/dataset/{{package.name}}"
+               target="_blank"
+               class="view-dataset"
+               aria-label="View document {{ title }}">
+              <i class="fa fa-desktop "></i> {{ _('View document') }}
             </a>
             <button onclick="toggleResources('{{ datasets_group_name }}-resources-{{ package.id }}'); return false;"
                     aria-label="Toggle between hiding and showing resources and additional information for {{ title }}"
@@ -72,10 +75,10 @@ Example:
                   {% endif %}
                 </div>                
                 <div class="btn-group">
-                  <a href="{{ resource.url }}" class="btn btn-sm btn-primary resource-download" target="_blank"><i class="fa fa-arrow-circle-o-down"></i>{{ _(' Download')}}</a>
+                  <a href="{{ resource.url }}" class="btn btn-sm btn-primary res-download" target="_blank"><i class="fa fa-arrow-circle-o-down"></i>{{ _(' Download')}}</a>
                   {% set resource_view = h.orgportals_get_default_resource_view(resource.id) %}
                   {% if resource_view %}
-                  <button class="btn btn-sm btn-primary resource-view" onclick="toggleResources('resource-view-{{ resource.id }}'); return false;">
+                  <button class="btn btn-sm btn-primary res-view" onclick="toggleResources('resource-view-{{ resource.id }}'); return false;">
                     <i class="fa fa-desktop "></i>{{ _(' View') }}
                   </button>
                   {% endif %}
