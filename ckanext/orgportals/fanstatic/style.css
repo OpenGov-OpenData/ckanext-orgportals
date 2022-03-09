@@ -8157,14 +8157,17 @@ ul.col-md-2 {
   float: right;
 }
 @media (max-width: 767px) {
+  .col-sm-3, .col-sm-9,
   .span3, .span9 {
     width: 100%;
   }
 }
 @media (min-width: 768px) {
+  .col-sm-3.aside-fixed-panel,
   .span3.aside-fixed-panel {
     width: 219px;
   }
+  .col-sm-9.responsive-panel,
   .span9.responsive-panel {
     width: calc(100% - 230px);
   }
