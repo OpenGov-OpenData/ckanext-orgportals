@@ -13,7 +13,6 @@ from ckan.plugins import toolkit
 from ckan.lib import search
 import ckan.lib.helpers as lib_helpers
 import ckan.lib.i18n as i18n
-from ckan.logic.validators import resource_id_exists
 from ckan import model
 from ckan.common import json
 import ckan.logic as l
@@ -192,10 +191,12 @@ def orgportals_convert_to_list(resources):
 
 
 def orgportals_get_resource_url(id):
-    if not resource_id_exists(id, _get_ctx()):
+    try:
+        data = toolkit.get_action('resource_show')({}, {'id': id})
+    except toolkit.ValidationError:
         return None
-
-    data = toolkit.get_action('resource_show')({}, {'id': id})
+    except (toolkit.ObjectNotFound, toolkit.NotAuthorized):
+        return None
 
     return data['url']
 
@@ -545,7 +546,7 @@ def get_showcase_list(org_name, num=24):
                 org_showcases.append(showcase)
         sorted_showcases = sorted(org_showcases, key=lambda k: k.get('metadata_modified'), reverse=True)
     except:
-        print "[orgportals] Error in retrieving list of showcases"
+        log.debug("[orgportals] Error in retrieving list of showcases")
     return sorted_showcases[:num]
 
 
@@ -557,5 +558,5 @@ def get_default_resource_view(resource_id):
         if len(resource_views) > 0:
             resource_view = resource_views[0]
     except:
-        print "[orgportals] Error in retrieving resource view"
+        log.debug("[orgportals] Error in retrieving resource view")
     return resource_view
