@@ -2,8 +2,9 @@ import logging
 from datetime import datetime
 from urllib import urlencode
 from urlparse import urlsplit, urlunsplit
-import urllib
 import os
+import requests
+import six
 from operator import itemgetter
 
 from pylons import config
@@ -18,6 +19,9 @@ from ckan.common import json
 import ckan.logic as l
 
 log = logging.getLogger(__name__)
+
+MAX_FILE_SIZE = 1024 * 1024 * 50  # 50 Mb
+CHUNK_SIZE = 1024
 
 
 def _get_ctx():
@@ -263,27 +267,48 @@ def orgportals_resource_show_map_properties(id):
 
 def orgportals_get_geojson_properties(resource_id):
     url = orgportals_get_resource_url(resource_id)
+    if not url:
+        return []
 
-    r = urllib.urlopen(url)
+    length = 0
+    content = '' if six.PY2 else b''
 
-    data = unicode(r.read(), errors='ignore')
-    geojson = json.loads(data)
+    try:
+        r = requests.get(url)
+        for chunk in r.iter_content(chunk_size=CHUNK_SIZE):
+            content = content + chunk
+
+            length += len(chunk)
+
+            if length >= MAX_FILE_SIZE:
+                return []
+    except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError, requests.exceptions.Timeout):
+        log.error("Error getting content from geojson url %s" % url)
 
     result = []
-    exclude_keys = [
-        'marker-symbol',
-        'marker-color',
-        'marker-size',
-        'stroke',
-        'stroke-width',
-        'stroke-opacity',
-        'fill',
-        'fill-opacity'
-    ]
 
-    for k, v in geojson.get('features')[0].get('properties').iteritems():
-        if k not in exclude_keys:
-            result.append({'value':k, 'text': k})
+    try:
+        if not six.PY2:
+            content = content.decode('utf-8')
+
+        geojson = json.loads(content)
+
+        exclude_keys = [
+            'marker-symbol',
+            'marker-color',
+            'marker-size',
+            'stroke',
+            'stroke-width',
+            'stroke-opacity',
+            'fill',
+            'fill-opacity'
+        ]
+
+        for k, v in geojson.get('features', [])[0].get('properties', {}).iteritems():
+            if k not in exclude_keys:
+                result.append({'value':k, 'text': k})
+    except (ValueError, TypeError, json.JSONDecodeError):
+        log.error("Error getting geojson properties")
 
     return result
 
@@ -432,13 +457,12 @@ def orgportals_get_facebook_app_id():
 def orgportals_get_countries():
     get_countries_path = lambda: os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                                               'public/countries.json')
-    r = urllib.urlopen(get_countries_path())
+    r = requests.get(get_countries_path())
 
-    data = unicode(r.read(), errors='ignore')
-    countries = json.loads(data)
+    countries = r.json()
     result = []
 
-    for item in countries['features']:
+    for item in countries.get('features', []):
         result.append({'value': item['properties']['name'], 'text': item['properties']['name']})
 
     result.sort(key=itemgetter('text'))
