@@ -21,7 +21,7 @@ try:
     unicode_safe = tk.get_validator('unicode_safe')
 except tk.UnknownValidator:
     # CKAN 2.7
-    unicode_safe = unicode
+    unicode_safe = unicode # noqa: F821
 
 log = logging.getLogger(__name__)
 

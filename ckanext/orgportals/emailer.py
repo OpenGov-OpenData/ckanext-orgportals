@@ -1,5 +1,6 @@
 import logging
 import smtplib
+from six import string_types
 from socket import error as socket_error
 from email.mime.text import MIMEText
 
@@ -18,7 +19,7 @@ def send_email(content, subject, to, from_=FROM):
 
     msg = MIMEText(content,'plain','UTF-8')
 
-    if isinstance(to, basestring):
+    if isinstance(to, string_types):
         to = [to]
 
     msg['Subject'] = subject

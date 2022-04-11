@@ -3,7 +3,6 @@ import ckan.plugins.toolkit as toolkit
 import ckan.lib.plugins as lib_plugins
 from ckan import model as m
 from sqlalchemy import and_
-from paste.deploy.converters import asbool
 import ckanext.orgportals.helpers as helpers
 import ckanext.orgportals.db as db
 import ckanext.orgportals.actions as actions

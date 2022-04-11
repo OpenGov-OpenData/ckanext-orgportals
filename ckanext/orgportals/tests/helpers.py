@@ -81,15 +81,16 @@ def upload_json_resource(dataset_name, resource_name):
     }
 
     # Upload resource
-    response = requests.post(
-        '{0}/api/action/resource_create'.format(site_base_url),
-        data=data_dict,
-        headers={'Authorization': sysadmin['apikey']},
-        files=[('upload', file(file_path))])
-    if response.json()['success']:
-        return response.json()['result']
-    else:
-        return response.json()['error']
+    with open(file_path) as resource_file:
+        response = requests.post(
+            '{0}/api/action/resource_create'.format(site_base_url),
+            data=data_dict,
+            headers={'Authorization': sysadmin['apikey']},
+            files=[('upload', resource_file)])
+        if response.json()['success']:
+            return response.json()['result']
+        else:
+            return response.json()['error']
 
 
 def get_site_base_url():

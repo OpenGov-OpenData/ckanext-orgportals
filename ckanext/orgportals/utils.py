@@ -37,6 +37,21 @@ def _encode_params(params):
             for k, v in params]
 
 
+def url_with_params(url, params):
+    params = _encode_params(params)
+    return url + u'?' + urlencode(params)
+
+
+def search_url(params, package_type=None):
+    if not package_type:
+        package_type == 'dataset'
+    if ckan_29_or_higher:
+        url = h.url_for(u'{0}.search'.format(package_type))
+    else:
+        url = h.url_for('{0}_search'.format(package_type))
+    return url_with_params(url, params)
+
+
 def _setup_template_variables(context, data_dict, package_type=None):
     return lookup_package_plugin(package_type).setup_template_variables(
         context, data_dict
