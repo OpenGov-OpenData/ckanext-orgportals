@@ -68,7 +68,7 @@ Example:
           {% for resource in package.resources %}
             <div class="row">
               <div class="col-sm-12 col-md-12 resources-dropdown-name">
-                <span class="format-label" property="dc:format" data-format="{{ resource.format.lower() }}">{{ resource.format }}</span>
+                <span class="format-label" property="dc:format" data-format="{{ resource.format.lower() or 'data' }}">{{ resource.format }}</span>
 {#
                 {% if resource.format == 'ODS' %}
                   <p

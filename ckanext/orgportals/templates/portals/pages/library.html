@@ -1,5 +1,17 @@
 {% extends 'portals/index.html' %}
 
+{% block styles %}
+  {{ super() }}
+{% endblock %}
+
+{%- block custom_styles %}
+  {%- if g.site_custom_css -%}
+  <style>
+    {{ g.site_custom_css | safe }}
+  </style>
+  {%- endif %}
+{% endblock %}
+
 {% block breadcrumb_content %}
   <li class="active"><a class=" active" href="{{ page_link }}">Library</a></li>
 {% endblock %}

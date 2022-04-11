@@ -1,14 +1,17 @@
 {% extends "organization/edit_base.html" %}
 
+{% set ckan_29_or_higher = h.version(h.ckan_version()) >= h.version('2.9') %}
+{% set orgportals_subdashboards_edit_route = 'orgportals_blueprint.subdashboards_edit' if ckan_29_or_higher else 'orgportals_subdashboards_edit' %}
+
 {% block subtitle %}{{ _('Subdashboards') }} - {{ super() }}{% endblock %}
 
 {% block page_primary_action %}
-  {% link_for _('Add Subdashboard'), controller='ckanext.orgportals.controllers.portals:OrgportalsController', action='orgportals_subdashboards_edit', subdashboard='', org_name=c.group_dict.name, class_='btn btn-primary', icon='plus-square' %}
+  {% link_for _('Add Subdashboard'), named_route=orgportals_subdashboards_edit_route, org_name=group_dict.name, class_='btn btn-primary', icon='plus-square' %}
 {% endblock %}
 
 {% block primary_content_inner %}
   <legend>
   <h2>{{ _('Subdashboards') }}</h2>
   </legend>
-  {% snippet 'organization/snippets/subdashboards_list.html', subdashboards=c.subdashboards %}
+  {% snippet 'organization/snippets/subdashboards_list.html', subdashboards=subdashboards %}
 {% endblock %}

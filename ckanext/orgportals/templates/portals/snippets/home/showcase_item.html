@@ -13,8 +13,10 @@ show_remove    - If True, show the remove button to remove showcase/dataset asso
 {% set title = showcase.title or showcase.name %}
 {% set notes = h.markdown_extract(showcase.notes, extract_length=truncate) %}
 
-{% block showcase_item %}
+{% set ckan_29_or_higher = h.version(h.ckan_version()) >= h.version('2.9') %}
+{% set showcase_read_route = 'showcase_blueprint.read' if ckan_29_or_higher else 'showcase_read' %}
 
+{% block showcase_item %}
 <div class="media-item">
   {% block item_inner %}
     {% block image %}
@@ -28,7 +30,7 @@ show_remove    - If True, show the remove button to remove showcase/dataset asso
       <h3 style="text-align:center;">{{ showcase.title }}</h3>
     {% endblock %}
     {% block link %}
-      <a href="{{ h.url_for(controller='ckanext.showcase.controller:ShowcaseController', action='read', id=showcase.name) }}" title="{{ _('View {name}').format(name=showcase.title) }}" class="media-view">
+      <a href="{{ h.url_for(showcase_read_route, id=showcase.name) }}" title="{{ _('View {name}').format(name=showcase.title) }}" class="media-view">
         <span>{{ _('View {name}').format(name=showcase.title) }}</span>
       </a>
     {% endblock %}

@@ -1,4 +1,6 @@
-{% set map_views = h.orgportals_get_org_map_views(c.group_dict.name) %}
+{% set group_dict = group_dict or c.group_dict %}
+
+{% set map_views = h.orgportals_get_org_map_views(group_dict.name) %}
 
 <fieldset class="map-properties">
   <legend>{{ _('Map options') }}</legend>

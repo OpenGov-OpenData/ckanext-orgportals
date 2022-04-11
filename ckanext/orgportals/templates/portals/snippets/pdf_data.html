@@ -37,7 +37,7 @@
       <div class="data-block-header span3 aside-fixed-panel">
         <div class="filters">
           {% for facet in facets.titles %}
-            {{ h.snippet('portals/snippets/facet_list.html', name=facet, organization_name=c.org_name, subdashboard=subdashboard, font_base_color=font_base_color, secondary_color=secondary_color) }}
+            {{ h.snippet('portals/snippets/facet_list.html', name=facet, search_facets=c.search_facets, organization_name=c.org_name, subdashboard=subdashboard, font_base_color=font_base_color, secondary_color=secondary_color) }}
           {% endfor %}
         </div>
       </div>

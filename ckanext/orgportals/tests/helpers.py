@@ -5,7 +5,7 @@ import random
 import requests
 import os
 
-from pylons import config
+from ckan.common import config
 
 from ckan.tests import factories
 from ckan.plugins import toolkit

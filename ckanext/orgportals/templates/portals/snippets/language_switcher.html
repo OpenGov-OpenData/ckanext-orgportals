@@ -1,6 +1,11 @@
 {% set organization = h.orgportals_get_current_organization(c.org_name) %}
 {% set action = c.action %}
 
+{% set ckan_29_or_higher = h.version(h.ckan_version()) >= h.version('2.9') %}
+{% set orgportals_subdashboardpage_show_route = 'orgportals_blueprint.subdashboardpage_show' if ckan_29_or_higher else 'orgportals_subdashboardpage_show' %}
+{% set orgportals_view_portal_route = 'orgportals_blueprint.view_portal' if ckan_29_or_higher else 'orgportals_view_portal' %}
+{% set orgportals_custompage_show_route = 'orgportals_blueprint.custompage_show' if ckan_29_or_higher else 'orgportals_custompage_show' %}
+
 {% if organization.orgportals_lang_is_active == '1'%}
   {% if organization.orgportals_secondary_language == 'en' %}
     {% set organization_name = organization.orgportals_secondary_portal %}
@@ -19,11 +24,11 @@
                 {% endif %}
               {% else %}
                 {% if action == 'subdashboardpage_show' %}
-                  {% set url = h.url_for(controller=c.controller, action=action, org_name=organization_name, subdashboard_name=c.subdashboard_name, locale='en', source='admin') %}
+                  {% set url = h.url_for(orgportals_subdashboardpage_show_route, org_name=organization_name, subdashboard_name=c.subdashboard_name, locale='en', source='admin') %}
                 {% elif action == 'view_portal' or action == 'datapage_show' %}
-                  {% set url = h.url_for(controller=c.controller, action=action, org_name=organization_name, locale='en', source='admin') %}
+                  {% set url = h.url_for(orgportals_view_portal_route, org_name=organization_name, locale='en', source='admin') %}
                 {% elif action == 'contentpage_show' or action == 'custompage_show' %}
-                  {% set url = h.url_for(controller=c.controller, action=action, org_name=organization_name, page_name=c.page_name, locale='en', source='admin') %}
+                  {% set url = h.url_for(orgportals_custompage_show_route, org_name=organization_name, page_name=c.page_name, locale='en', source='admin') %}
                 {% endif %}
                 <img class="language-flag" src="/images/flags/en.svg" width="20" alt="UK flag">
                 <a href="{{ url }}" class="language-picker-link">
@@ -65,11 +70,11 @@
                   {% endif %}
                 {% else %}
                   {% if action == 'subdashboardpage_show' %}
-                    {% set url = h.url_for(controller=c.controller, action=action, org_name=organization_name, subdashboard_name=c.subdashboard_name, locale=current_locale, source='admin') %}
+                    {% set url = h.url_for(orgportals_subdashboardpage_show_route, org_name=organization_name, subdashboard_name=c.subdashboard_name, locale=current_locale, source='admin') %}
                   {% elif action == 'view_portal' or action == 'datapage_show' %}
-                    {% set url = h.url_for(controller=c.controller, action=action, org_name=organization_name, locale=current_locale, source='admin') %}
+                    {% set url = h.url_for(orgportals_view_portal_route, org_name=organization_name, locale=current_locale, source='admin') %}
                   {% elif action == 'contentpage_show' or action == 'custompage_show' %}
-                    {% set url = h.url_for(controller=c.controller, action=action, org_name=organization_name, page_name=c.page_name, locale=current_locale, source='admin') %}
+                    {% set url = h.url_for(orgportals_custompage_show_route, org_name=organization_name, page_name=c.page_name, locale=current_locale, source='admin') %}
                   {% endif %}
 
                   <img class="language-flag" src="{{ flag_url }}" width="20" alt="{{ country_short_name | upper }} flag">
