@@ -1,22 +1,27 @@
 {% ckan_extends %}
 
+{% set ckan_29_or_higher = h.version(h.ckan_version()) >= h.version('2.9') %}
+{% set orgportals_view_portal_route = 'orgportals_blueprint.view_portal' if ckan_29_or_higher else 'orgportals_view_portal' %}
+
+{% set group_dict = group_dict or c.group_dict %}
+
 {% block content_action %}
   {{ super() }}
 
-
-
-  {% if c.group_dict.orgportals_portal_created == '1' and c.group_dict.orgportals_is_active == '1' %}
-    {% if c.group_dict.orgportals_secondary_language and c.group_dict.orgportals_secondary_language == 'en' %}
-      {% set locale = h.orgportals_get_secondary_language(c.group_dict.orgportals_secondary_portal) %}
+  {% if group_dict.orgportals_portal_created == '1' and group_dict.orgportals_is_active == '1' %}
+    {% if group_dict.orgportals_secondary_language and group_dict.orgportals_secondary_language == 'en' %}
+      {% set locale = h.orgportals_get_secondary_language(group_dict.orgportals_secondary_portal) %}
     {% else %}
       {% set locale = 'en' %}
     {% endif %}
 
     {% set source = 'admin' %}
 
-    <a class="btn" href="{% url_for controller='ckanext.orgportals.controllers.portals:OrgportalsController',
-                                    action='view_portal',
-                                    org_name=c.group_dict.name,
-                                    source=source%}" target="_blank"><i class="icon-globe"></i>View portal</a>
+    <a class="btn btn-default" target="_blank"
+       href="{% url_for orgportals_view_portal_route,
+                        org_name=group_dict.name,
+                        source=source%}">
+      <i class="fa fa-globe"></i>View portal
+    </a>
   {% endif %}
 {% endblock %}

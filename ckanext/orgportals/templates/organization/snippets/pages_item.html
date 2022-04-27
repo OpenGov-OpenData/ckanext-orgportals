@@ -1,12 +1,17 @@
-{% set url = h.url_for(controller='ckanext.orgportals.controllers.portals:OrgportalsController',
-                       action='orgportals_pages_edit',
-                       org_name=c.group_dict.name,
-                       page='/' + page.name) %}
+{% set ckan_29_or_higher = h.version(h.ckan_version()) >= h.version('2.9') %}
+{% set orgportals_pages_edit_route = 'orgportals_blueprint.pages_edit' if ckan_29_or_higher else 'orgportals_pages_edit' %}
+
+{% set group_dict = group_dict or c.group_dict %}
+{% set page = page or c.page %}
+
+{% set url = h.url_for(orgportals_pages_edit_route,
+                       org_name=group_dict.name,
+                       page=page.name) %}
 {% block item %}
 <li class="media-item">
   {% block item_inner %}
     {% block image %}
-      <img src="{{ page.image or h.url_for_static('/base/images/placeholder-organization.png') }}" alt="{{ page.name }}" class="media-image">
+      <img src="{{ page.image or h.url_for_static('/base/images/placeholder-organization.png') }}" alt="{{ page.name }}" class="img-responsive media-image">
     {% endblock %}
     {% block title %}
       <h3 class="media-heading">{{ page.page_title }}</h3>

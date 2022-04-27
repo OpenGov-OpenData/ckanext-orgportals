@@ -1,5 +1,8 @@
 {% extends 'portals/index.html' %}
 
+{% set ckan_29_or_higher = h.version(h.ckan_version()) >= h.version('2.9') %}
+{% set type = 'asset' if ckan_29_or_higher else 'resource' %}
+
 {% block meta %}
 <meta property="og:url" content="localhost:5000" />
 <meta property="og:type" content="article" />
@@ -11,8 +14,9 @@
 {% block scripts %}
   {{ super() }}
 
-  {% resource 'orgportals/map' %}
-  {% resource 'orgportals/subdashboard' %}
+  {% snippet 'portals/snippets/portal_' ~ type ~ '.html', name='orgportals/map-css' %}
+  {% snippet 'portals/snippets/portal_' ~ type ~ '.html', name='orgportals/map-js' %}
+  {% snippet 'portals/snippets/portal_' ~ type ~ '.html', name='orgportals/subdashboard' %}
 {% endblock %}
 
 {% block content %}

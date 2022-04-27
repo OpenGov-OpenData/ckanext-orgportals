@@ -1,9 +1,13 @@
 {% extends 'portals/index.html' %}
 
+{% set ckan_29_or_higher = h.version(h.ckan_version()) >= h.version('2.9') %}
+{% set orgportals_contentpage_show_route = 'orgportals_blueprint.contentpage_show' if ckan_29_or_higher else 'orgportals_contentpage_show' %}
+{% set orgportals_show_portal_contentpage_route = 'orgportals_blueprint.show_portal_contentpage' if ckan_29_or_higher else 'orgportals_show_portal_contentpage' %}
+
 {% if c.source == 'admin' %}
-  {% set action_url = h.url_for(controller='ckanext.orgportals.controllers.portals:OrgportalsController', action='contentpage_show', page_name=page.name, org_name=page.org_name, source='admin') %}
+  {% set action_url = h.url_for(orgportals_contentpage_show_route, page_name=page.name, org_name=page.org_name, source='admin') %}
 {% else %}
-  {% set action_url = h.url_for(controller='ckanext.orgportals.controllers.portals:OrgportalsController', action='show_portal_contentpage', page_name=page.name) %}
+  {% set action_url = h.url_for(orgportals_show_portal_contentpage_route, page_name=page.name) %}
 {% endif %}
 
 {% block breadcrumb_content %}

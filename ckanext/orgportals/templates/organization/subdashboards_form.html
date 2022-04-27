@@ -1,21 +1,30 @@
 {% import 'macros/form.html' as form %}
 
+{% set ckan_29_or_higher = h.version(h.ckan_version()) >= h.version('2.9') %}
+{% set type = 'asset' if ckan_29_or_higher else 'resource' %}
+
+{% set orgportals_subdashboards_edit_route = 'orgportals_blueprint.subdashboards_edit' if ckan_29_or_higher else 'orgportals_subdashboards_edit' %}
+{% set orgportals_subdashboards_delete_route = 'orgportals_blueprint.subdashboards_delete' if ckan_29_or_higher else 'orgportals_subdashboards_delete' %}
+{% set orgportals_subdashboards_index_route = 'orgportals_blueprint.subdashboards_index' if ckan_29_or_higher else 'orgportals_subdashboards_index' %}
+{% set orgportals_subdashboardpage_show_route = 'orgportals_blueprint.subdashboardpage_show' if ckan_29_or_higher else 'orgportals_subdashboardpage_show' %}
+
 {% block scripts %}
-  {% resource 'orgportals/map-settings.js' %}
-  {% resource 'orgportals/content' %}
+  {% snippet 'portals/snippets/portal_' ~ type ~ '.html', name='orgportals/map-settings.js' %}
+  {% snippet 'portals/snippets/portal_' ~ type ~ '.html', name='orgportals/content-css' %}
+  {% snippet 'portals/snippets/portal_' ~ type ~ '.html', name='orgportals/content-js' %}
 {% endblock %}
 
 {% set data = data or {} %}
 {% set errors = errors or {} %}
 
 {% if subdashboard.name %}
-  {% set action_url = h.url_for('orgportals_subdashboards_edit', org_name=org_name, subdashboard='/' + subdashboard.name) %}
-  {% set delete_url = h.url_for('orgportals_subdashboards_delete', org_name=org_name, subdashboard='/' + subdashboard.name) %}
+  {% set action_url = h.url_for(orgportals_subdashboards_edit_route, org_name=org_name, subdashboard=subdashboard.name) %}
+  {% set delete_url = h.url_for(orgportals_subdashboards_delete_route, org_name=org_name, subdashboard=subdashboard.name) %}
 {% else %}
-  {% set action_url = h.url_for('orgportals_subdashboards_edit', org_name=org_name, subdashboard='') %}
-  {% set delete_url = h.url_for('orgportals_subdashboards_delete', org_name=org_name, subdashboard='') %}
+  {% set action_url = '/organization/edit/' + org_name + '/subdashboards_edit' %}
+  {% set delete_url = h.url_for(orgportals_subdashboards_delete_route, org_name=org_name, subdashboard='') %}
 {% endif %}
-{% set cancel_url = h.url_for('orgportals_subdashboards_index', org_name=org_name) %}
+{% set cancel_url = h.url_for(orgportals_subdashboards_index_route, org_name=org_name) %}
 
 {% if not subdashboard %}
   <h1>{{ _('Add subdashboard') }}</h1>
@@ -30,7 +39,7 @@
     {{ form.errors(error_summary) }}
   {% endblock %}
 
-  {% set prefix = h.url_for(controller='ckanext.orgportals.controllers.portals:OrgportalsController', action='subdashboardpage_show', org_name=org_name, subdashboard_name='', source='admin') %}
+  {% set prefix = h.url_for(orgportals_subdashboardpage_show_route, org_name=org_name, subdashboard_name='', source='admin') %}
   {% set attrs = {'data-module': 'slug-preview-target', 'required': 'true'} %}
 
   {{ form.select('is_active', 'is_active', _('Is subdashboard active?'), options=[{'value': True, 'text': 'Yes'}, {'value': False, 'text': 'No'}], selected=subdashboard.is_active) }}

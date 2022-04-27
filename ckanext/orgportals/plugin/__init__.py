@@ -3,84 +3,43 @@ import ckan.plugins.toolkit as toolkit
 import ckan.lib.plugins as lib_plugins
 from ckan import model as m
 from sqlalchemy import and_
-from paste.deploy.converters import asbool
-from pylons import config
-import helpers
-import db
-import actions
-import auth
+import ckanext.orgportals.helpers as helpers
+import ckanext.orgportals.db as db
+import ckanext.orgportals.actions as actions
+import ckanext.orgportals.auth as auth
 
 from ckan.lib.plugins import DefaultTranslation
 
+from packaging.version import Version
 
-class OrgportalsPlugin(plugins.SingletonPlugin,
+if toolkit.check_ckan_version(min_version='2.9.0'):
+    from ckanext.orgportals.plugin.flask_plugin import MixinPlugin
+else:
+    from ckanext.orgportals.plugin.pylons_plugin import MixinPlugin
+
+
+def version_builder(text_version):
+    return Version(text_version)
+
+
+class OrgportalsPlugin(MixinPlugin,
+                       plugins.SingletonPlugin,
                        lib_plugins.DefaultOrganizationForm,
                        DefaultTranslation):
     plugins.implements(plugins.IConfigurer)
-    plugins.implements(plugins.IRoutes, inherit=True)
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.IAuthFunctions, inherit=True)
     plugins.implements(plugins.IGroupForm, inherit=True)
     plugins.implements(plugins.IPackageController, inherit=True)
     plugins.implements(plugins.ITranslation)
-
-    def __init__(self, name='OrgportalsPlugin'):
-        db.init()
+    plugins.implements(plugins.IConfigurable, inherit=True)
 
     # IConfigurer
-
     def update_config(self, config_):
-        toolkit.add_template_directory(config_, 'templates')
-        toolkit.add_public_directory(config_, 'public')
-        toolkit.add_resource('fanstatic', 'orgportals')
-
-    # IRoutes
-
-    def before_map(self, map):
-        ctrl = 'ckanext.orgportals.controllers.portals:OrgportalsController'
-
-        #edit portal admin routes
-        map.connect('orgportals_pages_delete', '/organization/edit/{org_name}/pages_delete{page:/.*|}',
-                    action='orgportals_pages_delete', ckan_icon='delete', controller=ctrl)
-        map.connect('orgportals_pages_edit', '/organization/edit/{org_name}/pages_edit{page:/.*|}',
-                    action='orgportals_pages_edit', ckan_icon='edit', controller=ctrl)
-        map.connect('orgportals_pages_index', '/organization/edit/{org_name}/pages',
-                    action='orgportals_pages_index', ckan_icon='file', controller=ctrl)
-        map.connect('orgportals_nav_bar', '/organization/edit/{org_name}/nav', controller=ctrl,
-                    action='orgportals_nav_bar', ckan_icon='list')
-        map.connect('orgportals_subdashboards_index', '/organization/edit/{org_name}/subdashboards', controller=ctrl,
-                    action='orgportals_subdashboards_index', ckan_icon='file')
-        map.connect('orgportals_subdashboards_edit', '/organization/edit/{org_name}/subdashboards_edit{subdashboard:/.*|}',
-                    action='orgportals_subdashboards_edit', ckan_icon='edit', controller=ctrl)
-        map.connect('orgportals_subdashboards_delete', '/organization/edit/{org_name}/subdashboards_delete{subdashboard:/.*|}',
-                    action='orgportals_subdashboards_delete', ckan_icon='delete', controller=ctrl)
-
-        #portal routes for custom domain
-        if asbool(config.get('ckanext.orgdashboards.custom_dns_active')):
-            map.connect('/', controller=ctrl, action='show_portal_homepage')
-        map.connect('/data', controller=ctrl, action='show_portal_datapage')
-        map.connect('/library', controller=ctrl, action='show_portal_library')
-        map.connect('/aboutportal', controller=ctrl, action='show_portal_contentpage', page_name='about')
-        map.connect('/org-pages/{page_name}', controller=ctrl, action='show_portal_custompage')
-        map.connect('/subdashboard/{subdashboard_name}', controller=ctrl, action='show_portal_subdashboardpage')
-
-
-        #portal routes for admin
-        map.connect('/organization/{org_name}/portal/home', controller=ctrl,
-                    action='view_portal', source='admin')
-        map.connect('/organization/{org_name}/portal/data', controller=ctrl,
-                    action='datapage_show', source='admin')
-        map.connect('/organization/{org_name}/portal/library', controller=ctrl,
-                    action='library_show', source='admin')
-        map.connect('/organization/{org_name}/portal/subdashboard/{subdashboard_name}', controller=ctrl,
-                    action='subdashboardpage_show', source='admin')
-        map.connect('/organization/{org_name}/portal/about', controller=ctrl,
-                    action='contentpage_show', source='admin', page_name='about')
-        map.connect('/organization/{org_name}/portal/{page_name}', controller=ctrl,
-                    action='custompage_show', source='admin')
-
-        return map
+        toolkit.add_template_directory(config_, '../templates')
+        toolkit.add_public_directory(config_, '../public')
+        toolkit.add_resource('../fanstatic', 'orgportals')
 
     # IActions
     def get_actions(self):
@@ -192,7 +151,8 @@ class OrgportalsPlugin(plugins.SingletonPlugin,
             'orgportals_get_showcase_list':
                 helpers.get_showcase_list,
             'orgportals_get_default_resource_view':
-                helpers.get_default_resource_view
+                helpers.get_default_resource_view,
+            'version': version_builder
         }
 
     # IGroupForm
@@ -298,12 +258,16 @@ class OrgportalsPlugin(plugins.SingletonPlugin,
         return schema
 
     # IPackageController
-
     def before_index(self, pkg_dict):
         title = pkg_dict.get('title')
         if title:
             pkg_dict['title_string'] = title.lower()
         return pkg_dict
+
+    # IConfigurable
+    def configure(self, config):
+        db.init()
+
 
 def _domain_validator(key, data, errors, context):
 

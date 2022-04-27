@@ -1,14 +1,17 @@
 import datetime
+import pytest
 
 from nose.tools import assert_raises
-from webob.multidict import UnicodeMultiDict
+try:
+    from webob.multidict import MultiDict
+except ImportError:
+    from webob import UnicodeMultiDict as MultiDict
 
-from ckan.tests.helpers import reset_db
 from ckan import plugins
 import ckan.lib.search as search
 from ckan.tests import factories
 from ckan.plugins import toolkit
-from pylons import config
+from ckan.common import config
 
 from ckanext.orgportals.tests.helpers import (id_generator,
                                               create_mock_data,
@@ -18,19 +21,20 @@ from ckanext.orgportals.tests.helpers import (id_generator,
 from ckanext.orgportals import helpers
 
 
-class TestHelpers():
+class BaseTestHelpers(object):
+    @pytest.fixture(autouse=True)
+    def request_context(self, monkeypatch, ckan_config, app):
+        monkeypatch.setitem(ckan_config, "ckan.site_url", "http://example.com")
+        self.request_context = app.flask_app.test_request_context()
+        self.request_context.push()
+        yield
+        self.request_context.pop()
 
-    @classmethod
-    def setup_class(self, **kwargs):
-        # Every time the test is run, the database is resetted
-        reset_db()
 
-        if not plugins.plugin_loaded('image_view'):
-            plugins.load('image_view')
+@pytest.mark.usefixtures('clean_db', 'orgportals_setup', 'clean_index')
+class TestHelpers(BaseTestHelpers):
 
-        if not plugins.plugin_loaded('orgportals'):
-            plugins.load('orgportals')
-
+    def setup(self):
         organization_name = id_generator()
         dataset_name = id_generator()
         group_name = id_generator()
@@ -46,20 +50,23 @@ class TestHelpers():
 
         self.subdashboard = create_subdashboard(self.mock_data)
 
-    @classmethod
-    def teardown_class(self):
-        plugins.unload('image_view')
-        plugins.unload('orgportals')
-
+        if toolkit.check_ckan_version(u'2.9'):
+            self.controller = 'orgportals_blueprint'
+        else:
+            self.controller = \
+                'ckanext.orgportals.controllers.portals:OrgportalsController'
 
     def test_get_newly_released_data(self, **kwargs):
         dataset_found = False
 
-        assert_raises(search.SearchError,
-                      helpers.orgportals_get_newly_released_data,
-                      organization_name='',
-                      subdashboard_group_name=None,
-                      limit=5)
+        try:
+            packages = helpers.orgportals_get_newly_released_data(
+                organization_name='',
+                subdashboard_group_name=None,
+                limit=5)
+        except search.SearchError:
+            dataset_found = False
+            assert not dataset_found
 
         packages = helpers.orgportals_get_newly_released_data(
             organization_name=self.mock_data['organization_name'],
@@ -98,8 +105,7 @@ class TestHelpers():
         organization_name = self.mock_data['organization_name']
         subdashboard_name = self.subdashboard['name']
         author = 'John Doe'
-        controller =\
-            'ckanext.orgportals.controllers.portals:OrgportalsController'
+        controller = self.controller
         action = 'show_portal_datapage'
         name = 'tags'
         value = 'nature'
@@ -124,7 +130,7 @@ class TestHelpers():
             context_name=organization_name,
             subdashboard_name=None,
             source=None)
-        new_url = '/data?page=1&author={0}&{1}={2}'\
+        new_url = '/data?author={0}&{1}={2}'\
             .format('+'.join(author.split(' ')), name, value)
         assert url == new_url
 
@@ -257,8 +263,7 @@ class TestHelpers():
         assert secondary_language == 'fr'
 
     def test_get_current_url(self):
-        controller =\
-            'ckanext.orgportals.controllers.portals:OrgportalsController'
+        controller = self.controller
         name = self.mock_data['organization_name']
         page = 5
         subdashboard_name = self.subdashboard['name']
@@ -368,11 +373,11 @@ class TestHelpers():
         assert len(pages) > 0
 
     def test_orgportals_show_exit_button(self):
-        params = UnicodeMultiDict({'author': 'John Doe'})
+        params = MultiDict({'author': 'John Doe'})
         show_button = helpers.orgportals_show_exit_button(params)
         assert show_button is False
 
-        params = UnicodeMultiDict({'q': 'test'})
+        params = MultiDict({'q': 'test'})
         show_button = helpers.orgportals_show_exit_button(params)
         assert show_button is True
 

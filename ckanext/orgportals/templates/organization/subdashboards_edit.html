@@ -1,8 +1,11 @@
 {% extends 'organization/edit_base.html' %}
 
+{% set group_dict = group_dict or c.group_dict %}
+{% set subdashboard = subdashboard or c.subdashboard %}
+
 {% block subtitle %}{{ _('Edit Subdashboard')}} {% endblock %}
 
 {% block primary_content_inner %}
-  {% snippet 'organization/subdashboards_form.html', subdashboard=subdashboard, data=data, errors=errors, org_name=c.group_dict.name %}
+  {% snippet 'organization/subdashboards_form.html', subdashboard=subdashboard, data=data, errors=errors, org_name=group_dict.name %}
 {% endblock %}
 

@@ -1,18 +1,19 @@
 {% extends 'page.html' %}
+
+{% set ckan_29_or_higher = h.version(h.ckan_version()) >= h.version('2.9') %}
+{% set type = 'asset' if ckan_29_or_higher else 'resource' %}
+
+{% set orgportals_view_portal_route = 'orgportals_blueprint.view_portal' if ckan_29_or_higher else 'orgportals_view_portal' %}
+
 {% block head_extras %}
-    {% if ga_code %}
-        {% snippet 'portals/snippets/gtm_head.html', ga=ga_code %}
-    {% endif %}
-{% endblock %}
-{% block styles %}
-  {% resource 'orgportals/style' %}
+  {% if ga_code %}
+    {% snippet 'portals/snippets/gtm_head.html', ga=ga_code %}
+  {% endif %}
 {% endblock %}
 
-{% block scripts %}
-  {% resource 'orgportals/main.js' %}
-  {% resource 'orgportals/hero.js' %}
-  {% resource 'orgportals/slick_min.js' %}
-  {% resource 'orgportals/slick.js' %}
+{% block styles %}
+  {% snippet 'portals/snippets/portal_' ~ type ~ '.html', name='orgportals/style-css' %}
+  {% snippet 'portals/snippets/portal_' ~ type ~ '.html', name='orgportals/style-js' %}
 {% endblock %}
 
 {% block page %}
@@ -26,8 +27,7 @@
     {% endblock %}
 
     {% block toolbar %}
-      {% set ctrl = 'ckanext.orgportals.controllers.portals:OrgportalsController' %}
-      {% set portal_link = h.url_for(controller=ctrl, action='view_portal', org_name=c.org_name, source='admin') %}
+      {% set portal_link = h.url_for(orgportals_view_portal_route, org_name=c.org_name, source='admin') %}
       {% set org = h.orgportals_get_current_organization(c.org_name) %}
       <div class="container">
         <div class="toolbar">

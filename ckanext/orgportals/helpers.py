@@ -1,21 +1,24 @@
 import logging
 from datetime import datetime
-from urllib import urlencode
-from urlparse import urlsplit, urlunsplit
+from six import string_types
+from six.moves.urllib.parse import urlencode
+from six.moves.urllib.parse import urlsplit, urlunsplit
 import os
 import requests
 import six
 from operator import itemgetter
-
-from pylons import config
-
+try:
+    from collections import OrderedDict
+except ImportError:
+    from sqlalchemy.util import OrderedDict
 
 from ckan.plugins import toolkit
+from ckan.plugins.toolkit import config
 from ckan.lib import search
 import ckan.lib.helpers as lib_helpers
 import ckan.lib.i18n as i18n
 from ckan import model
-from ckan.common import json
+from ckan.common import json, request
 import ckan.logic as l
 
 log = logging.getLogger(__name__)
@@ -49,7 +52,7 @@ def orgportals_get_newly_released_data(organization_name, subdashboard_group_nam
             'rows': limit
         })['results']
 
-    except toolkit.ValidationError, search.SearchError:
+    except (toolkit.ValidationError, search.SearchError):
         return []
     else:
         pkgs = []
@@ -92,18 +95,14 @@ def orgportals_get_facet_items_dict(value):
         return None
 
 
-def orgportals_replace_or_add_url_param(name, value, params, controller,
-                                        action, context_name, subdashboard_name, source):
-    for k, v in params:
-        # Reset the page to the first one
-        if k == 'page':
-            params.remove((k, v))
-            params.insert(0, ('page', '1'))
-        if k != name:
-            continue
-        params.remove((k, v))
+def orgportals_replace_or_add_url_param(name, value, params, controller, action,
+                                        context_name, subdashboard_name, source):
+    params_nopage = [
+        (k, v) for k, v in params
+        if k != 'page'
+    ]
 
-    params.append((name, value))
+    params_nopage.append((name, value))
 
     if subdashboard_name:
         if source and source == 'admin':
@@ -126,9 +125,8 @@ def orgportals_replace_or_add_url_param(name, value, params, controller,
             url = lib_helpers.url_for(controller=controller,
                                       action=action)
 
-
-    params = [(k, v.encode('utf-8') if isinstance(v, basestring) else str(v))
-              for k, v in params]
+    params = [(k, v.encode('utf-8') if isinstance(v, string_types) else str(v))
+              for k, v in params_nopage]
 
     return url + u'?' + urlencode(params)
 
@@ -136,9 +134,7 @@ def orgportals_replace_or_add_url_param(name, value, params, controller,
 def orgportals_get_current_url(page, params, controller, action, name, subdashboard_name, source,
                                exclude_param=''):
     if subdashboard_name:
-
         if source and source == 'admin':
-
             url = lib_helpers.url_for(controller=controller,
                                       action=action,
                                       org_name=name,
@@ -150,7 +146,6 @@ def orgportals_get_current_url(page, params, controller, action, name, subdashbo
                                       subdashboard_name=subdashboard_name)
     else:
         if source and source == 'admin':
-
             url = lib_helpers.url_for(controller=controller,
                                       action=action,
                                       org_name=name,
@@ -159,16 +154,16 @@ def orgportals_get_current_url(page, params, controller, action, name, subdashbo
             url = lib_helpers.url_for(controller=controller,
                                       action=action)
 
+    params_items = [
+        (k, v) for k, v in params
+        if k != exclude_param
+    ]
 
-    for k, v in params:
-        if k == exclude_param:
-            params.remove((k, v))
+    params_items = [(k, v.encode('utf-8') if isinstance(v, string_types) else str(v))
+              for k, v in params_items]
 
-    params = [(k, v.encode('utf-8') if isinstance(v, basestring) else str(v))
-              for k, v in params]
-
-    if (params):
-        url = url + u'?page=' + str(page) + '&' + urlencode(params)
+    if (params_items):
+        url = url + u'?page=' + str(page) + '&' + urlencode(params_items)
     else:
         url = url + u'?page=' + str(page)
 
@@ -377,7 +372,7 @@ def orgportals_get_all_organizations(current_org_name):
     organizations = map(lambda item:
                         {
                             'value': item['name'],
-                            'text': item['display_name']
+                            'text': item['title']
                         },
                         organizations
                     )
@@ -401,8 +396,6 @@ def orgportals_get_available_languages():
 
     for locale in locales:
         languages.append({'value': locale, 'text': locale.english_name})
-
-    languages.sort()
 
     languages.insert(0, {'value': 'none', 'text': 'None'})
 
@@ -455,18 +448,19 @@ def orgportals_get_facebook_app_id():
 
 
 def orgportals_get_countries():
-    get_countries_path = lambda: os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                                              'public/countries.json')
-    r = requests.get(get_countries_path())
+    countries_path = os.path.join(os.path.dirname(__file__), 'public', 'countries.json')
+    if not os.path.isfile(countries_path):
+        log.warning("Could not find %s", countries_path)
 
-    countries = r.json()
     result = []
+    with open(countries_path, 'r') as countries_json:
+        countries = json.load(countries_json, object_pairs_hook=OrderedDict)
 
-    for item in countries.get('features', []):
-        result.append({'value': item['properties']['name'], 'text': item['properties']['name']})
+        for item in countries.get('features', []):
+            result.append({'value': item['properties']['name'], 'text': item['properties']['name']})
 
-    result.sort(key=itemgetter('text'))
-    result.insert(0, {'value': 'none', 'text': 'None'})
+        result.sort(key=itemgetter('text'))
+        result.insert(0, {'value': 'none', 'text': 'None'})
 
     return result
 
