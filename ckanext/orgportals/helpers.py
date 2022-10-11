@@ -550,7 +550,7 @@ def get_package_metadata(package):
         package_metadata = package
         package_metadata['tracking_summary'] = {
             'total': 0,
-            'recent' 0
+            'recent': 0
         }
         return package_metadata
     return result
