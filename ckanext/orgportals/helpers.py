@@ -536,7 +536,17 @@ def popular_datasets(org_name, num=5):
 
 def get_package_metadata(package):
     """Return the metadata of a dataset"""
-    result = toolkit.get_action('package_show')(None, {'id': package.get('name'), 'include_tracking': True})
+    result = {}
+    try:
+        result = toolkit.get_action('package_show')(None, {'id': package.get('name'), 'include_tracking': True})
+    except Exception:
+        log.exception("Error in retrieving dataset metadata for %s", package)
+        package_metadata = package
+        package_metadata['tracking_summary'] = {
+            'total': 0,
+            'recent': 0
+        }
+        return package_metadata
     return result
 
 
