@@ -1,0 +1,39 @@
+{#
+Displays a single dataset of type 'showcase'.
+
+showcase        - A showcase to display.
+item_class     - The class name to use on the list item.
+truncate       - The length to trucate the description to (default: 180)
+truncate_title - The length to truncate the title to (default: 85).
+show_remove    - If True, show the remove button to remove showcase/dataset association.
+
+#}
+{% set truncate = truncate or 180 %}
+{% set truncate_title = truncate_title or 80 %}
+{% set title = showcase.title or showcase.name %}
+{% set notes = h.markdown_extract(showcase.notes, extract_length=truncate) %}
+
+{% set ckan_29_or_higher = h.version(h.ckan_version()) >= h.version('2.9') %}
+{% set showcase_read_route = 'showcase_blueprint.read' if ckan_29_or_higher else 'showcase_read' %}
+
+{% block showcase_item %}
+<div class="media-item">
+  {% block item_inner %}
+    {% block image %}
+      {% if showcase.image_url and 'http' not in showcase.image_url %}
+      <img data-lazy="/uploads/showcase/{{ showcase.image_url }}" alt="" class="media-image">
+      {% else %}
+      <img data-lazy="{{ showcase.image_url or h.url_for_static('/base/images/placeholder-group.png') }}" alt="" class="media-image">
+      {% endif %}
+    {% endblock %}
+    {% block title %}
+      <h3 style="text-align:center;">{{ showcase.title }}</h3>
+    {% endblock %}
+    {% block link %}
+      <a href="{{ h.url_for(showcase_read_route, id=showcase.name) }}" title="{{ _('View {name}').format(name=showcase.title) }}" class="media-view">
+        <span>{{ _('View {name}').format(name=showcase.title) }}</span>
+      </a>
+    {% endblock %}
+  {% endblock %}
+</div>
+{% endblock %}

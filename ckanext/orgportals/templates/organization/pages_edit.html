@@ -1,8 +1,9 @@
 {% extends 'organization/edit_base.html' %}
 
+{% set group_dict = group_dict or c.group_dict %}
+
 {% block subtitle %}{{ _('Edit Page')}} {% endblock %}
 
 {% block primary_content_inner %}
-  {% snippet 'organization/base_form.html', page=page, data=data, errors=errors, org_name=c.group_dict.name %}
+  {% snippet 'organization/base_form.html', page=page, data=data, errors=errors, org_name=group_dict.name %}
 {% endblock %}
-

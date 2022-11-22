@@ -1,0 +1,101 @@
+map-js:
+  filters: rjsmin
+  output: ckanext-orgportals/%(version)s_map.js
+  extra:
+    preload:
+      - base/main
+  contents:
+    - vendor/leaflet/leaflet-src.js
+    - map.js
+    - map-module.js
+
+map-css:
+  output: ckanext-orgportals/%(version)s_map.css
+  filters: cssrewrite
+  contents:
+    - vendor/leaflet/leaflet.css
+
+nav-bar-js:
+  filters: rjsmin
+  output: ckanext-orgportals/%(version)s_nav_bar.js
+  extra:
+    preload:
+      - base/main
+  contents:
+    - vendor/dragula/dragula.js
+    - nav-bar.js
+
+nav-bar-css:
+  output: ckanext-orgportals/%(version)s_nav_bar.css
+  filters: cssrewrite
+  contents:
+    - vendor/dragula/dragula.css
+    - nav-bar.css
+
+topics-js:
+  filters: rjsmin
+  output: ckanext-orgportals/%(version)s_topics.js
+  extra:
+    preload:
+      - base/main
+  contents:
+    - vendor/dragula/dragula.js
+    - topics-settings.js
+
+topics-css:
+  output: ckanext-orgportals/%(version)s_topics.css
+  filters: cssrewrite
+  contents:
+    - vendor/dragula/dragula.css
+    - topics-settings.css
+
+content-js:
+  filters: rjsmin
+  output: ckanext-orgportals/%(version)s_content.js
+  extra:
+    preload:
+      - base/main
+  contents:
+    - vendor/dragula/dragula.js
+    - content-settings.js
+
+content-css:
+  output: ckanext-orgportals/%(version)s_content.css
+  filters: cssrewrite
+  contents:
+    - vendor/dragula/dragula.css
+    - content-settings.css
+
+style-js:
+  filters: rjsmin
+  output: ckanext-orgportals/%(version)s_style.js
+  extra:
+    preload:
+      - base/main
+  contents:
+    - portal.js
+    - hero.js
+    - slick_min.js
+    - slick.js
+
+style-css:
+  output: ckanext-orgportals/%(version)s_style.css
+  filters: cssrewrite
+  contents:
+    - font-awesome.css
+    - style.css
+    - hero.css
+    - slick.css
+    - slick-theme.css
+
+subdashboard:
+  filters: rjsmin
+  output: ckanext-orgportals/%(version)s_subdashboard.js
+  extra:
+    preload:
+      - base/main
+  contents:
+    - vendor/bootstrap/dropdown.js
+    - goto-next-section.js
+    - codebird.js
+    - social-media-share.js

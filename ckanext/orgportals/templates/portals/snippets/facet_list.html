@@ -6,7 +6,14 @@ name
 
 #}
 
-{% set items = h.orgportals_get_facet_items_dict(name.value) %}
+{% set ckan_29_or_higher = h.version(h.ckan_version()) >= h.version('2.9') %}
+{% if ckan_29_or_higher %}
+  {% set items = items or h.get_facet_items_dict(name.value, search_facets) %}
+  {% set controller = 'orgportals_blueprint' %}
+{% else %}
+  {% set items = items or h.orgportals_get_facet_items_dict(name.value) or h.get_facet_items_dict(name.value) %}
+  {% set controller = 'ckanext.orgportals.controllers.portals:OrgportalsController' %}
+{% endif %}
 
 {% if subdashboard and subdashboard.name %}
   {% set subdashboard_name = subdashboard.name %}
@@ -15,50 +22,64 @@ name
 {% endif %}
 
 {% if items %}
-  <div class="col-md-2">
-    <select class="form-control orgportals-filters {{ organization_name|lower }}">
-      {% block facet_list_items %}
-        {% with items = h.get_facet_items_dict(name.value) %}
+  <section class="module module-narrow module-shallow">
+    {% block facet_list_heading %}
+      <h2 class="module-heading" {# style="background:{{ secondary_color }}; color:{{ font_base_color }};" #}>
+        {% set title = title or name.name %}
+        {{ title }}
+      </h2>
+    {% endblock %}
+    {% block facet_list_items %}
 
-          {% if c.source == 'admin' %}
-            {% if subdashboard_name %}
-              {% set extras={'org_name': c.org_name, 'source': 'admin', 'subdashboard_name': subdashboard_name} %}
+      {% if c.source == 'admin' %}
+        {% if subdashboard_name %}
+          {% set extras={'org_name': c.org_name, 'source': 'admin', 'subdashboard_name': subdashboard_name} %}
+        {% else %}
+          {% set extras={'org_name': c.org_name, 'source': 'admin'} %}
+        {% endif %}
+      {% else %}
+        {% if subdashboard_name %}
+          {% set extras={'subdashboard_name': subdashboard_name} %}
+        {% else %}
+          {% set extras={} %}
+        {% endif %}
+      {% endif %}
+
+      {% if items %}
+        <nav aria-label="{{ title or name.name }}">
+          <ul class="unstyled nav nav-simple nav-facet">
+            {% for item in items %}
+              {% set params = request.args.items(multi=True) if ckan_29_or_higher else request.params.items() %}
+              {% set href = h.remove_url_param(key=name.value, value=item.name, controller=controller, action=c.action, extras=extras) if item.active
+                            else h.orgportals_replace_or_add_url_param(name=name.value, value=item.name, params=params, controller=controller, action=c.action, context_name=c.org_name, subdashboard_name=subdashboard_name, source=c.source) %}
+              {% set label = label_function(item) if label_function else item.display_name %}
+              {% set label_truncated = h.truncate(label, 50) if not label_function else label %}
+              {% set count = count_label(item['count']) if count_label else ('(%d)' % item['count']) %}
+              <li class="nav-item{% if item.active %} active{% endif %}">
+                <a href="{{ href }}" title="{{ label if label != label_truncated else '' }}">
+                  <span>{{ label_truncated }} {{ count }}</span>
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </nav>
+        <p class="module-footer">
+          {% if h.get_param_int('_%s_limit' % name.value) %}
+            {% if ckan_29_or_higher %}
+              {% set more_facets = h.has_more_facets(name.value, search_facets or c.search_facets) %}
             {% else %}
-              {% set extras={'org_name': c.org_name, 'source': 'admin'} %}
+              {% set more_facets = h.has_more_facets(name.value) %}
+            {% endif %}
+            {% if more_facets %}
+              <a href="{{ h.remove_url_param('_%s_limit' % name.value, replace=0, extras=extras, alternative_url=alternative_url) }}" class="read-more">{{ _('Show More {facet_type}').format(facet_type=title) }}</a>
             {% endif %}
           {% else %}
-            {% if subdashboard_name %}
-              {% set extras={'subdashboard_name': subdashboard_name} %}
-            {% else %}
-              {% set extras={} %}
-            {% endif %}
+            <a href="{{ h.remove_url_param('_%s_limit' % name.value, extras=extras, alternative_url=alternative_url) }}" class="read-more">{{ _('Show Only Popular {facet_type}').format(facet_type=title) }}</a>
           {% endif %}
-
-          {% set selected = {'value': False} %}
-          {% for item in items %}
-            {% if item.active %}
-              <option value="{{ h.remove_url_param(key=name.value, controller=c.controller, action=c.action, extras=extras) }}"></option>
-              {% if selected.update({'value': True}) %}
-              {% endif %}
-            {% endif %}
-          {% endfor %}
-          {% if not selected.value %}
-            <option value="{{ h.remove_url_param(key=name.value, controller=c.controller, action=c.action, extras=extras) }}">{{ name.name }}</option>
-          {% endif %}
-          {% if items %}
-            {% for item in items %}
-              {% set href = h.orgportals_replace_or_add_url_param(name=name.value, value=item.name, params=request.params.items(), controller=c.controller, action=c.action, context_name=c.org_name, subdashboard_name=subdashboard_name, source=c.source) %}
-              {% set label = label_function(item) if label_function else item.display_name %}
-              {% set label_truncated = h.truncate(label, 22) if not label_function else label %}
-              {% if item.active %}
-                <option selected="selected" value="{{ href }}">{{ label }}</option>
-              {% else %}
-                <option value="{{ href }}">{{ label }}</option>
-              {% endif %}
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
-      {% endblock %}
-    </select>
-  </div>
+        </p>
+      {% else %}
+        <p class="module-content empty">{{ _('There are no {facet_type} that match this search').format(facet_type=title) }}</p>
+      {% endif %}
+    {% endblock %}
+  </section>
 {% endif %}

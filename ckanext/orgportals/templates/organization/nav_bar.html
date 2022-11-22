@@ -1,16 +1,18 @@
 {% extends "organization/edit_base.html" %}
 
+{% set ckan_29_or_higher = h.version(h.ckan_version()) >= h.version('2.9') %}
+{% set type = 'asset' if ckan_29_or_higher else 'resource' %}
+
 {% block styles %}
   {{ super() }}
 
-  {% resource 'orgportals/vendor/dragula/dragula.css' %}
-  {% resource 'orgportals/nav-bar.css' %}
+  {% snippet 'portals/snippets/portal_' ~ type ~ '.html', name='orgportals/nav-bar-css' %}
 {% endblock %}
 
 {% block scripts %}
   {{ super() }}
 
-  {% resource 'orgportals/nav_bar' %}
+  {% snippet 'portals/snippets/portal_' ~ type ~ '.html', name='orgportals/nav-bar-js' %}
 {% endblock %}
 
 {% block subtitle %}{{ _('Portal navigation bar') }} - {{ super() }}{% endblock %}

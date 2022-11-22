@@ -6,35 +6,39 @@
 {% set no_bottom_border = no_bottom_border if no_bottom_border else false %}
 {% set form_id = form_id if form_id else false %}
 
-{% if subdashboard %}
-  {% if c.source == 'admin' %}
-    {% set exit_search_href = h.url_for(controller=c.controller, action=c.action, org_name=c.org_name, subdashboard_name=subdashboard.name, source='admin') %}
-  {% else %}
-    {% set exit_search_href = h.url_for(controller=c.controller, action=c.action, subdashboard_name=subdashboard.name) %}
-  {% endif %}
-{% else %}
-  {% if c.source == 'admin' %}
-    {% set exit_search_href = h.url_for(controller=c.controller, action=c.action, org_name=c.org_name, source='admin') %}
-  {% else %}
-    {% set exit_search_href = h.url_for(controller=c.controller, action=c.action) %}
-  {% endif %}
-{% endif %}
-<div class="data-block-header" style="background: {{ secondary_color }}">
+<div class="data-block-header" {# style="background: {{ secondary_color }}" #}>
   <div class="row">
-    <div class="col-md-2">
-      <h2 class="data-block-heading" style="color: {{ font_base_color }}">{{ _('Data') }} [{{ count }}]</h2>
-    </div>
-    <div class="col-md-4">
+    <div class="col-md-12">
       <form {% if form_id %}id="{{ form_id }}" {% endif %}class="search-form{% if no_bottom_border %} no-bottom-border{% endif %}"
             method="get" data-module="select-switch">
-          <div class="input-group">
-            <input type="text" name="q" value="{{ query }}" autocomplete="off"
+          <div class="input-group search-input-group">
+            <input aria-label="Search datasets..." type="text" name="q" value="{{ query }}" autocomplete="off"
                  class="form-control input-search-data" placeholder="{{ placeholder }}"
-                 style="border-color: {{ base_color }} ">
-            {% if h.orgportals_show_exit_button(request.params) %}
-              <a class="btn btn-default exit-search-btn" href="{{ exit_search_href }}#search-data" title="Exit search" role="button"><i class="fa fa-times fa-lg" aria-hidden="true"></i></a>
-            {% endif %}
+                 {# style="border-color: {{ base_color }}" #}>
+            <button type="submit" value="search" aria-label="{{_('Submit')}}">
+              <i class="fa fa-search fa-2x"></i>
+            </button>
           </div>
+          {% if sorting %}
+          <div class="form-select control-order-by">
+            <label for="field-order-by">{{_('Order by')}}</label>
+            <select id="field-order-by" name="sort" onchange="this.form.submit()">
+              {% for label, value in sorting %}
+                {% if label and value %}
+                  <option value="{{value}}" {% if sorting_selected == value %} selected="selected" {% endif %}>{{ label }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+           <!-- <button class="btn js-hide" type="submit">{{ _('Go') }}</button>-->
+          </div>
+          {% endif %}
+        <div class="col-dataset-found">
+          {% if result_text %}
+            <h2 class="data-block-heading"> {{ count }} {{ _('datasets found ') }} {{ result_text }}</h2>
+          {% else %}
+            <h2 class="data-block-heading" {# style="color: {{ font_base_color }}" #}> {{ count }} {{ _('datasets found') }}</h2>
+          {% endif %}
+        </div>
       </form>
     </div>
   </div>

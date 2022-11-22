@@ -1,12 +1,17 @@
-{% set url = h.url_for(controller='ckanext.orgportals.controllers.portals:OrgportalsController',
-                       action='orgportals_subdashboards_edit',
-                       org_name=c.group_dict.name,
-                       subdashboard='/' + subdashboard.name) %}
+{% set ckan_29_or_higher = h.version(h.ckan_version()) >= h.version('2.9') %}
+{% set orgportals_subdashboards_edit_route = 'orgportals_blueprint.subdashboards_edit' if ckan_29_or_higher else 'orgportals_subdashboards_edit' %}
+
+{% set group_dict = group_dict or c.group_dict %}
+{% set subdashboard = subdashboard or c.subdashboard %}
+
+{% set url = h.url_for(orgportals_subdashboards_edit_route,
+                       org_name=group_dict.name,
+                       subdashboard=subdashboard.name) %}
 {% block item %}
 <li class="media-item">
   {% block item_inner %}
     {% block image %}
-      <img src="{{ h.url_for_static('/base/images/placeholder-organization.png') }}" alt="{{ subdashboard.name }}" class="media-image">
+      <img src="{{ h.url_for_static('/base/images/placeholder-organization.png') }}" alt="{{ subdashboard.name }}" class="img-responsive media-image">
     {% endblock %}
     {% block title %}
       <h3 class="media-heading">{{ subdashboard.name }}</h3>

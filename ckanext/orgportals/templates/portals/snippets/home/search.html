@@ -1,0 +1,16 @@
+{% set ckan_29_or_higher = h.version(h.ckan_version()) >= h.version('2.9') %}
+{% set orgportals_datapage_show_route = 'orgportals_blueprint.datapage_show' if ckan_29_or_higher else 'orgportals_datapage_show' %}
+{% set source = 'admin' %}
+{% set page_link = h.url_for(orgportals_datapage_show_route, org_name=c.org_name, source=source) %}
+{% set placeholder = 'Search Datasets' %}
+<div class="module module-search box">
+  <form class="search-form no-bottom-border" method="get" action="{{ page_link }}">
+    <div class="search-input control-group search-giant">
+      <input type="text" class="search" name="q" value="" autocomplete="off" id="data-search-keyword-input-field" placeholder="{{placeholder}}" title="{{_('Type search term here')}}"/>
+      <button type="submit" aria-labelledby="search-label">
+        <i class="fa fa-search"></i>
+        <span class="sr-only" id="search-label">Search</span>
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,9 +1,9 @@
 import base64
 import os
+import pytest
 
-from pylons import config
+from ckan.common import config
 
-from ckan.tests.helpers import reset_db
 from ckan import plugins
 from ckan.tests import factories
 from ckan.plugins import toolkit
@@ -15,19 +15,10 @@ from ckanext.orgportals.tests.helpers import (id_generator,
                                               create_subdashboard)
 
 
-class TestCustomActions():
+@pytest.mark.usefixtures('clean_db', 'orgportals_setup', 'clean_index')
+class TestCustomActions(object):
 
-    @classmethod
-    def setup_class(self, **kwargs):
-        # Every time the test is run, the database is resetted
-        reset_db()
-
-        if not plugins.plugin_loaded('image_view'):
-            plugins.load('image_view')
-
-        if not plugins.plugin_loaded('orgportals'):
-            plugins.load('orgportals')
-
+    def setup(self):
         organization_name = id_generator()
         dataset_name = id_generator()
         group_name = id_generator()
@@ -42,11 +33,6 @@ class TestCustomActions():
             resource_view_title=resource_view_title)
 
         self.subdashboard = create_subdashboard(self.mock_data)
-
-    @classmethod
-    def teardown_class(self):
-        plugins.unload('image_view')
-        plugins.unload('orgportals')
 
     def test_show_datasets(self):
         data_dict = {'id': self.mock_data['organization_name']}

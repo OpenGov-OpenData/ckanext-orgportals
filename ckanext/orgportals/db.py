@@ -2,34 +2,43 @@ import uuid
 import datetime
 import json
 
+from six import text_type
 import sqlalchemy as sa
 from sqlalchemy.orm import class_mapper
 
 import ckan.model as model
 
 try:
-    from sqlalchemy.engine.result import RowProxy
-except:
-    from sqlalchemy.engine.base import RowProxy
+    from sqlalchemy.engine import Row
+except ImportError:
+    try:
+        from sqlalchemy.engine.result import RowProxy as Row
+    except ImportError:
+        from sqlalchemy.engine.base import RowProxy as Row
 
 page_table = None
-Page = None
-
 subdashboard_table = None
-Subdashboard = None
 
 
 def _make_uuid():
-    return unicode(uuid.uuid4())
+    return text_type(uuid.uuid4())
 
 
 def init():
-    _create_pages_table()
-    _create_subdashboard_table()
+    if page_table is None:
+        define_page_table()
+
+    if subdashboard_table is None:
+        define_subdashboard_table()
+
+    if not page_table.exists():
+        page_table.create()
+
+    if not subdashboard_table.exists():
+        subdashboard_table.create()
 
 
-def _create_pages_table():
-    class _Page(model.DomainObject):
+class Page(model.DomainObject):
 
         @classmethod
         def get_pages_for_org(self, org_name):
@@ -46,10 +55,9 @@ def _create_pages_table():
 
             return query.first()
 
-    global Page
 
-    Page = _Page
-
+def define_page_table():
+    global page_table
     page_table = sa.Table('orgportal_pages', model.meta.metadata,
         sa.Column('id', sa.types.UnicodeText, primary_key=True, default=_make_uuid),
         sa.Column('name', sa.types.UnicodeText, default=u''),
@@ -59,6 +67,8 @@ def _create_pages_table():
         sa.Column('page_title', sa.types.UnicodeText, default=u''),
         sa.Column('content_title', sa.types.UnicodeText, default=u''),
         sa.Column('image_url', sa.types.UnicodeText, default=u''),
+        sa.Column('image_url_2', sa.types.UnicodeText, default=u''),
+        sa.Column('image_url_3', sa.types.UnicodeText, default=u''),
         sa.Column('text_box', sa.types.UnicodeText, default=u''),
         sa.Column('content', sa.types.UnicodeText, default=u''),
         sa.Column('map', sa.types.UnicodeText, default=u''),
@@ -73,14 +83,10 @@ def _create_pages_table():
         sa.Column('modified', sa.types.DateTime, default=datetime.datetime.utcnow),
         extend_existing=True
     )
-
-    page_table.create(checkfirst=True)
-
     model.meta.mapper(Page, page_table)
 
 
-def _create_subdashboard_table():
-    class _Subdashboard(model.DomainObject):
+class Subdashboard(model.DomainObject):
 
         @classmethod
         def get_subdashboards_for_org(self, org_name):
@@ -97,10 +103,9 @@ def _create_subdashboard_table():
 
             return query.first()
 
-    global Subdashboard
 
-    Subdashboard = _Subdashboard
-
+def define_subdashboard_table():
+    global subdashboard_table
     subdashboard_table = sa.Table('orgportal_subdashboard', model.meta.metadata,
         sa.Column('id', sa.types.UnicodeText, primary_key=True, default=_make_uuid),
         sa.Column('name', sa.types.UnicodeText, default=u''),
@@ -119,9 +124,6 @@ def _create_subdashboard_table():
         sa.Column('modified', sa.types.DateTime, default=datetime.datetime.utcnow),
         extend_existing=True
     )
-
-    subdashboard_table.create(checkfirst=True)
-
     model.meta.mapper(Subdashboard, subdashboard_table)
 
 
@@ -130,7 +132,7 @@ def table_dictize(obj, context, **kw):
     '''Get any model object and represent it as a dict'''
     result_dict = {}
 
-    if isinstance(obj, RowProxy):
+    if isinstance(obj, Row):
         fields = obj.keys()
     else:
         ModelClass = obj.__class__
@@ -157,7 +159,7 @@ def table_dictize(obj, context, **kw):
         elif isinstance(value, list):
             result_dict[name] = value
         else:
-            result_dict[name] = unicode(value)
+            result_dict[name] = text_type(value)
 
     result_dict.update(kw)
 

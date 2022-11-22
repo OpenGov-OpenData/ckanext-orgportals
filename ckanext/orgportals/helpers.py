@@ -1,24 +1,30 @@
 import logging
 from datetime import datetime
-from urllib import urlencode
-from urlparse import urlsplit, urlunsplit
-import urllib
+from six import string_types
+from six.moves.urllib.parse import urlencode
+from six.moves.urllib.parse import urlsplit, urlunsplit
 import os
+import requests
+import six
 from operator import itemgetter
-
-from pylons import config
-
+try:
+    from collections import OrderedDict
+except ImportError:
+    from sqlalchemy.util import OrderedDict
 
 from ckan.plugins import toolkit
+from ckan.plugins.toolkit import config
 from ckan.lib import search
 import ckan.lib.helpers as lib_helpers
 import ckan.lib.i18n as i18n
-from ckan.logic.validators import resource_id_exists
 from ckan import model
-from ckan.common import json
+from ckan.common import json, request
 import ckan.logic as l
 
 log = logging.getLogger(__name__)
+
+MAX_FILE_SIZE = 1024 * 1024 * 50  # 50 Mb
+CHUNK_SIZE = 1024
 
 
 def _get_ctx():
@@ -46,7 +52,7 @@ def orgportals_get_newly_released_data(organization_name, subdashboard_group_nam
             'rows': limit
         })['results']
 
-    except toolkit.ValidationError, search.SearchError:
+    except (toolkit.ValidationError, search.SearchError):
         return []
     else:
         pkgs = []
@@ -89,18 +95,14 @@ def orgportals_get_facet_items_dict(value):
         return None
 
 
-def orgportals_replace_or_add_url_param(name, value, params, controller,
-                                        action, context_name, subdashboard_name, source):
-    for k, v in params:
-        # Reset the page to the first one
-        if k == 'page':
-            params.remove((k, v))
-            params.insert(0, ('page', '1'))
-        if k != name:
-            continue
-        params.remove((k, v))
+def orgportals_replace_or_add_url_param(name, value, params, controller, action,
+                                        context_name, subdashboard_name, source):
+    params_nopage = [
+        (k, v) for k, v in params
+        if k != 'page'
+    ]
 
-    params.append((name, value))
+    params_nopage.append((name, value))
 
     if subdashboard_name:
         if source and source == 'admin':
@@ -123,9 +125,8 @@ def orgportals_replace_or_add_url_param(name, value, params, controller,
             url = lib_helpers.url_for(controller=controller,
                                       action=action)
 
-
-    params = [(k, v.encode('utf-8') if isinstance(v, basestring) else str(v))
-              for k, v in params]
+    params = [(k, v.encode('utf-8') if isinstance(v, string_types) else str(v))
+              for k, v in params_nopage]
 
     return url + u'?' + urlencode(params)
 
@@ -133,9 +134,7 @@ def orgportals_replace_or_add_url_param(name, value, params, controller,
 def orgportals_get_current_url(page, params, controller, action, name, subdashboard_name, source,
                                exclude_param=''):
     if subdashboard_name:
-
         if source and source == 'admin':
-
             url = lib_helpers.url_for(controller=controller,
                                       action=action,
                                       org_name=name,
@@ -147,7 +146,6 @@ def orgportals_get_current_url(page, params, controller, action, name, subdashbo
                                       subdashboard_name=subdashboard_name)
     else:
         if source and source == 'admin':
-
             url = lib_helpers.url_for(controller=controller,
                                       action=action,
                                       org_name=name,
@@ -156,16 +154,16 @@ def orgportals_get_current_url(page, params, controller, action, name, subdashbo
             url = lib_helpers.url_for(controller=controller,
                                       action=action)
 
+    params_items = [
+        (k, v) for k, v in params
+        if k != exclude_param
+    ]
 
-    for k, v in params:
-        if k == exclude_param:
-            params.remove((k, v))
+    params_items = [(k, v.encode('utf-8') if isinstance(v, string_types) else str(v))
+              for k, v in params_items]
 
-    params = [(k, v.encode('utf-8') if isinstance(v, basestring) else str(v))
-              for k, v in params]
-
-    if (params):
-        url = url + u'?page=' + str(page) + '&' + urlencode(params)
+    if (params_items):
+        url = url + u'?page=' + str(page) + '&' + urlencode(params_items)
     else:
         url = url + u'?page=' + str(page)
 
@@ -192,10 +190,12 @@ def orgportals_convert_to_list(resources):
 
 
 def orgportals_get_resource_url(id):
-    if not resource_id_exists(id, _get_ctx()):
+    try:
+        data = toolkit.get_action('resource_show')({}, {'id': id})
+    except toolkit.ValidationError:
         return None
-
-    data = toolkit.get_action('resource_show')({}, {'id': id})
+    except (toolkit.ObjectNotFound, toolkit.NotAuthorized):
+        return None
 
     return data['url']
 
@@ -262,27 +262,48 @@ def orgportals_resource_show_map_properties(id):
 
 def orgportals_get_geojson_properties(resource_id):
     url = orgportals_get_resource_url(resource_id)
+    if not url:
+        return []
 
-    r = urllib.urlopen(url)
+    length = 0
+    content = '' if six.PY2 else b''
 
-    data = unicode(r.read(), errors='ignore')
-    geojson = json.loads(data)
+    try:
+        r = requests.get(url)
+        for chunk in r.iter_content(chunk_size=CHUNK_SIZE):
+            content = content + chunk
+
+            length += len(chunk)
+
+            if length >= MAX_FILE_SIZE:
+                return []
+    except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError, requests.exceptions.Timeout):
+        log.error("Error getting content from geojson url %s" % url)
 
     result = []
-    exclude_keys = [
-        'marker-symbol',
-        'marker-color',
-        'marker-size',
-        'stroke',
-        'stroke-width',
-        'stroke-opacity',
-        'fill',
-        'fill-opacity'
-    ]
 
-    for k, v in geojson.get('features')[0].get('properties').iteritems():
-        if k not in exclude_keys:
-            result.append({'value':k, 'text': k})
+    try:
+        if not six.PY2:
+            content = content.decode('utf-8')
+
+        geojson = json.loads(content)
+
+        exclude_keys = [
+            'marker-symbol',
+            'marker-color',
+            'marker-size',
+            'stroke',
+            'stroke-width',
+            'stroke-opacity',
+            'fill',
+            'fill-opacity'
+        ]
+
+        for k, v in geojson.get('features', [])[0].get('properties', {}).iteritems():
+            if k not in exclude_keys:
+                result.append({'value':k, 'text': k})
+    except (ValueError, TypeError, json.JSONDecodeError):
+        log.error("Error getting geojson properties")
 
     return result
 
@@ -376,8 +397,6 @@ def orgportals_get_available_languages():
     for locale in locales:
         languages.append({'value': locale, 'text': locale.english_name})
 
-    languages.sort()
-
     languages.insert(0, {'value': 'none', 'text': 'None'})
 
     return languages
@@ -429,19 +448,19 @@ def orgportals_get_facebook_app_id():
 
 
 def orgportals_get_countries():
-    get_countries_path = lambda: os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                                              'public/countries.json')
-    r = urllib.urlopen(get_countries_path())
+    countries_path = os.path.join(os.path.dirname(__file__), 'public', 'countries.json')
+    if not os.path.isfile(countries_path):
+        log.warning("Could not find %s", countries_path)
 
-    data = unicode(r.read(), errors='ignore')
-    countries = json.loads(data)
     result = []
+    with open(countries_path, 'r') as countries_json:
+        countries = json.load(countries_json, object_pairs_hook=OrderedDict)
 
-    for item in countries['features']:
-        result.append({'value': item['properties']['name'], 'text': item['properties']['name']})
+        for item in countries.get('features', []):
+            result.append({'value': item['properties']['name'], 'text': item['properties']['name']})
 
-    result.sort(key=itemgetter('text'))
-    result.insert(0, {'value': 'none', 'text': 'None'})
+        result.sort(key=itemgetter('text'))
+        result.insert(0, {'value': 'none', 'text': 'None'})
 
     return result
 
@@ -481,3 +500,91 @@ def orgportals_get_organization_image(org_name):
     org = toolkit.get_action('organization_show')({}, {'id': org_name})
 
     return org['image_display_url']
+
+
+def orgportals_get_dataset_count(org_name):
+    count = 0
+    try:
+        result = toolkit.get_action('organization_list')({}, {'all_fields':'true', 'limit':1, 'organizations':[org_name]})
+        if result[0].get('package_count'):
+            count = result[0].get('package_count')
+    except:
+        pass
+    return count
+
+
+def recent_datasets(org_name, num=5):
+    """Return a list of recent datasets."""
+    datasets = []
+    try:
+        search = toolkit.get_action('package_search')({},{'rows': num, 'sort': 'metadata_modified desc', 'fq': 'organization:'+org_name})
+        if search.get('results'):
+            datasets = search.get('results')
+    except:
+        pass
+    return datasets[:num]
+
+
+def popular_datasets(org_name, num=5):
+    """Return a list of popular datasets."""
+    datasets = []
+    search = toolkit.get_action('package_search')({},{'rows': num, 'sort': 'views_recent desc', 'fq': 'organization:'+org_name})
+    if search.get('results'):
+        datasets = search.get('results')
+    return datasets[:num]
+
+
+def get_package_metadata(package):
+    """Return the metadata of a dataset"""
+    result = {}
+    try:
+        result = toolkit.get_action('package_show')(None, {'id': package.get('name'), 'include_tracking': True})
+    except Exception:
+        log.exception("Error in retrieving dataset metadata for %s", package)
+        package_metadata = package
+        package_metadata['tracking_summary'] = {
+            'total': 0,
+            'recent': 0
+        }
+        return package_metadata
+    return result
+
+
+def get_group_list(org_name, num=12):
+    """Return a list of groups"""
+    org_groups = []
+    result = toolkit.get_action('package_search')({}, {'fq':'organization:\"'+org_name+'\"', 'facet.field': ["groups"], 'rows': 0})
+    facet_list = result.get('search_facets',{}).get('groups',{}).get('items')
+    for item in facet_list:
+        group = toolkit.get_action('group_show')({},{'id': item['name'], 'include_users': False})
+        if group:
+            org_groups.append(group)
+    return org_groups[:num]
+
+
+def get_showcase_list(org_name, num=24):
+    """Return a list of showcases"""
+    org_showcases = []
+    sorted_showcases = []
+    try:
+        showcase_ids_list = toolkit.get_action('ckanext_organization_showcase_list')({},{'organization_id':org_name})
+        if showcase_ids_list:
+            for showcase_id in showcase_ids_list:
+                showcase = toolkit.get_action('ckanext_showcase_show')({},{'id':showcase_id})
+                org_showcases.append(showcase)
+        sorted_showcases = sorted(org_showcases, key=lambda k: k.get('metadata_modified'), reverse=True)
+    except:
+        log.debug("[orgportals] Error in retrieving list of showcases")
+    return sorted_showcases[:num]
+
+
+def get_default_resource_view(resource_id):
+    """Return the first resource view"""
+    resource_view = ''
+    try:
+        resource_views = toolkit.get_action('resource_view_list')({},{'id': resource_id})
+        if len(resource_views) > 0:
+            resource_view = resource_views[0]
+    except:
+        log.debug("[orgportals] Error in retrieving resource view")
+    return resource_view

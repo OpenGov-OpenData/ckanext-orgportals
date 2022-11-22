@@ -1,10 +1,25 @@
 {% extends 'portals/index.html' %}
 
-{% block scripts %}
-  {{ super() }}
+{% set ckan_29_or_higher = h.version(h.ckan_version()) >= h.version('2.9') %}
+{% set type = 'asset' if ckan_29_or_higher else 'resource' %}
 
-  {% resource 'orgportals/map' %}
-  {% resource 'orgportals/goto-next-section.js' %}
+{% block styles %}
+  {{ super() }}
+  {% snippet 'portals/snippets/portal_' ~ type ~ '.html', name='orgportals/map-css' %}
+  {% snippet 'portals/snippets/portal_' ~ type ~ '.html', name='orgportals/map-js' %}
+  {% snippet 'portals/snippets/portal_' ~ type ~ '.html', name='orgportals/goto-next-section.js' %}
+{% endblock %}
+
+{%- block custom_styles %}
+  {%- if g.site_custom_css -%}
+  <style>
+    {{ g.site_custom_css | safe }}
+  </style>
+  {%- endif %}
+{% endblock %}
+
+{% block breadcrumb_content %}
+  <li class="active"><a class=" active" href="{{ page_link }}">Data</a></li>
 {% endblock %}
 
 {% block content %}
@@ -47,6 +62,9 @@
     %}
   {% endif %}
 
+
+{# Remove Organization description and topic section #}
+{#
   <div data-section="topics">
     {% if organization.description %}
       <div id="org-description">
@@ -69,13 +87,16 @@
       {% endfor %}
     </div>
   </div>
-
+#}
+{# Remove new data section #}
+{#
   {% snippet 'portals/snippets/new_data.html',
     base_color=base_color,
     font_base_color=font_base_color,
     font_new_data_color=font_new_data_color,
     org_display_name=organization.display_name
   %}
+#}
   {% snippet 'portals/snippets/all_data.html',
     base_color=base_color,
     secondary_color=secondary_color,

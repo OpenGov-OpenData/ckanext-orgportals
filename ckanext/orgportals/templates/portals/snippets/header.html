@@ -1,23 +1,42 @@
-{% set pages = h.orgportals_get_pages(c.org_name) %}
+{% set org_name = org_name or c.org_name %}
+{% set pages = h.orgportals_get_pages(org_name) %}
+
+{% set ckan_29_or_higher = h.version(h.ckan_version()) >= h.version('2.9') %}
+{% set orgportals_view_portal_route = 'orgportals_blueprint.view_portal' if ckan_29_or_higher else 'orgportals_view_portal' %}
+{% set orgportals_datapage_show_route = 'orgportals_blueprint.datapage_show' if ckan_29_or_higher else 'orgportals_datapage_show' %}
+{% set orgportals_library_show_route = 'orgportals_blueprint.library_show' if ckan_29_or_higher else 'orgportals_library_show' %}
+{% set orgportals_contentpage_show_route = 'orgportals_blueprint.contentpage_show' if ckan_29_or_higher else 'orgportals_contentpage_show' %}
+{% set orgportals_custompage_show_route = 'orgportals_blueprint.custompage_show' if ckan_29_or_higher else 'orgportals_custompage_show' %}
+
+{% set orgportals_show_portal_homepage_route = 'orgportals_blueprint.show_portal_homepage' if ckan_29_or_higher else 'orgportals_show_portal_homepage' %}
+{% set orgportals_show_portal_datapage_route = 'orgportals_blueprint.show_portal_datapage' if ckan_29_or_higher else 'orgportals_show_portal_datapage' %}
+{% set orgportals_show_portal_library_route = 'orgportals_blueprint.show_portal_library' if ckan_29_or_higher else 'orgportals_show_portal_library' %}
+{% set orgportals_show_portal_contentpage_route = 'orgportals_blueprint.show_portal_contentpage' if ckan_29_or_higher else 'orgportals_show_portal_contentpage' %}
+{% set orgportals_show_portal_custompage_route = 'orgportals_blueprint.show_portal_custompage' if ckan_29_or_higher else 'orgportals_show_portal_custompage' %}
+
+
 <header>
   {% snippet 'portals/snippets/language_switcher.html' %}
 
-  {% set ctrl = 'ckanext.orgportals.controllers.portals:OrgportalsController' %}
   {% set source = 'admin' %}
 
   {% if c.source == 'admin' %}
-    {% set home_url = h.url_for(controller=ctrl, action='view_portal', org_name=c.org_name, source=source) %}
+    {% set home_url = h.url_for(orgportals_view_portal_route, org_name=org_name, source=source) %}
   {% else %}
-    {% set home_url = h.url_for(controller=ctrl, action='show_portal_homepage') %}
+    {% set home_url = h.url_for(orgportals_show_portal_homepage_route) %}
   {% endif %}
 
-  <div class="row">
-    <div class="col-sm-3 organization-logo">
-      <a href="{{ home_url }}" title="Home"><img class="img-responsive" src="{{ h.orgportals_get_organization_image(c.org_name) }}" height="130" alt="Organization logo"></a>
+  {%- set exclude_headers = [
+    'home'
+  ] -%}
+
+  <div class="row data-header-container">
+    <div class="organization-logo">
+      <a href="{{ home_url }}" title="Home"><img class="img-responsive" src="{{ h.orgportals_get_organization_image(org_name) }}" alt="Organization logo"></a>
     </div>
 
-    <div class="col-sm-9">
-      <nav class="top-navigation pull-right" style="background-color: grey">
+    <div class="col-header-nav">
+      <nav class="top-navigation pull-right">
         <div class="">
           <ul class="list-inline">
 
@@ -26,33 +45,41 @@
               {% if page.type == 'home' %}
 
                 {% if c.source == 'admin' %}
-                  {% set page_link = h.url_for(controller=ctrl, action='view_portal', org_name=c.org_name, source=source) %}
+                  {% set page_link = h.url_for(orgportals_view_portal_route, org_name=org_name, source=source) %}
                 {% else %}
-                  {% set page_link = h.url_for(controller=ctrl, action='show_portal_homepage') %}
+                  {% set page_link = h.url_for(orgportals_show_portal_homepage_route) %}
                 {% endif %}
 
               {% elif page.type == 'data' %}
 
                 {% if c.source == 'admin' %}
-                  {% set page_link = h.url_for(controller=ctrl, action='datapage_show', org_name=c.org_name, source=source) %}
+                  {% set page_link = h.url_for(orgportals_datapage_show_route, org_name=org_name, source=source) %}
                 {% else %}
-                  {% set page_link = h.url_for(controller=ctrl, action='show_portal_datapage') %}
+                  {% set page_link = h.url_for(orgportals_show_portal_datapage_route) %}
+                {% endif %}
+
+              {% elif page.type == 'library' %}
+
+                {% if c.source == 'admin' %}
+                  {% set page_link = h.url_for(orgportals_library_show_route, org_name=org_name, source=source) %}
+                {% else %}
+                  {% set page_link = h.url_for(orgportals_show_portal_library_route) %}
                 {% endif %}
 
               {% elif page.type == 'default' %}
 
                 {% if c.source == 'admin' %}
-                  {% set page_link = h.url_for(controller=ctrl, action='contentpage_show', org_name=c.org_name, page_name=page.name, source=source) %}
+                  {% set page_link = h.url_for(orgportals_contentpage_show_route, org_name=org_name, page_name=page.name, source=source) %}
                 {% else %}
-                  {% set page_link = h.url_for(controller=ctrl, action='show_portal_contentpage', page_name=page.name) %}
+                  {% set page_link = h.url_for(orgportals_show_portal_contentpage_route, page_name=page.name) %}
                 {% endif %}
 
-              {% elif page.type == 'custom' %}
+              {% elif page.type == 'custom' and page.name != 'resources' %}
 
                 {% if c.source == 'admin' %}
-                  {% set page_link = h.url_for(controller=ctrl, action='custompage_show', org_name=c.org_name, page_name=page.name, source=source) %}
+                  {% set page_link = h.url_for(orgportals_custompage_show_route, org_name=org_name, page_name=page.name, source=source) %}
                 {% else %}
-                  {% set page_link = h.url_for(controller=ctrl, action='show_portal_custompage', page_name=page.name) %}
+                  {% set page_link = h.url_for(orgportals_show_portal_custompage_route, page_name=page.name) %}
                 {% endif %}
               {% endif %}
 
@@ -62,10 +89,20 @@
                 {% set page_active = 'false' %}
               {% endif %}
 
-              <li><a href="{{ page_link }}" data-page-active="{{ page_active }}">{{ page.page_title }}</a></li>
+              {% if page.name not in exclude_headers %}
+                <li><a href="{{ page_link }}" data-page-active="{{ page_active }}">{{ page.page_title }}</a></li>
+              {% endif %}
             {% endfor %}
           </ul>
         </div>
+      </nav>
+    </div>
+    <div>
+      {% set org = h.orgportals_get_current_organization(org_name) %}
+      <nav class="top-navigation pull-right">
+        <ul class="list-inline">
+          <li><a href="/" target='_blank'>{{ _('CNRA Open Data Home') }}</a></li>
+        </ul>
       </nav>
     </div>
   </div>

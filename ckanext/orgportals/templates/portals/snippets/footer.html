@@ -1,90 +1,20 @@
-<footer class="footer-container">
+{% set organization = h.orgportals_get_current_organization(c.org_name) %}
+{% if organization.orgportals_base_color %}
+  {% set base_color = "#" + organization.orgportals_base_color %}
+{% else %}
+  {% set base_color = "#1F549B" %}
+{% endif %}
+
+<footer class="footer-container" {# style="background: {{ base_color }}" #}>
   <div class="row">
-    {# <div class="col-md-2 col-lg-4">
-      <ul class="list-unstyled list-footer-nav">
-        {% set ctrl = 'ckanext.orgportals.controllers.portals:OrgportalsController' %}
-        {% set source = 'admin' %}
-        {% set pages = h.orgportals_get_pages(c.org_name) %}
 
-        {% for page in pages %}
-
-          {% if page.type == 'home' %}
-
-            {% if c.source == 'admin' %}
-              {% set page_link = h.url_for(controller=ctrl, action='view_portal', org_name=c.org_name, source=source) %}
-            {% else %}
-              {% set page_link = h.url_for(controller=ctrl, action='show_portal_homepage') %}
-            {% endif %}
-
-          {% elif page.type == 'data' %}
-
-            {% if c.source == 'admin' %}
-              {% set page_link = h.url_for(controller=ctrl, action='datapage_show', org_name=c.org_name, source=source) %}
-            {% else %}
-              {% set page_link = h.url_for(controller=ctrl, action='show_portal_datapage') %}
-            {% endif %}
-
-          {% elif page.type == 'default' %}
-
-            {% if c.source == 'admin' %}
-              {% set page_link = h.url_for(controller=ctrl, action='contentpage_show', org_name=c.org_name, page_name=page.name, source=source) %}
-            {% else %}
-              {% set page_link = h.url_for(controller=ctrl, action='show_portal_contentpage', page_name=page.name) %}
-            {% endif %}
-
-          {% elif page.type == 'custom' %}
-
-            {% if c.source == 'admin' %}
-              {% set page_link = h.url_for(controller=ctrl, action='custompage_show', org_name=c.org_name, page_name=page.name, source=source) %}
-            {% else %}
-              {% set page_link = h.url_for(controller=ctrl, action='show_portal_custompage', page_name=page.name) %}
-            {% endif %}
-          {% endif %}
-
-          <li><a href="{{ page_link }}">{{ page.page_title }}</a></li>
-        {% endfor %}
-      </ul>
-    </div> #}
-    <div class="col-md-12 col-lg-12">
-      <ul class="list-inline list-footer-logos">
-        <li>
-          <a href="https://www.gov.uk/government/organisations/department-for-international-development" target="_blank">
-            <img src="/images/ukaid-logo-246x260.png" height="130" alt="UKAID logo">
-          </a>
-        </li>
-      </ul>
-
-      <div class="row" style="margin-top: 30px;">
-        <ul class="list-inline list-social-buttons col-md-4">
-          <li>
-            <a class="btn-animated" href="https://www.facebook.com/usingextractivesdata" target="_blank">
-              <img src="/images/facebook-circle-color.svg" width="50" height="50" alt="Share on Facebook" />
-            </a>
-          </li>
-          <li>
-            <a class="btn-animated" href="https://twitter.com/usedata15" target="_blank">
-              <img src="/images/twitter-circle-color.svg" width="50" height="50" alt="Tweet">
-            </a>
-          </li>
-          <li>
-              <a class="btn-animated" href="https://www.youtube.com/channel/UChuXl8V6Voqi-EHvabaYAdg" target="_blank">
-                  <img src="/images/youtube-circle-color.png" width="48" height="48" alt="View on Youtube" />
-              </a>
-          </li>
-        </ul>
-
-        <div class="email-subscription-container col-md-4">
-          <form action="https://usedata.us14.list-manage.com/subscribe/post" method="POST" target="_blank">
-            <input type="email" name="MERGE0" id="MERGE0" class="form-control" placeholder="example@mail.com">
-            <input type="hidden" name="u" value="67941644d03c85a673bb79d88">
-            <input type="hidden" name="id" value="0dbdee8b5b">
-            <!-- <span class="input-group-btn"> -->
-              <button class="btn btn-default subscribe-button" type="submit">Subscribe</button>
-            <!-- </span> -->
-          </form>
-        </div>
-        <div class="copyright col-md-4">© {{ h.render_markdown(h.orgportals_get_copyright_text(c.org_name)) }}</div>
+    <div class="attribution">
+      <span id="footer-attribution-text">Powered by</span>
+      <div style="white-space:nowrap" id="footer-attribution-content">
+        <a class="hide-text" target="_blank" href="https://opengov.com/?utm_campaign=Footer-Product-OpenData&utm_source=OpenGov&utm_medium=product&utm_term=PO-OGOV-1274&utm_content=logo"><img src="/images/OpenGov_Logo.png" alt="OpenGov"></a>
+        <a class="hide-text" target="_blank" href="http://ckan.org"><img src="/images/ckan_logo_white.png" alt="CKAN"></a>
       </div>
     </div>
+
   </div>
 </footer>

@@ -5,7 +5,7 @@ import os
 import logging
 
 import twitter
-from pylons import config
+from ckan.plugins.toolkit import config
 from selenium import webdriver
 
 import ckan.plugins as p
@@ -16,6 +16,12 @@ import ckan.logic.action.update as update_core
 from ckan import model
 
 from ckanext.orgportals import db, helpers
+
+try:
+    unicode_safe = tk.get_validator('unicode_safe')
+except tk.UnknownValidator:
+    # CKAN 2.7
+    unicode_safe = unicode # noqa: F821
 
 log = logging.getLogger(__name__)
 
@@ -78,25 +84,29 @@ def subdashboard_name_validator(key, data, errors, context):
             p.toolkit._('This subdashboard name already exists. Choose another one.'))
 
 pages_schema = {
-    'id': [p.toolkit.get_validator('ignore_empty'), unicode],
-    'name': [p.toolkit.get_validator('not_empty'), unicode,
+    'id': [p.toolkit.get_validator('ignore_empty'), unicode_safe],
+    'name': [p.toolkit.get_validator('not_empty'), unicode_safe,
              p.toolkit.get_validator('name_validator'), page_name_validator],
-    'org_name': [p.toolkit.get_validator('not_empty'), unicode],
-    'type': [p.toolkit.get_validator('not_empty'), unicode],
-    'page_title': [p.toolkit.get_validator('not_empty'), unicode],
-    'content_title': [p.toolkit.get_validator('ignore_missing'), unicode],
-    'order': [p.toolkit.get_validator('ignore_missing'), unicode],
-    'image_url': [p.toolkit.get_validator('ignore_empty'), unicode],
-    'text_box': [p.toolkit.get_validator('ignore_empty'), unicode],
-    'content': [p.toolkit.get_validator('ignore_missing'), unicode],
-    'topics': [p.toolkit.get_validator('ignore_missing'), unicode],
+    'org_name': [p.toolkit.get_validator('not_empty'), unicode_safe],
+    'type': [p.toolkit.get_validator('not_empty'), unicode_safe],
+    'page_title': [p.toolkit.get_validator('not_empty'), unicode_safe],
+    'content_title': [p.toolkit.get_validator('ignore_missing'), unicode_safe],
+    'order': [p.toolkit.get_validator('ignore_missing'), unicode_safe],
+    'image_url': [p.toolkit.get_validator('ignore_empty'), unicode_safe],
+    'image_url_2': [p.toolkit.get_validator('ignore_empty'), unicode_safe],
+    'image_url_3': [p.toolkit.get_validator('ignore_empty'), unicode_safe],
+    'text_box': [p.toolkit.get_validator('ignore_empty'), unicode_safe],
+    'content': [p.toolkit.get_validator('ignore_missing'), unicode_safe],
+    'topics': [p.toolkit.get_validator('ignore_missing'), unicode_safe],
     'datasets_per_page': [p.toolkit.get_validator('ignore_empty'), int],
-    'survey_enabled': [p.toolkit.get_validator('ignore_missing'), bool],
-    'survey_text': [p.toolkit.get_validator('ignore_missing'), unicode],
-    'survey_link': [p.toolkit.get_validator('ignore_missing'), unicode],
-    'map': [p.toolkit.get_validator('ignore_missing'), unicode],
-    'map_main_property': [p.toolkit.get_validator('ignore_missing'), unicode],
-    'map_enabled': [p.toolkit.get_validator('ignore_missing'), unicode],
+    'survey_enabled': [p.toolkit.get_validator('ignore_missing'),
+                       p.toolkit.get_validator('boolean_validator')],
+    'survey_text': [p.toolkit.get_validator('ignore_missing'), unicode_safe],
+    'survey_link': [p.toolkit.get_validator('ignore_missing'), unicode_safe],
+    'map': [p.toolkit.get_validator('ignore_missing'), unicode_safe],
+    'map_main_property': [p.toolkit.get_validator('ignore_missing'), unicode_safe],
+    'map_enabled': [p.toolkit.get_validator('ignore_missing'),
+                    p.toolkit.get_validator('boolean_validator')],
     'created': [p.toolkit.get_validator('ignore_missing'),
                 p.toolkit.get_validator('isodate')],
     'updated': [p.toolkit.get_validator('ignore_missing'),
@@ -104,20 +114,24 @@ pages_schema = {
 }
 
 subdashboards_schema = {
-    'id': [p.toolkit.get_validator('ignore_empty'), unicode],
-    'name': [p.toolkit.get_validator('not_empty'), unicode,
+    'id': [p.toolkit.get_validator('ignore_empty'), unicode_safe],
+    'name': [p.toolkit.get_validator('not_empty'), unicode_safe,
              p.toolkit.get_validator('name_validator'), subdashboard_name_validator],
-    'org_name': [p.toolkit.get_validator('not_empty'), unicode],
-    'group': [p.toolkit.get_validator('not_empty'), unicode],
-    'is_active': [p.toolkit.get_validator('not_empty'), unicode],
-    'subdashboard_description': [p.toolkit.get_validator('ignore_empty'), unicode],
-    'icon_description': [p.toolkit.get_validator('ignore_empty'), unicode],
-    'map': [p.toolkit.get_validator('ignore_missing'), unicode],
-    'map_main_property': [p.toolkit.get_validator('ignore_missing'), unicode],
-    'map_enabled': [p.toolkit.get_validator('ignore_missing'), unicode],
-    'data_section_enabled': [p.toolkit.get_validator('not_empty'), unicode],
-    'content_section_enabled': [p.toolkit.get_validator('not_empty'), unicode],
-    'media': [p.toolkit.get_validator('ignore_missing'), unicode],
+    'org_name': [p.toolkit.get_validator('not_empty'), unicode_safe],
+    'group': [p.toolkit.get_validator('not_empty'), unicode_safe],
+    'is_active': [p.toolkit.get_validator('not_empty'),
+                  p.toolkit.get_validator('boolean_validator')],
+    'subdashboard_description': [p.toolkit.get_validator('ignore_empty'), unicode_safe],
+    'icon_description': [p.toolkit.get_validator('ignore_empty'), unicode_safe],
+    'map': [p.toolkit.get_validator('ignore_missing'), unicode_safe],
+    'map_main_property': [p.toolkit.get_validator('ignore_missing'), unicode_safe],
+    'map_enabled': [p.toolkit.get_validator('ignore_missing'),
+                    p.toolkit.get_validator('boolean_validator')],
+    'data_section_enabled': [p.toolkit.get_validator('not_empty'),
+                             p.toolkit.get_validator('boolean_validator')],
+    'content_section_enabled': [p.toolkit.get_validator('not_empty'),
+                                p.toolkit.get_validator('boolean_validator')],
+    'media': [p.toolkit.get_validator('ignore_missing'), unicode_safe],
     'created': [p.toolkit.get_validator('ignore_missing'),
                 p.toolkit.get_validator('isodate')],
     'updated': [p.toolkit.get_validator('ignore_missing'),
@@ -176,7 +190,7 @@ def _pages_update(context, data_dict):
         out.org_name = org_name
         out.name = page_name
 
-    items = ['page_title', 'content_title', 'content', 'name', 'image_url',
+    items = ['page_title', 'content_title', 'content', 'name', 'image_url', 'image_url_2', 'image_url_3',
              'type', 'text_box',
              'topics', 'datasets_per_page', 'survey_enabled',
              'survey_text', 'survey_link', 'map', 'map_main_property',
@@ -286,11 +300,8 @@ def _create_pages(org_name):
     pages = [
         {'org_name': org_name, 'type': 'home', 'name': 'home', 'page_title': 'Home', 'order': 0},
         {'org_name': org_name, 'type': 'data', 'name': 'data', 'page_title': 'Data', 'order': 1},
-        {'org_name': org_name, 'type': 'default', 'name': 'about', 'page_title': 'About', 'order': 2},
-        {'org_name': org_name, 'type': 'default', 'name': 'help', 'page_title': 'Help', 'order': 3},
-        {'org_name': org_name, 'type': 'default', 'name': 'resources', 'page_title': 'Resources', 'order': 4},
-        {'org_name': org_name, 'type': 'default', 'name': 'glossary', 'page_title': 'Glossary', 'order': 5},
-        {'org_name': org_name, 'type': 'default', 'name': 'contact', 'page_title': 'Contact', 'order': 6},
+        {'org_name': org_name, 'type': 'library', 'name': 'library', 'page_title': 'Document Library', 'order': 2},
+        {'org_name': org_name, 'type': 'default', 'name': 'about', 'page_title': 'About', 'order': 3}
     ]
 
     for page in pages:
@@ -385,6 +396,7 @@ def orgportals_dataset_show_resources(context, data_dict):
 def orgportals_resource_show_resource_views(context, data_dict):
     data = helpers._get_action('resource_view_list', context.copy(), data_dict)
     data = filter(lambda i: i['view_type'] == data_dict['view_type'], data)
+    data = list(data)
 
     return data
 
@@ -413,7 +425,7 @@ def orgportals_share_graph_on_twitter(context, data_dict):
         api.PostUpdate('{0} {1}'.format(graph_title, subdashboard_url), media=file)
 
         os.remove(file)
-    except Exception, e:
+    except Exception as e:
         log.error(e)
 
         return {'share_status_success': False}
@@ -442,7 +454,7 @@ def orgportals_share_link_on_twitter(context, data_dict):
         elif url_type == 'video':
             api.PostUpdate('{0} {1} {2}'.format(title, subdashboard_url, url))
 
-    except Exception, e:
+    except Exception as e:
         log.error(e)
 
         return {'share_status_success': False}
@@ -479,7 +491,7 @@ def orgportals_download_dashboard(context, data_dict):
         return {
             'image_data': image_data
         }
-    except Exception, e:
+    except Exception as e:
         log.error(e)
 
         return {
