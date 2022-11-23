@@ -14,7 +14,6 @@
 {% set orgportals_show_portal_contentpage_route = 'orgportals_blueprint.show_portal_contentpage' if ckan_29_or_higher else 'orgportals_show_portal_contentpage' %}
 {% set orgportals_show_portal_custompage_route = 'orgportals_blueprint.show_portal_custompage' if ckan_29_or_higher else 'orgportals_show_portal_custompage' %}
 
-
 <header>
   {% snippet 'portals/snippets/language_switcher.html' %}
 
@@ -32,7 +31,7 @@
 
   <div class="row data-header-container">
     <div class="organization-logo">
-      <a href="{{ home_url }}" title="Home"><img class="img-responsive" src="{{ h.orgportals_get_organization_image(org_name) }}" alt="Organization logo"></a>
+      <a href="{{ home_url }}" title="{{ org_display_name }} Portal"><img src="{{ h.orgportals_get_organization_image(org_name) }}" alt="{{ org_display_name }} Logo"></a>
     </div>
 
     <div class="col-header-nav">
@@ -95,14 +94,6 @@
             {% endfor %}
           </ul>
         </div>
-      </nav>
-    </div>
-    <div>
-      {% set org = h.orgportals_get_current_organization(org_name) %}
-      <nav class="top-navigation pull-right">
-        <ul class="list-inline">
-          <li><a href="/" target='_blank'>{{ _('CNRA Open Data Home') }}</a></li>
-        </ul>
       </nav>
     </div>
   </div>

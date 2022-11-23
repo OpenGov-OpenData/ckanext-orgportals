@@ -588,3 +588,15 @@ def get_default_resource_view(resource_id):
     except:
         log.debug("[orgportals] Error in retrieving resource view")
     return resource_view
+
+
+def search_document_page_exists(page_id):
+    try:
+        if not page_id:
+            return False
+        search_doc = toolkit.get_action('ckanext_pages_show')({},{'page': page_id})
+        if search_doc.get('content') and not search_doc.get('private'):
+            return True
+    except:
+        log.debug("[orgportals] Error in retrieving page")
+    return False
