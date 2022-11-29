@@ -1,5 +1,8 @@
 {% extends 'portals/index.html' %}
 
+{% set org = h.orgportals_get_current_organization(c.org_name) %}
+{% set org_display_name = org.title or c.org_name %}
+
 {% block toolbar %}
 {% endblock %}
 
@@ -12,7 +15,7 @@
     <div class="hero-content-container" style="background:url({{ image_url }}); background-size: cover; height:480px; z-index:-25">
       <div class="tint"></div>
       <div class="hero-content-container__content">
-        <h3 class="hero-content-container__header">{{ page.content_title or c.org_name}}</h3>
+        <h3 class="hero-content-container__header">{{ page.content_title or org_display_name}}</h3>
         <div class="hero-content-container__secondary">{{ h.render_markdown(page.text_box) }}</div>
       </div>
     </div>
@@ -27,11 +30,13 @@
       <div class="col-md-6">
         {% snippet 'portals/snippets/home/search.html' %}
       </div>
-      <p class="search-hint search-doc col-md-3">
-        <span>Try <a href="/pages/advanced-search-documentation"><u>Advanced Search Terms</u></a></span>
-        <br>
-        <span>for more specific results</span>
-      </p>
+      {% if h.orgportals_search_document_page_exists('advanced-search-documentation') %}
+        <p class="search-hint search-doc col-md-3">
+          <span>Try <a href="/pages/advanced-search-documentation" target="_blank"><u>Advanced Search Terms</u></a></span>
+          <br>
+          <span>for more specific results</span>
+        </p>
+      {% endif %}
     </div>
   </div>
   {% if h.orgportals_get_group_list(c.org_name) %}

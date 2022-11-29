@@ -42,9 +42,11 @@
         </div>
       </div>
       <div class="data-block span9 responsive-panel">
-        <p class="search-doc">
-          <a href="/pages/advanced-search-documentation"><u>Advanced Search Terms</u></a>
-        </p>
+        {% if h.orgportals_search_document_page_exists('advanced-search-documentation') %}
+          <p class="search-doc">
+            <a href="/pages/advanced-search-documentation" target="_blank"><u>Advanced Search Terms</u></a>
+          </p>
+        {% endif %}
         {% snippet 'portals/snippets/search_form.html',
           form_id='dataset-search-form',
           type='dataset',

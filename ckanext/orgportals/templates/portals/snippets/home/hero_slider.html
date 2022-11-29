@@ -15,7 +15,7 @@
   <ul class="cd-hero-slider autoplay">
     {% set hero_images_list = [image_url, image_url_2, image_url_3] %}
     {% for hero_img in hero_images_list %}
-      <li style="background-image: url({{hero_img}})" {%if loop.index == 1%}class="selected"{%endif%}>
+      <li style="background-image: url({{hero_img}})" {% if loop.index == 1 %}class="selected"{% endif %}>
         <div class="cd-full-width">
         </div> <!-- .cd-full-width -->
       </li>
@@ -24,9 +24,12 @@
   <div class="cd-slider-nav">
     <nav>
       <span class="cd-marker item-1"></span>
-      <ul>
+      <ul class="list-unstyled">
         {% for hero_img in hero_images_list %}
-          <li {%if loop.index == 1%}class="selected"{%endif%}><a href="#0"><i class="icon-circle"></i></a></li>
+          {% set current_loop_index = loop.index %}
+          <li {% if current_loop_index == 1 %}class="selected"{% endif %}>
+            <button aria-label="Change slider background to option {{current_loop_index}}"><i class="icon-circle"></i></button>
+          </li>
         {% endfor %}
       </ul>
     </nav>

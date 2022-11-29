@@ -152,6 +152,8 @@ class OrgportalsPlugin(MixinPlugin,
                 helpers.get_showcase_list,
             'orgportals_get_default_resource_view':
                 helpers.get_default_resource_view,
+            'orgportals_search_document_page_exists':
+                helpers.search_document_page_exists,
             'version': version_builder
         }
 

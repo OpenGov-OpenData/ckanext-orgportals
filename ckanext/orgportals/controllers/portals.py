@@ -24,11 +24,11 @@ class OrgportalsController(PackageController):
     def library_show(self, org_name, source):
         return utils.library_show(org_name, source)
 
-    def contentpage_show(self, org_name, source, page_name):
-        return utils.contentpage_show(org_name, source, page_name)
+    def contentpage_show(self, org_name, page_name, source):
+        return utils.contentpage_show(org_name, page_name, source)
 
-    def custompage_show(self, org_name, source, page_name):
-        return utils.custompage_show(org_name, source, page_name)
+    def custompage_show(self, org_name, page_name, source):
+        return utils.custompage_show(org_name, page_name, source)
 
     def orgportals_subdashboards_index(self, org_name):
         return utils.orgportals_subdashboards_index(org_name)
