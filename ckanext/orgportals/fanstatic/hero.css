@@ -59,7 +59,7 @@ Main Components
 .tint {
   background-color: rgba(1,1,1,0.5);
   position: absolute;
-  height: 480px;
+  height: 470px;
   width: 100%;
   z-index: -10;
 }
@@ -183,7 +183,7 @@ Slider
 
 .cd-hero-slider {
   position: relative;
-  height: 480px;
+  height: 500px;
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -234,10 +234,10 @@ Slider
 }
 @media only screen and (min-width: 767px) {
   .cd-hero-slider {
-    height: 480px;
+    height: 450px;
   }
   .tint {
-    height: 480px;
+    height: 420px;
   }
 }
 [class^="icon-"], [class*=" icon-"] {
@@ -543,7 +543,7 @@ Slider navigation
   z-index: 2;
   text-align: center;
   height: 30px;
-  background-color: rgba(0, 0, 0, 0.5)
+  background-color: rgba(0, 0, 0, 0.8)
 }
 .cd-slider-nav nav, .cd-slider-nav ul, .cd-slider-nav li, .cd-slider-nav button {
   height: 100%;

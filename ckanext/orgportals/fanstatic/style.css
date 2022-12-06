@@ -7650,7 +7650,7 @@ footer .container {
 
 .top-navigation {
     font-size: 20px;
-    margin-top: 10px;
+    margin-top: 15px;
     background-color: #FFF !important;
 }
 
@@ -7713,8 +7713,8 @@ footer .container {
   text-transform: uppercase;
   margin: 0 0 20px 0;
   padding: 0;
-  font-size: 36px;
-  line-height: 32px;
+  font-size: 32px;
+  line-height: 34px;
 }
 
 .hero-content-container__button {
@@ -8181,16 +8181,16 @@ ul.col-md-2 {
     width: 85%;
   }
   .hero-content-container__header {
-    font-size: 38px;
-    line-height: 36px;
+    font-size: 36px;
+    line-height: 38px;
     padding: 0;
   }
 }
 
 @media (min-width: 1366px) {
   .hero-content-container__header {
-    font-size: 64px;
-    line-height: 58px;
+    font-size: 48px;
+    line-height: 50px;
     padding: 0;
   }
 }
