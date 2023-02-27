@@ -69,6 +69,12 @@ Main Components
   margin-right: auto;
   width: 90%
 }
+.default-hero {
+  background:url("/images/background_SardineLake.jpeg");
+  background-size: cover;
+  height: 470px;
+  z-index:-25;
+}
 .cd-header {
   position: absolute;
   z-index: 2;
@@ -237,6 +243,9 @@ Slider
     height: 450px;
   }
   .tint {
+    height: 420px;
+  }
+  .default-hero {
     height: 420px;
   }
 }

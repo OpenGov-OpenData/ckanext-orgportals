@@ -14,7 +14,7 @@ truncate_title - The length to truncate the title to (default: 80).
 {% block group_list %}
   {% for group in groups %}
     <a href="/organization/{{c.org_name}}/portal/data?groups={{ group.name }}" class="browse-group">
-      <img class="browse-group-image" alt="" class="homepage-group-images" src="{{ group.image_display_url or '/base/images/placeholder-group.png' }}">
+      <img class="browse-group-image" alt="" src="{{ group.image_display_url or '/base/images/placeholder-group.png' }}">
       <div class="browse-group-title">
         <div class="browse-group-display-name">
           {{ group.display_name }}
