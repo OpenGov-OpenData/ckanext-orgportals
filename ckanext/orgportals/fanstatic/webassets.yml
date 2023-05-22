@@ -11,7 +11,6 @@ map-js:
 
 map-css:
   output: ckanext-orgportals/%(version)s_map.css
-  filters: cssrewrite
   contents:
     - vendor/leaflet/leaflet.css
 
@@ -80,7 +79,6 @@ style-js:
 
 style-css:
   output: ckanext-orgportals/%(version)s_style.css
-  filters: cssrewrite
   contents:
     - font-awesome.css
     - style.css

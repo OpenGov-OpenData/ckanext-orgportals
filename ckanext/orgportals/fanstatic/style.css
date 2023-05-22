@@ -8282,6 +8282,7 @@ ul.col-md-2 {
 }
 
 .search-block {
+  background-color: #FFFFFF;
   min-height: 100px;
 }
 .search-block .search-hint {
