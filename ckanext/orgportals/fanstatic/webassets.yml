@@ -26,7 +26,6 @@ nav-bar-js:
 
 nav-bar-css:
   output: ckanext-orgportals/%(version)s_nav_bar.css
-  filters: cssrewrite
   contents:
     - vendor/dragula/dragula.css
     - nav-bar.css
@@ -43,7 +42,6 @@ topics-js:
 
 topics-css:
   output: ckanext-orgportals/%(version)s_topics.css
-  filters: cssrewrite
   contents:
     - vendor/dragula/dragula.css
     - topics-settings.css
@@ -60,7 +58,6 @@ content-js:
 
 content-css:
   output: ckanext-orgportals/%(version)s_content.css
-  filters: cssrewrite
   contents:
     - vendor/dragula/dragula.css
     - content-settings.css
