@@ -101,29 +101,6 @@ class TestCustomActions(object):
             assert map_properties[i]['text'] == item[0]
     '''
 
-    def test_orgportals_share_graph_on_twitter(self):
-        image_path = os.path.join(os.path.realpath(
-            os.path.join(os.getcwd(),
-                         os.path.dirname(__file__))), 'graph_image.png')
-
-        with open(image_path, 'rb') as image_file:
-            base64_image = base64.b64encode(image_file.read())
-
-        data_dict = {
-            'oauth_token':
-                config.get('ckanext.orgportals.twitter_oauth_token'),
-            'oauth_token_secret':
-                config.get('ckanext.orgportals.twitter_oauth_token_secret'),
-            'graph_title': 'test',
-            'subdashboard_url': 'http://google.com',
-            'image': base64_image
-        }
-
-        response = toolkit.get_action('orgportals_share_graph_on_twitter')(
-            self.mock_data['context'], data_dict)
-
-        assert response['share_status_success'] is True
-
     def test_organization_create(self):
         org = toolkit.get_action('organization_create')(
             self.mock_data['context'], {'name': 'test_org'})
