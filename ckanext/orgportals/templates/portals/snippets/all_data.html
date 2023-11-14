@@ -1,9 +1,9 @@
 <div class="all-data" id="search-data" data-section="all-data">
   {% set group_entity_name = h.orgportals_get_group_entity_name() %}
 
-  {% if group_entity_name == 'group' %}
+  {% if group_entity_name == 'group' or group_entity_name == 'Group' %}
     {% set group_filter_name = _('Groups') %}
-  {% elif group_entity_name == 'topic' %}
+  {% elif group_entity_name == 'topic' or group_entity_name == 'Topic' %}
     {% set group_filter_name = _('Topics') %}
   {% endif %}
 
