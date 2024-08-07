@@ -144,37 +144,39 @@ orgportals.add_url_rule(
     view_func=custompage_show,
     defaults={'source': 'admin'}
 )
-
-orgportals.add_url_rule(
-    '/organization/edit/<org_name>/subdashboards',
-    'subdashboards_index',
-    view_func=orgportals_subdashboards_index
-)
-
-orgportals.add_url_rule(
-    '/organization/edit/<org_name>/subdashboards_edit',
-    'subdashboards_edit',
-    view_func=orgportals_subdashboards_edit,
-    defaults={'subdashboard': ''}
-)
-orgportals.add_url_rule(
-    '/organization/edit/<org_name>/subdashboards_edit/<subdashboard>',
-    'subdashboards_edit',
-    view_func=orgportals_subdashboards_edit
-)
-
-orgportals.add_url_rule(
-    '/organization/edit/<org_name>/subdashboards_delete/<subdashboard>',
-    'subdashboards_delete',
-    view_func=orgportals_subdashboards_delete
-)
-
-orgportals.add_url_rule(
-    '/organization/<org_name>/portal/subdashboard/<subdashboard_name>',
-    'subdashboardpage_show',
-    view_func=subdashboardpage_show,
-    defaults={'source': 'admin'}
-)
+#
+# orgportals.add_url_rule(
+#     '/organization/edit/<org_name>/subdashboards',
+#     'subdashboards_index',
+#     view_func=orgportals_subdashboards_index
+# )
+#
+# orgportals.add_url_rule(
+#     '/organization/edit/<org_name>/subdashboards_edit',
+#     'subdashboards_edit',
+#     view_func=orgportals_subdashboards_edit,
+#     defaults={'subdashboard': ''},
+#     methods=[u'GET', u'POST']
+# )
+# orgportals.add_url_rule(
+#     '/organization/edit/<org_name>/subdashboards_edit/<subdashboard>',
+#     'subdashboards_edit',
+#     view_func=orgportals_subdashboards_edit,
+#     methods=[u'GET', u'POST']
+# )
+#
+# orgportals.add_url_rule(
+#     '/organization/edit/<org_name>/subdashboards_delete/<subdashboard>',
+#     'subdashboards_delete',
+#     view_func=orgportals_subdashboards_delete
+# )
+#
+# orgportals.add_url_rule(
+#     '/organization/<org_name>/portal/subdashboard/<subdashboard_name>',
+#     'subdashboardpage_show',
+#     view_func=subdashboardpage_show,
+#     defaults={'source': 'admin'}
+# )
 
 if tk.asbool(tk.config.get('ckanext.orgdashboards.custom_dns_active')):
     orgportals.add_url_rule(
@@ -202,11 +204,11 @@ orgportals.add_url_rule(
     view_func=show_portal_custompage
 )
 
-orgportals.add_url_rule(
-    '/subdashboard/<subdashboard_name>',
-    'show_portal_subdashboardpage',
-    view_func=show_portal_subdashboardpage
-)
+# orgportals.add_url_rule(
+#     '/subdashboard/<subdashboard_name>',
+#     'show_portal_subdashboardpage',
+#     view_func=show_portal_subdashboardpage
+# )
 
 
 def get_blueprints():

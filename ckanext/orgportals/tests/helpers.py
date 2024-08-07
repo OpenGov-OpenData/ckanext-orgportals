@@ -97,27 +97,27 @@ def get_site_base_url():
     return config.get('ckan.site_url', 'http://localhost:5000')
 
 
-def create_subdashboard(mock_data):
-    data_dict = {
-        'name': mock_data['group_name'],
-        'org_name': mock_data['organization_name'],
-        'group': mock_data['group_name'],
-        'is_active': True,
-        'description': 'some description',
-        'data_section_enabled': True,
-        'content_section_enabled': True
-    }
-
-    toolkit.get_action('orgportals_subdashboards_update')(
-        mock_data['context'],
-        data_dict)
-
-    data_dict = {
-        'org_name': mock_data['organization_name'],
-        'subdashboard_name': mock_data['group_name']
-    }
-
-    return toolkit.\
-        get_action('orgportals_subdashboards_show')(
-            mock_data['context'],
-            data_dict)
+# def create_subdashboard(mock_data):
+#     data_dict = {
+#         'name': mock_data['group_name'],
+#         'org_name': mock_data['organization_name'],
+#         'group': mock_data['group_name'],
+#         'is_active': True,
+#         'description': 'some description',
+#         'data_section_enabled': True,
+#         'content_section_enabled': True
+#     }
+#
+#     toolkit.get_action('orgportals_subdashboards_update')(
+#         mock_data['context'],
+#         data_dict)
+#
+#     data_dict = {
+#         'org_name': mock_data['organization_name'],
+#         'subdashboard_name': mock_data['group_name']
+#     }
+#
+#     return toolkit.\
+#         get_action('orgportals_subdashboards_show')(
+#             mock_data['context'],
+#             data_dict)

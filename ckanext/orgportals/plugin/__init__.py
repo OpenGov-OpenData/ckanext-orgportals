@@ -51,15 +51,15 @@ class OrgportalsPlugin(MixinPlugin,
             'orgportals_resource_show_map_properties': actions.orgportals_resource_show_map_properties,
             'organization_create': actions.organization_create,
             'organization_update': actions.organization_update,
-            'orgportals_subdashboards_list': actions.subdashboards_list,
-            'orgportals_subdashboards_show': actions.subdashboards_show,
-            'orgportals_subdashboards_update': actions.subdashboards_update,
-            'orgportals_subdashboards_delete': actions.subdashboards_delete,
+            # 'orgportals_subdashboards_list': actions.subdashboards_list,
+            # 'orgportals_subdashboards_show': actions.subdashboards_show,
+            # 'orgportals_subdashboards_update': actions.subdashboards_update,
+            # 'orgportals_subdashboards_delete': actions.subdashboards_delete,
             'orgportals_show_datasets': actions.orgportals_show_datasets,
             'orgportals_dataset_show_resources': actions.orgportals_dataset_show_resources,
             'orgportals_resource_show_resource_views': actions.orgportals_resource_show_resource_views,
             'orgportals_share_graph_on_twitter': actions.orgportals_share_graph_on_twitter,
-            'orgportals_download_dashboard': actions.orgportals_download_dashboard,
+            # 'orgportals_download_dashboard': actions.orgportals_download_dashboard,
             'orgportals_share_link_on_twitter': actions.orgportals_share_link_on_twitter
         }
         return actions_dict
@@ -71,10 +71,10 @@ class OrgportalsPlugin(MixinPlugin,
             'orgportals_pages_update': auth.pages_update,
             'orgportals_pages_delete': auth.pages_delete,
             'orgportals_pages_list': auth.pages_list,
-            'orgportals_subdashboards_show': auth.subdashboards_show,
-            'orgportals_subdashboards_update': auth.subdashboards_update,
-            'orgportals_subdashboards_delete': auth.subdashboards_delete,
-            'orgportals_subdashboards_list': auth.subdashboards_list,
+            # 'orgportals_subdashboards_show': auth.subdashboards_show,
+            # 'orgportals_subdashboards_update': auth.subdashboards_update,
+            # 'orgportals_subdashboards_delete': auth.subdashboards_delete,
+            # 'orgportals_subdashboards_list': auth.subdashboards_list,
        }
 
     # ITemplateHelpers
@@ -112,8 +112,8 @@ class OrgportalsPlugin(MixinPlugin,
                 helpers.orgportals_get_resourceview_resource_package,
             'orgportals_show_exit_button':
                 helpers.orgportals_show_exit_button,
-            'orgportals_is_subdashboard_active':
-                helpers.orgportals_is_subdashboard_active,
+            # 'orgportals_is_subdashboard_active':
+            #     helpers.orgportals_is_subdashboard_active,
             'orgportals_get_all_organizations':
                 helpers.orgportals_get_all_organizations,
             'orgportals_get_available_languages':
