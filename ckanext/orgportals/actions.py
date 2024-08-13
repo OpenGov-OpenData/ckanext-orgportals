@@ -6,7 +6,7 @@ import logging
 
 import twitter
 from ckan.plugins.toolkit import config
-from selenium import webdriver
+# from selenium import webdriver
 
 import ckan.plugins as p
 import ckan.lib.navl.dictization_functions as df
@@ -463,37 +463,37 @@ def orgportals_share_link_on_twitter(context, data_dict):
 
 
 
-@p.toolkit.side_effect_free
-def orgportals_download_dashboard(context, data_dict):
-    try:
-        url = data_dict['url']
-    except KeyError:
-        return {
-            'error': 'Missing parameter: url'
-        }
-
-    try:
-        fallback_storage_path = os.path.dirname(os.path.realpath(__file__))
-        log_path = '{0}/phantomjs.log'.format(config.get('ckan.storage_path',
-                                              fallback_storage_path))
-        driver = webdriver.PhantomJS(service_log_path=log_path)
-        image = '{0}/montrose-dashboard.png'.format(
-            config.get('ckan.storage_path', fallback_storage_path))
-
-        driver.set_window_size(1320, 1080)
-        driver.get(url)
-        driver.save_screenshot(image)
-
-        os.remove(image)
-
-        image_data = driver.get_screenshot_as_base64()
-
-        return {
-            'image_data': image_data
-        }
-    except Exception as e:
-        log.error(e)
-
-        return {
-            'error': 'Cannot create snapshot'
-        }
+# @p.toolkit.side_effect_free
+# def orgportals_download_dashboard(context, data_dict):
+#     try:
+#         url = data_dict['url']
+#     except KeyError:
+#         return {
+#             'error': 'Missing parameter: url'
+#         }
+#
+#     try:
+#         fallback_storage_path = os.path.dirname(os.path.realpath(__file__))
+#         log_path = '{0}/phantomjs.log'.format(config.get('ckan.storage_path',
+#                                               fallback_storage_path))
+#         driver = webdriver.PhantomJS(service_log_path=log_path)
+#         image = '{0}/montrose-dashboard.png'.format(
+#             config.get('ckan.storage_path', fallback_storage_path))
+#
+#         driver.set_window_size(1320, 1080)
+#         driver.get(url)
+#         driver.save_screenshot(image)
+#
+#         os.remove(image)
+#
+#         image_data = driver.get_screenshot_as_base64()
+#
+#         return {
+#             'image_data': image_data
+#         }
+#     except Exception as e:
+#         log.error(e)
+#
+#         return {
+#             'error': 'Cannot create snapshot'
+#         }

@@ -567,16 +567,16 @@ def datapage_show(org_name, source):
     else:
         data_page['topics'] = []
 
-    subdashboards_list = p.toolkit.get_action('orgportals_subdashboards_list')(context, {'org_name': org['name']})
-    subdashboards_dict = {x['name']: x for x in subdashboards_list}
+    # subdashboards_list = p.toolkit.get_action('orgportals_subdashboards_list')(context, {'org_name': org['name']})
+    # subdashboards_dict = {x['name']: x for x in subdashboards_list}
     for topic in data_page['topics']:
         is_upload = topic['image_url'] and not topic['image_url'].startswith('http')
 
         if is_upload:
             topic['image_url'] = '/uploads/portal/{}'.format(topic['image_url'])
 
-        if topic['subdashboard'] in subdashboards_dict:
-            topic['full_attributes'] = subdashboards_dict[topic['subdashboard']]
+        # if topic['subdashboard'] in subdashboards_dict:
+        #     topic['full_attributes'] = subdashboards_dict[topic['subdashboard']]
 
     extra_vars = {
         'organization': org,
@@ -787,16 +787,16 @@ def library_show(org_name, source):
     else:
         data_page['topics'] = []
 
-    subdashboards_list = p.toolkit.get_action('orgportals_subdashboards_list')(context, {'org_name': org['name']})
-    subdashboards_dict = {x['name']: x for x in subdashboards_list}
+    # subdashboards_list = p.toolkit.get_action('orgportals_subdashboards_list')(context, {'org_name': org['name']})
+    # subdashboards_dict = {x['name']: x for x in subdashboards_list}
     for topic in data_page['topics']:
         is_upload = topic['image_url'] and not topic['image_url'].startswith('http')
 
         if is_upload:
             topic['image_url'] = '/uploads/portal/{}'.format(topic['image_url'])
 
-        if topic['subdashboard'] in subdashboards_dict:
-            topic['full_attributes'] = subdashboards_dict[topic['subdashboard']]
+        # if topic['subdashboard'] in subdashboards_dict:
+        #     topic['full_attributes'] = subdashboards_dict[topic['subdashboard']]
 
     data_page['page_title'] = 'Library'
     data_page['name'] = 'library'

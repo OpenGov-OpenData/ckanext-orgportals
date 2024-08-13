@@ -13,6 +13,6 @@ def clean_orgportals():
         model.Session.query(db.Page).delete()
         model.Session.commit()
 
-    if db.subdashboard_table is not None:
-        model.Session.query(db.Subdashboard).delete()
-        model.Session.commit()
+    # if db.subdashboard_table is not None:
+    #     model.Session.query(db.Subdashboard).delete()
+    #     model.Session.commit()

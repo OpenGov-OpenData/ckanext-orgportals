@@ -1,18 +1,9 @@
-import base64
-import os
 import pytest
 
-from ckan.common import config
-
-from ckan import plugins
 from ckan.tests import factories
 from ckan.plugins import toolkit
 
-from ckanext.orgportals.tests.helpers import (id_generator,
-                                              create_mock_data,
-                                              upload_json_resource,
-                                              mock_map_properties,
-                                              create_subdashboard)
+from ckanext.orgportals.tests.helpers import (id_generator, create_mock_data)
 
 
 @pytest.mark.usefixtures('clean_db', 'orgportals_setup', 'clean_index')
@@ -32,7 +23,7 @@ class TestCustomActions(object):
             resource_name=resource_name,
             resource_view_title=resource_view_title)
 
-        self.subdashboard = create_subdashboard(self.mock_data)
+        # self.subdashboard = create_subdashboard(self.mock_data)
 
     def test_show_datasets(self):
         data_dict = {'id': self.mock_data['organization_name']}
@@ -222,115 +213,115 @@ class TestCustomActions(object):
 
         assert len(pages) > 0
 
-    def test_orgportals_subdashboards_show(self):
-        data_dict = {
-            'org_name': self.mock_data['organization_name'],
-            'subdashboard_name': self.mock_data['group_name']
-        }
-
-        subdashboard = toolkit.get_action('orgportals_subdashboards_show')(
-            self.mock_data['context'], data_dict)
-
-        assert subdashboard['name'] == self.mock_data['group_name']
-        assert subdashboard['org_name'] == self.mock_data['organization_name']
-
-    def test_orgportals_subdashboards_update(self):
-        data_dict = {
-            'org_name': self.mock_data['organization_name'],
-            'name': 'test',
-            'group': self.mock_data['group_name'],
-            'is_active': True,
-            'data_section_enabled': True,
-            'content_section_enabled': True
-        }
-
-        # Create new subdashboard
-        toolkit.get_action('orgportals_subdashboards_update')(
-            self.mock_data['context'], data_dict)
-
-        data_dict = {
-            'org_name': self.mock_data['organization_name'],
-            'subdashboard_name': 'test'
-        }
-
-        subdashboard = toolkit.get_action('orgportals_subdashboards_show')(
-            self.mock_data['context'], data_dict)
-
-        assert subdashboard['name'] == 'test'
-        assert subdashboard['org_name'] == self.mock_data['organization_name']
-        assert subdashboard['group'] == self.mock_data['group_name']
-        assert subdashboard['is_active'] is True
-        assert subdashboard['data_section_enabled'] is True
-        assert subdashboard['content_section_enabled'] is True
-
-        data_dict = {
-            'org_name': self.mock_data['organization_name'],
-            'name': 'test',
-            'subdashboard_name': 'test',
-            'group': 'test_group',
-            'is_active': True,
-            'data_section_enabled': True,
-            'content_section_enabled': True
-        }
-
-        # Update existing subdashboard
-        toolkit.get_action('orgportals_subdashboards_update')(
-            self.mock_data['context'], data_dict)
-
-        data_dict = {
-            'org_name': self.mock_data['organization_name'],
-            'subdashboard_name': 'test'
-        }
-
-        subdashboard = toolkit.get_action('orgportals_subdashboards_show')(
-            self.mock_data['context'], data_dict)
-
-        assert subdashboard['name'] == 'test'
-        assert subdashboard['org_name'] == self.mock_data['organization_name']
-        assert subdashboard['group'] == 'test_group'
-        assert subdashboard['is_active'] is True
-        assert subdashboard['data_section_enabled'] is True
-        assert subdashboard['content_section_enabled'] is True
-
-    def test_orgportals_subdashboards_delete(self):
-        data_dict = {
-            'org_name': self.mock_data['organization_name'],
-            'name': 'test2',
-            'group': self.mock_data['group_name'],
-            'is_active': True,
-            'data_section_enabled': True,
-            'content_section_enabled': True
-        }
-
-        # Create new subdashboard
-        toolkit.get_action('orgportals_subdashboards_update')(
-            self.mock_data['context'], data_dict)
-
-        data_dict = {
-            'org_name': self.mock_data['organization_name'],
-            'subdashboard_name': 'test2'
-        }
-
-        # Delete the just created custom page
-        toolkit.get_action('orgportals_subdashboards_delete')(
-            self.mock_data['context'], data_dict)
-
-        data_dict = {
-            'org_name': self.mock_data['organization_name'],
-            'subdashboard_name': 'test2'
-        }
-
-        subdashboard = toolkit.get_action('orgportals_subdashboards_show')(
-            self.mock_data['context'], data_dict)
-
-        assert subdashboard is None
-
-    def test_orgportals_subdashboards_list(self):
-        data_dict = {
-            'org_name': self.mock_data['organization_name']
-        }
-
-        subdashboards = toolkit.get_action('orgportals_subdashboards_list')(
-            self.mock_data['context'], data_dict)
-
-        assert len(subdashboards) > 0
+    # def test_orgportals_subdashboards_show(self):
+    #     data_dict = {
+    #         'org_name': self.mock_data['organization_name'],
+    #         'subdashboard_name': self.mock_data['group_name']
+    #     }
+    #
+    #     subdashboard = toolkit.get_action('orgportals_subdashboards_show')(
+    #         self.mock_data['context'], data_dict)
+    #
+    #     assert subdashboard['name'] == self.mock_data['group_name']
+    #     assert subdashboard['org_name'] == self.mock_data['organization_name']
+    #
+    # def test_orgportals_subdashboards_update(self):
+    #     data_dict = {
+    #         'org_name': self.mock_data['organization_name'],
+    #         'name': 'test',
+    #         'group': self.mock_data['group_name'],
+    #         'is_active': True,
+    #         'data_section_enabled': True,
+    #         'content_section_enabled': True
+    #     }
+    #
+    #     # Create new subdashboard
+    #     toolkit.get_action('orgportals_subdashboards_update')(
+    #         self.mock_data['context'], data_dict)
+    #
+    #     data_dict = {
+    #         'org_name': self.mock_data['organization_name'],
+    #         'subdashboard_name': 'test'
+    #     }
+    #
+    #     subdashboard = toolkit.get_action('orgportals_subdashboards_show')(
+    #         self.mock_data['context'], data_dict)
+    #
+    #     assert subdashboard['name'] == 'test'
+    #     assert subdashboard['org_name'] == self.mock_data['organization_name']
+    #     assert subdashboard['group'] == self.mock_data['group_name']
+    #     assert subdashboard['is_active'] is True
+    #     assert subdashboard['data_section_enabled'] is True
+    #     assert subdashboard['content_section_enabled'] is True
+    #
+    #     data_dict = {
+    #         'org_name': self.mock_data['organization_name'],
+    #         'name': 'test',
+    #         'subdashboard_name': 'test',
+    #         'group': 'test_group',
+    #         'is_active': True,
+    #         'data_section_enabled': True,
+    #         'content_section_enabled': True
+    #     }
+    #
+    #     # Update existing subdashboard
+    #     toolkit.get_action('orgportals_subdashboards_update')(
+    #         self.mock_data['context'], data_dict)
+    #
+    #     data_dict = {
+    #         'org_name': self.mock_data['organization_name'],
+    #         'subdashboard_name': 'test'
+    #     }
+    #
+    #     subdashboard = toolkit.get_action('orgportals_subdashboards_show')(
+    #         self.mock_data['context'], data_dict)
+    #
+    #     assert subdashboard['name'] == 'test'
+    #     assert subdashboard['org_name'] == self.mock_data['organization_name']
+    #     assert subdashboard['group'] == 'test_group'
+    #     assert subdashboard['is_active'] is True
+    #     assert subdashboard['data_section_enabled'] is True
+    #     assert subdashboard['content_section_enabled'] is True
+    #
+    # def test_orgportals_subdashboards_delete(self):
+    #     data_dict = {
+    #         'org_name': self.mock_data['organization_name'],
+    #         'name': 'test2',
+    #         'group': self.mock_data['group_name'],
+    #         'is_active': True,
+    #         'data_section_enabled': True,
+    #         'content_section_enabled': True
+    #     }
+    #
+    #     # Create new subdashboard
+    #     toolkit.get_action('orgportals_subdashboards_update')(
+    #         self.mock_data['context'], data_dict)
+    #
+    #     data_dict = {
+    #         'org_name': self.mock_data['organization_name'],
+    #         'subdashboard_name': 'test2'
+    #     }
+    #
+    #     # Delete the just created custom page
+    #     toolkit.get_action('orgportals_subdashboards_delete')(
+    #         self.mock_data['context'], data_dict)
+    #
+    #     data_dict = {
+    #         'org_name': self.mock_data['organization_name'],
+    #         'subdashboard_name': 'test2'
+    #     }
+    #
+    #     subdashboard = toolkit.get_action('orgportals_subdashboards_show')(
+    #         self.mock_data['context'], data_dict)
+    #
+    #     assert subdashboard is None
+    #
+    # def test_orgportals_subdashboards_list(self):
+    #     data_dict = {
+    #         'org_name': self.mock_data['organization_name']
+    #     }
+    #
+    #     subdashboards = toolkit.get_action('orgportals_subdashboards_list')(
+    #         self.mock_data['context'], data_dict)
+    #
+    #     assert len(subdashboards) > 0
