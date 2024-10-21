@@ -105,7 +105,7 @@
       <p><b>Note: Press the <i>Update Organization</i> button in order to create the portal.</b></p><br>
     {% endif %}
 
-    {{ form.select('orgportals_is_active', 'orgportals_is_active', _('Is portal active?'), options=[{'value': '1', 'text': 'Yes'}, {'value': '0', 'text': 'No'}], selected=data.orgportals_is_active, attrs={'class': 'control-medium'}) }}
+    {{ form.select('orgportals_is_active', 'orgportals_is_active', _('Is portal active?'), options=[{'value': '0', 'text': 'No'}, {'value': '1', 'text': 'Yes'}], selected=data.orgportals_is_active, attrs={'class': 'control-medium'}) }}
 
 {#
     {{ form.input('orgportals_portal_url', 'orgportals_portal_url', label=_('Portal URL'), type='url', value=data.orgportals_portal_url, error=errors.orgportals_portal_url) }}
