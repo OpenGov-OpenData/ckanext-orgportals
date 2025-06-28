@@ -234,12 +234,12 @@ def orgportals_pages_edit(org_name, page=None, data=None, errors=None, error_sum
         data['topics'] = json.loads(data['topics'])
         data['topics'].sort(key=itemgetter('order'))
 
-    if _page:
-        data_dict = {'org_name': org_name}
-        subdashboards = p.toolkit.get_action('orgportals_subdashboards_list')({}, data_dict)
-        subdashboards = [{'value': subdashboard['name'], 'text': subdashboard['name']} for subdashboard in subdashboards]
-        subdashboards.insert(0, {'value': '$none$', 'text':'None'})
-        data['subdashboards'] = subdashboards
+    # if _page:
+    #     data_dict = {'org_name': org_name}
+    #     subdashboards = p.toolkit.get_action('orgportals_subdashboards_list')({}, data_dict)
+    #     subdashboards = [{'value': subdashboard['name'], 'text': subdashboard['name']} for subdashboard in subdashboards]
+    #     subdashboards.insert(0, {'value': '$none$', 'text':'None'})
+    #     data['subdashboards'] = subdashboards
 
     group_dict = _get_group_dict(org_name)
     c.group_dict = group_dict

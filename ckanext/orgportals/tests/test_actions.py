@@ -6,9 +6,10 @@ from ckan.plugins import toolkit
 from ckanext.orgportals.tests.helpers import (id_generator, create_mock_data)
 
 
-@pytest.mark.usefixtures('clean_db', 'orgportals_setup', 'clean_index')
+@pytest.mark.usefixtures('orgportals_setup')
 class TestCustomActions(object):
 
+    @pytest.fixture(autouse=True)
     def setup(self):
         organization_name = id_generator()
         dataset_name = id_generator()
