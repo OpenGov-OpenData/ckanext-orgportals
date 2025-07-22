@@ -18,7 +18,7 @@ body {
 }
 
 .resources-title a {
-    color: #000;
+    color: #165cab;
 }
 
 body, figure {
@@ -1331,9 +1331,9 @@ a {
     text-decoration: none
 }
 
-a:focus, a:hover {
-    color: #000;
-    text-decoration: underline
+a:hover, a:focus {
+    color: #113845;
+    text-decoration: underline;
 }
 
 a:focus {
@@ -1406,8 +1406,8 @@ select[multiple], select[size], textarea.form-control {
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 700;
-    line-height: 1.5;
-    color: #375F87;
+    line-height: 1.1;
+    color: inherit;
 }
 
 .h1 .small, .h1 small, .h2 .small, .h2 small, .h3 .small, .h3 small, .h4 .small, .h4 small, .h5 .small, .h5 small, .h6 .small, .h6 small, h1 .small, h1 small, h2 .small, h2 small, h3 .small, h3 small, h4 .small, h4 small, h5 .small, h5 small, h6 .small, h6 small {
@@ -1469,6 +1469,8 @@ p {
 
 .data-set p {
     color: #131517;
+    position: relative;
+    z-index: 1;
 }
 
 .col-md-4 p {
@@ -3344,23 +3346,23 @@ footer a, footer a:hover {
 }
 .btn {
     display: inline-block;
-    padding: 4px 12px;
     margin-bottom: 0;
-    font-size: 14px;
-    line-height: 20px;
+    font-weight: normal;
     text-align: center;
+    white-space: nowrap;
     vertical-align: middle;
+    touch-action: manipulation;
     cursor: pointer;
-    color: #333333;
-    text-shadow: 0 1px 1px rgb(255 255 255 / 75%);
-    background-color: #f7f7f7;
-    border: 1px solid #cccccc;
-    border-bottom-color: #b3b3b3;
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 20%), 0 1px 2px rgb(0 0 0 / 5%);
+    background-image: none;
+    border: 1px solid transparent;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    border-radius: 4px;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-    user-select: none
+    user-select: none;
 }
 
 .btn.active.focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn:active:focus, .btn:focus {
@@ -3393,9 +3395,9 @@ a.btn.disabled, fieldset[disabled] a.btn {
 }
 
 .btn-default {
-    color: #333;
-    background-color: #fff;
-    border-color: #ccc
+    background: rgb(247, 249, 250);
+    border: 1px solid rgb(181, 185, 189);
+    color: rgb(97, 99, 101);
 }
 
 .btn-default.focus, .btn-default:focus {
@@ -3440,8 +3442,8 @@ a.btn.disabled, fieldset[disabled] a.btn {
 
 .btn-primary.active, .btn-primary:active, .btn-primary:hover, .open > .dropdown-toggle.btn-primary {
     color: #fff;
-    background-color: #c60;
-    border-color: #c60;
+    background: rgb(4, 65, 135);
+    border: 1px solid rgb(97, 99, 101);
 }
 
 .btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open > .dropdown-toggle.btn-primary.focus, .open > .dropdown-toggle.btn-primary:focus, .open > .dropdown-toggle.btn-primary:hover {
@@ -4936,7 +4938,6 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
     color: #505050;
     font-weight: 500;
     font-size: 20px;
-    text-decoration: none;
 }
 
 .pagination {
@@ -7411,7 +7412,7 @@ main:after {
 }
 
 .data-block-heading {
-    margin-bottom: 16px
+    margin-bottom: 16px;
     color: #375F87;
 }
 /*
@@ -7434,14 +7435,9 @@ main:after {
 }
 
 .data-set-title {
-    margin-top: 0;
     font-size: 18px;
     font-weight: 700;
     padding-left: 0px;
-}
-
-.data-set a {
-    color: #165cab;
 }
 
 @media (min-width: 343px) and (max-width: 376px) {
@@ -7628,7 +7624,6 @@ footer .container {
 }
 
 .resources-dropdown-name a {
-    /*text-decoration: underline;*/
     font-weight: bold;
 }
 
@@ -8873,6 +8868,8 @@ ul.unstyled, ol.unstyled {
 
 .dataset-actions {
   float: right;
+  position: relative;
+  z-index: 10;
 }
 .dataset-actions .view-dataset {
   padding-right: 20px;
