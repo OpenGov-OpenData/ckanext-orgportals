@@ -26,19 +26,15 @@ Example:
     <article class="data-set">
       <div class="row">
         <div class="col-md-12">
-          <h3 class="data-set-title col-md-8" onclick="toggleResources('{{ datasets_group_name }}-resources-{{ package.id }}'); return false;">
-            {{ h.markdown_extract(title, extract_length=truncate_title) }}
+          <h3 class="heading data-set-title col-md-8">
+            <a href="/dataset/{{package.name}}" aria-label="View dataset {{ title }}">
+              {{ h.markdown_extract(title, extract_length=truncate_title) }}
+            </a>
           </h3>
           <div class="dataset-actions">
-            <a href="/dataset/{{package.name}}"
-               target="_blank"
-               class="view-dataset"
-               aria-label="View document {{ title }}">
-              <i class="fa fa-desktop "></i> {{ _('View document') }}
-            </a>
             <button onclick="toggleResources('{{ datasets_group_name }}-resources-{{ package.id }}'); return false;"
-                    aria-label="Toggle between hiding and showing resources and additional information for {{ title }}"
-                    class="btn">
+                    aria-label="Toggle visibility of resources and additional information for {{ title }}"
+                    class="btn btn-default">
               <i class="fa fa-list-ul"></i>{{ _(' Toggle resources') }}
             </button>
           </div>
@@ -75,26 +71,34 @@ Example:
                   {% endif %}
                 </div>                
                 <div class="btn-group">
-                  <a href="{{ resource.url }}" class="btn btn-sm btn-primary res-download" target="_blank"><i class="fa fa-arrow-circle-o-down"></i>{{ _(' Download')}}</a>
+                  {% if resource.url and resource.url_type == 'upload' %}
+                    <a href="{{ resource.url }}" class="btn btn-sm btn-primary resource-url-analytics" target="_blank" aria-label="Download resource {{ resource.name or resource.id }}">
+                      <i class="fa fa-arrow-circle-o-down"></i>
+                      {{ _(' Download')}}
+                    </a>
+                  {% else %}
+                    <a href="{{ resource.url }}" class="btn btn-sm btn-primary resource-url-analytics" target="_blank" aria-label="Go to resource {{ resource.name or resource.id }}">
+                      <i class="fa fa-external-link"></i>
+                      {{ _('Go to resource') }}
+                    </a>
+                  {% endif %}
+                  {# Display PDF view #}
                   {% set resource_view = h.orgportals_get_default_resource_view(resource.id) %}
                   {% if resource_view %}
                   <button class="btn btn-sm btn-primary res-view" onclick="toggleResources('resource-view-{{ resource.id }}'); return false;">
                     <i class="fa fa-desktop "></i>{{ _(' View') }}
                   </button>
                   {% endif %}
-{#
-                  <a href="{{ h.orgportals_get_resource_view_url(dataset=package.name, id=resource.id) }}" class="btn btn-sm btn-primary" target="_blank"><i class="fa fa-desktop "></i> {{ _('Preview') }}</a>
-#}
                 </div>
                 {% if resource_view %}
-                <div class="resource-view hidden" id="resource-view-{{resource.id}}">
+                  <div class="resource-view hidden" id="resource-view-{{resource.id}}">
                     {% set src = h.url_for('resource_view', id=package.name,
-                                           resource_id=resource.id,
-                                           view_id=resource_view.id)  %}
+                                            resource_id=resource.id,
+                                            view_id=resource_view.id)  %}
                     <iframe src="{{ src }}" frameborder="0" width="100%" height="500px" data-module="data-viewer" allowfullscreen>
                       <p>{{ _('Your browser does not support iframes.') }}</p>
                     </iframe>
-                </div>
+                  </div>
                 {% endif %}
               </div>
             </div>
@@ -110,7 +114,7 @@ Example:
         <div class="add-info-block">
           <div class="row">
             <div class="col-sm-12 col-md-12">
-              <h4>{{ _('Additional information') }}</h4>
+              <h4>{{ _('Additional Information') }}</h4>
             </div>
           </div>
           {% if package.author %}
