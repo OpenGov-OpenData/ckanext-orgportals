@@ -25,6 +25,18 @@ except tk.UnknownValidator:
 
 log = logging.getLogger(__name__)
 
+
+def _rename_orgportal_org_name(old_name, new_name):
+    if old_name == new_name:
+        return
+    session = model.Session
+    session.query(db.Page).filter_by(org_name=old_name).update(
+        {u'org_name': new_name}, synchronize_session=False)
+    session.query(db.Subdashboard).filter_by(org_name=old_name).update(
+        {u'org_name': new_name}, synchronize_session=False)
+    session.commit()
+
+
 def organization_create(context, data_dict):
     try:
         data_dict.update({'orgportals_portal_created': u'1'})
@@ -38,13 +50,19 @@ def organization_create(context, data_dict):
 
 def organization_update(context, data_dict):
     try:
-        org_show = tk.get_action('organization_show')({}, {'id': data_dict['name']})
+        lookup_id = data_dict.get('id') or data_dict.get('name')
+        org_show = tk.get_action('organization_show')({}, {'id': lookup_id})
 
         if 'orgportals_portal_created' not in org_show:
-            _create_portal(data_dict['name'])
+            _create_portal(data_dict.get('name') or org_show['name'])
 
         data_dict.update({'orgportals_portal_created': u'1'})
         org = update_core.organization_update(context, data_dict)
+
+        old_name = org_show['name']
+        new_name = org['name']
+        if old_name != new_name:
+            _rename_orgportal_org_name(old_name, new_name)
 
         return org
     except p.toolkit.ValidationError:

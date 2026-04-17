@@ -1,5 +1,6 @@
 import pytest
 
+from ckan import model
 from ckan.tests import factories
 from ckan.plugins import toolkit
 
@@ -108,6 +109,71 @@ class TestCustomActions(object):
             self.mock_data['context'], data_dict)
 
         assert len(pages) > 0
+
+    def test_organization_patch_renames_slug_and_migrates_portal_pages(self):
+        old_name = id_generator()
+        new_name = id_generator()
+        assert old_name != new_name
+
+        factories.Organization(name=old_name)
+
+        pages_before = toolkit.get_action('orgportals_pages_list')(
+            self.mock_data['context'], {'org_name': old_name})
+        assert len(pages_before) > 0
+
+        updated = toolkit.get_action('organization_patch')(
+            self.mock_data['context'],
+            {'id': old_name, 'name': new_name})
+
+        assert updated['name'] == new_name
+
+        shown = toolkit.get_action('organization_show')(
+            self.mock_data['context'], {'id': new_name})
+        assert shown['name'] == new_name
+
+        pages_after = toolkit.get_action('orgportals_pages_list')(
+            self.mock_data['context'], {'org_name': new_name})
+        assert len(pages_after) == len(pages_before)
+        assert all(p['org_name'] == new_name for p in pages_after)
+
+        pages_old_slug = toolkit.get_action('orgportals_pages_list')(
+            self.mock_data['context'], {'org_name': old_name})
+        assert len(pages_old_slug) == 0
+
+    def test_organization_update_rename_when_id_is_old_slug_and_name_is_new(
+            self):
+        """Mimics the org edit form: id stays the current slug, name is new."""
+        old_name = id_generator()
+        new_name = id_generator()
+        assert old_name != new_name
+
+        factories.Organization(name=old_name)
+
+        pages_before = toolkit.get_action('orgportals_pages_list')(
+            self.mock_data['context'], {'org_name': old_name})
+        assert len(pages_before) > 0
+
+        base_context = {'user': self.mock_data['context']['user']}
+        org = toolkit.get_action('organization_show')(
+            base_context, {'id': old_name})
+        data = dict(org)
+        data.pop('display_name', None)
+        data['id'] = old_name
+        data['name'] = new_name
+
+        context = dict(base_context)
+        context['model'] = model
+        context['session'] = model.Session
+        context['allow_partial_update'] = True
+
+        updated = toolkit.get_action('organization_update')(context, data)
+
+        assert updated['name'] == new_name
+
+        pages_after = toolkit.get_action('orgportals_pages_list')(
+            self.mock_data['context'], {'org_name': new_name})
+        assert len(pages_after) == len(pages_before)
+        assert all(p['org_name'] == new_name for p in pages_after)
 
     def test_orgportals_pages_show(self):
         data_dict = {
